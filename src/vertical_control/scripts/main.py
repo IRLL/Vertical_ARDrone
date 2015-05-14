@@ -10,12 +10,10 @@ import cv2
 from image_converter import ToOpenCV
 from threading import Lock
 from vision_processor import Vision_Processor
-from controller import pi_controller_2d
+from controller import stabilizer
 
 class Lab5():
 	def __init__(self):
-		self.image = None
-		self.image_lock = Lock()
 		self.video_sub = rospy.Subscriber('/ardrone/image_raw',Image,self.Receive_image)
 		self.drone_pub = rospy.Publisher('cmd_vel', Twist)
 		self.drone_land_pub = rospy.Publisher('/ardrone/land', Empty)
