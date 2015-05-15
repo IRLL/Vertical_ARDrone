@@ -2,14 +2,48 @@ import cv2
 import cv2.cv as cv
 import numpy as np
 from copy import deepcopy
+from sensor_msgs.msg import Image
+from threading import Lock, Thread
+
+
+UPDATE_SPEED = 10 #process at 10 hz
 
 class Vision_Processor ():
 	def __init__(self):
+		self.video_sub = rospy.Subscriber('/ardrone/image_raw', Image, receive_image_callback)
+		self.learner_pub = rospy.Publisher('v_controller/state', Float32)
+		self.controller_pub = rospy.Publisher('v_controller/control_state', Float32MultiArray)
+		rospy.init_node('simulated_sensors', anonymous=False)
+
+		self.rate = rospy.Rate(UPDATE_SPEED)
+		self.current_image = None
+
+		self.image_lock = Lock()
+
+		
+
+		self.processing_thread = Thread(target=processing_function)
 		self.images = dict()
 		self.images['src'] = None
 		self.height, self.width = (-1, -1)
 
 
+
+	def receive_image_callback(self, data):
+		self.image_lock.acquire()
+		try:
+			self.current_image = data
+		finally:
+			self.image_lock.release()
+
+
+	def processing_function(self):
+		#do image processing here
+		while 1:
+			
+				
+			self.rate.sleep()
+		
 	def find_orange (self, image):
 		self.image = image
 		lower_target_range = (0, 170, 0)
