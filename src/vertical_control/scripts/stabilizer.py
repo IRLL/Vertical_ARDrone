@@ -43,7 +43,7 @@ class Stabilizer():
 	def __init__(self, proportional=1, integral=.1):
 		self.controller = pi_controller(proportional, integral) 
 		self.error_sub = rospy.Subscriber('v_controller/control_state', Float32MultiArray, self.run)
-		self.control_pub = rospy.Publisher('v_controller/control_cmd', Twist)
+		self.stabilizer_pub = rospy.Publisher('v_controller/stabilizer_cmd', Twist)
 		rospy.init_node('stabilizer', anonymous=False)
 
 	def run(self, data):

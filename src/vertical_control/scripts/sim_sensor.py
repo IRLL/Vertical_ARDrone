@@ -5,7 +5,7 @@ from copy import deepcopy
 from sensor_msgs.msg import Image
 from threading import Lock, Thread
 
-class Vision_Processor ():
+class Sim_sensor():
 	#class constants
 	UPDATE_SPEED = 10 #process at 10 hz
 	AREA_DIST_CONST = 1
@@ -111,3 +111,7 @@ class Vision_Processor ():
 		distance = area/AREA_DIST_CONST
 
 		return xpos, ypos, distance 
+
+if __name__ == '__main__':
+	sim_sensor = Sim_sensor()	
+	rospy.spin()
