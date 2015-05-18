@@ -1,9 +1,13 @@
+#!/usr/bin/python
 import cv2
-import cv2.cv as cv
+import rospy
 import numpy as np
 from copy import deepcopy
 from sensor_msgs.msg import Image
 from threading import Lock, Thread
+from std_msgs.msg import Float32
+from std_msgs.msg import Float32MultiArray
+from image_converter import ToOpenCV
 
 class Sim_sensor():
 	#class constants
@@ -11,20 +15,23 @@ class Sim_sensor():
 	AREA_DIST_CONST = 1
 
 	def __init__(self):
-		self.video_sub = rospy.Subscriber('/ardrone/image_raw', Image, receive_image_callback)
-		self.learner_pub = rospy.Publisher('v_controller/state', Float32)
-		self.controller_pub = rospy.Publisher('v_controller/control_state', Float32MultiArray)
-		rospy.init_node('simulated_sensors', anonymous=False)
-
-		self.rate = rospy.Rate(UPDATE_SPEED)
+		
 		self.latest_image = None
 
 		self.image_lock = Lock()
 
 		self.images = dict()
 		self.height, self.width = (-1, -1)
+		
 
-		self.processing_thread = Thread(target=processing_function)
+		self.video_sub = rospy.Subscriber('/ardrone/image_raw', Image, self.receive_image_callback)
+		self.learner_pub = rospy.Publisher('v_controller/state', Float32)
+		self.controller_pub = rospy.Publisher('v_controller/control_state', Float32MultiArray)
+		rospy.init_node('simulated_sensors', anonymous=False)
+		self.rate = rospy.Rate(self.UPDATE_SPEED)
+
+		self.processing_thread = Thread(target=self.processing_function)
+		self.processing_thread.start()
 		
 
 	def receive_image_callback(self, data):
@@ -37,7 +44,7 @@ class Sim_sensor():
 
 	def processing_function(self):
 		print "waiting for images to come in..."
-		while (not rospi.is_shutdown()) and self.latest_image is None:
+		while (not rospy.is_shutdown()) and self.latest_image is None:
 			pass		
 		print "done!"
 
@@ -45,18 +52,19 @@ class Sim_sensor():
 
 		while not rospy.is_shutdown(): #do image processing here
 			#get the latest image
-			self.image_lock_acquire()
+			self.image_lock.acquire()
 			try:
 				image = self.latest_image
 			finally:
-				self.image_lock_release()	
+				self.image_lock.release()	
 
 			image = np.asarray(ToOpenCV(image))
 
-			x, y, distance = self.locate_orange(image)
+			x, y, distance = self.find_orange(image)
 			x, y = self.rescale(x, y)
 
 			self.learner_pub.publish(y)		
+			self.controller_pub.publish(None, [x, distance])
 			#need to add publisher for other info
 			self.rate.sleep()
 		
@@ -69,9 +77,16 @@ class Sim_sensor():
 		return x, y, distance
 
 	def get_image_size(self):
-		self.height, self.width, _ = self.latest_image.shape
+		self.image_lock.acquire()
+		try:
+			image = self.latest_image
+		finally:
+			self.image_lock.release()	
+		image = np.asarray(ToOpenCV(image))
 
-	def rescale(x, y):
+		self.height, self.width, _ = image.shape
+
+	def rescale(self, x, y):
 		width_div = float(self.width)/2
 		height_div = float(self.height)/2
 		newx = float(x - width_div)/width_div			
@@ -79,7 +94,7 @@ class Sim_sensor():
 		return newx,newy
 
 	def process_image (self, image, lower_range, upper_range):
-		outputs = dict()
+		#outputs = dict()
 			
 		#create copy of the image
 		self.images["src"] = deepcopy(image) 
@@ -102,13 +117,17 @@ class Sim_sensor():
 		#self.images['center'] = deepcopy(self.images['src']) 
 		#cv2.circle(self.images['center'], (self.width/2, self.height/2), 1, 0, 5)		
 
-		#assume only one contour
-		moment = cv2.moments(contours[0])
-		area = moment["m00"] #cv2.contourArea(contours[0])
-		
-		xpos = moment["m10"] / moment["m00"]
-		ypos = moment["m01"] / moment["m00"]
-		distance = area/AREA_DIST_CONST
+		if contours: #check if we have any contours first
+			moment = cv2.moments(contours[0])
+			area = moment["m00"] #cv2.contourArea(contours[0])
+			
+			xpos = moment["m10"] / moment["m00"]
+			ypos = moment["m01"] / moment["m00"]
+			distance = area/self.AREA_DIST_CONST
+		else:
+			xpos = self.width/2
+			ypos = self.height/2
+			distance = 0
 
 		return xpos, ypos, distance 
 

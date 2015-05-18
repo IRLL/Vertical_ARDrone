@@ -47,7 +47,6 @@ class Viewer ():
 		#show the image
 		cv2.imshow('image', image)
 		cv2.waitKey(1)
-		print "also here"
 			
 	def get_image_size(self, image):
 		self.height, self.width, _ = image.shape
@@ -60,7 +59,5 @@ class Viewer ():
 		return int(newx),int(newy)
 
 if __name__ == "__main__":
-	print "got here"
 	viewer = Viewer()
-	print "and here"
 	rospy.spin()
