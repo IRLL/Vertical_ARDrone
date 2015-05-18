@@ -39,16 +39,26 @@ class pi_controller_2d():
 		
 		return correction
 
-class stabilizer():
-	def __init__(self, proportional, integral):
+class Stabilizer():
+	def __init__(self, proportional=1, integral=.1):
 		self.controller = pi_controller(proportional, integral) 
+		self.error_sub = rospy.Subscriber('v_controller/control_state', Float32MultiArray, self.run)
+		self.control_pub = rospy.Publisher('v_controller/control_cmd', Twist)
+		rospy.init_node('stabilizer', anonymous=False)
 
-	def run(self, error):
+	def run(self, data):
 		command = Twist()		
+
+		error = xy(data[0], data[1])
 		correction = controller.run(error)
 		
 		command.linear.y = correction.x
 
-		command.linear.z = correction.y
+		command.linear.x = correction.y
+		self.control_pub.publish(command)
 		
-		return command
+
+
+if __name__ == "__main__":
+	stabilizer = Stabilizer()
+	rospy.spin() 
