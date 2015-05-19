@@ -30,9 +30,9 @@ class Viewer ():
 			
 	
 	def rx_state_callback(self, data):
-		self.vloc = data;
+		self.vloc = data.data;
 	def rx_controller_state_callback(self, data):
-		self.hloc = data[0]
+		self.hloc = data.data[0]
 
 	def receive_image_callback(self, data):
 		image = np.asarray(ToOpenCV(data)) #convert image

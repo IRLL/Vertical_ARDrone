@@ -10,7 +10,7 @@ class Controller():
 		self.stabilizer_twist = Twist()
 
 
-		rospy.init_node('viewer', anonymous=False)
+		rospy.init_node('drone_controller', anonymous=False)
 		self.drone_pub = rospy.Publisher('cmd_vel', Twist)
 		self.takeoff_pub = rospy.Publisher('ardrone/takeoff', Empty) 
 		self.land_pub = rospy.Publisher('ardrone/land', Empty) 
@@ -31,7 +31,7 @@ class Controller():
 
 if __name__ == "__main__":
 	controller = Controller()
-
+	rospy.sleep(1)
 	controller.takeoff_pub.publish(Empty())
 	while not rospy.is_shutdown():
 		controller.run()
