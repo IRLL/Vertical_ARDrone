@@ -4,7 +4,7 @@ import rospy
 import numpy as np
 from copy import deepcopy
 from sensor_msgs.msg import Image
-from threading import Lock, Thread
+from threading import Lock
 from std_msgs.msg import Float32
 from std_msgs.msg import Float32MultiArray
 from image_converter import ToOpenCV
@@ -30,8 +30,6 @@ class Sim_sensor():
 		rospy.init_node('simulated_sensors', anonymous=False)
 		self.rate = rospy.Rate(self.UPDATE_SPEED)
 
-		self.processing_thread = Thread(target=self.processing_function)
-		self.processing_thread.start()
 		
 
 	def receive_image_callback(self, data):
@@ -45,7 +43,7 @@ class Sim_sensor():
 	def processing_function(self):
 		print "waiting for images to come in..."
 		while (not rospy.is_shutdown()) and self.latest_image is None:
-			pass		
+			rospy.sleep(.5)		
 		print "done!"
 
 		self.get_image_size()
@@ -133,4 +131,4 @@ class Sim_sensor():
 
 if __name__ == '__main__':
 	sim_sensor = Sim_sensor()	
-	rospy.spin()
+	sim_sensor.processing_function()

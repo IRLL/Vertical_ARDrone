@@ -31,7 +31,7 @@ class Controller():
 
 if __name__ == "__main__":
 	controller = Controller()
-	rospy.sleep(1)
+	rospy.sleep(5)
 	controller.takeoff_pub.publish(Empty())
 	while not rospy.is_shutdown():
 		controller.run()
