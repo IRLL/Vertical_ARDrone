@@ -16,7 +16,7 @@ class Stabilizer():
 		command = Twist()		
 
 		x = data.data[0]
-		y = (7000 - data.data[1]) / 1000
+		y = (7700 - data.data[1]) / 1000
 		error = xy(x, y)
 		correction = self.controller.run(error)
 		

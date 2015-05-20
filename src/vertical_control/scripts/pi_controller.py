@@ -22,6 +22,9 @@ class pi_controller():
 		correction = correction_p + correction_i
 			
 		return correction
+	
+	def reset(self):
+		self.error_integral = 0
 
 class pi_controller_2d():
 	def __init__(self, proportional, integral):
@@ -36,3 +39,6 @@ class pi_controller_2d():
 		
 		return correction
 
+	def reset(self):
+		self.x_controller.reset()
+		self.y_controller.reset()

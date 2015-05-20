@@ -3,8 +3,9 @@
 import rospy
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Empty
+import time
 class Controller():
-	UPDATE_SPEED = 10
+	UPDATE_SPEED = 5 
 	def __init__(self):
 		self.agent_twist = Twist()
 		self.stabilizer_twist = Twist()
@@ -19,10 +20,31 @@ class Controller():
 
 		self.rate = rospy.Rate(self.UPDATE_SPEED)
 	def rx_agent_callback(self, data):
-		self.agent_twist = data
+		self.agent_twist = self.smooth(data, self.agent_twist)
 
 	def rx_stabilizer_callback(self, data):
-		self.stabilizer_twist = data
+		self.stabilizer_twist = self.smooth(data, self.stabilizer_twist)
+
+	def smooth(self, new_cmd, prev_cmd):
+		new_cmd.linear.x += prev_cmd.linear.x 
+		new_cmd.linear.x /= 2
+
+		new_cmd.linear.y += prev_cmd.linear.y 
+		new_cmd.linear.y /= 2
+
+		new_cmd.linear.z += prev_cmd.linear.z 
+		new_cmd.linear.z /= 2
+
+		new_cmd.angular.x += prev_cmd.angular.x 
+		new_cmd.angular.x /= 2
+
+		new_cmd.angular.y += prev_cmd.angular.y 
+		new_cmd.angular.y /= 2
+
+		new_cmd.angular.z += prev_cmd.angular.z 
+		new_cmd.angular.z /= 2
+
+		return new_cmd
 	
 	def run(self):
 		cmd = self.stabilizer_twist
@@ -31,7 +53,7 @@ class Controller():
 
 if __name__ == "__main__":
 	controller = Controller()
-	rospy.sleep(5)
+	time.sleep(.5)
 	controller.takeoff_pub.publish(Empty())
 	while not rospy.is_shutdown():
 		controller.run()
