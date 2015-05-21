@@ -53,7 +53,7 @@ class Tag_sensor():
 				print x, y, distance
 			else:
 				print "can't see any tags"
-				x, y, distance = 0.0, 0.0, 5.0 #default_values
+				x, y, distance = 0.0, 0.0, 1.0 #default_values
 				
 
 			self.learner_pub.publish(y)		
@@ -61,7 +61,7 @@ class Tag_sensor():
 			self.rate.sleep()
 
 	def read_tag(self, navdata):
-		return navdata.tags_xc[0], navdata.tags_yc[0], navdata.tags_distance[0]
+		return navdata.tags_xc[0], navdata.tags_yc[0], navdata.tags_distance[0]/100
 
 	def rescale(self, x, y):
 		width_div = 1000/2

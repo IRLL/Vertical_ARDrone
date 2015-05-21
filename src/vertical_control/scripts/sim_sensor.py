@@ -8,11 +8,12 @@ from threading import Lock
 from std_msgs.msg import Float32
 from std_msgs.msg import Float32MultiArray
 from image_converter import ToOpenCV
+from math import sqrt
 
 class Sim_sensor():
 	#class constants
 	UPDATE_SPEED = 10 #process at 10 hz
-	AREA_DIST_CONST = 1
+	AREA_DIST_CONST = 35.623
 
 	def __init__(self):
 		
@@ -121,15 +122,17 @@ class Sim_sensor():
 			if area != 0:
 				xpos = moment["m10"] / area
 				ypos = moment["m01"] / area
-				distance = area/self.AREA_DIST_CONST
+				distance = self.AREA_DIST_CONST * 1/sqrt(area)
+				#print "a", area
+				#print "d", distance
 			else:
 				xpos = self.width/2
 				ypos = self.height/2
-				distance = 0
+				distance = 1
 		else:
 			xpos = self.width/2
 			ypos = self.height/2
-			distance = 0
+			distance = 1
 
 		return xpos, ypos, distance 
 

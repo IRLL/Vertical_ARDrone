@@ -48,7 +48,7 @@ class Viewer ():
 		cv2.line(image, (hloc, 0), (hloc, 479), 0)	#draw vertical line	
 		
 		#write current battery level on the image
-		cv2.putText(image, "{}%".format(self.battery), (int(self.width*.01
+		cv2.putText(image, "{:.2f}%".format(self.battery), (int(self.width*.01
 ),int(self.height*0.95)), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0))
 
 		#show the image

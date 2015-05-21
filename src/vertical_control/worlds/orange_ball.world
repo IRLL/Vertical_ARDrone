@@ -18,7 +18,7 @@
     </physics>
     
     <model name='unit_sphere_4'>
-      <pose>8 0 2.5 0 -0 0</pose>
+      <pose>3 0 1 0 -0 0</pose>
       <link name='link'>
         <inertial>
           <mass>1</mass>
@@ -34,7 +34,7 @@
         <collision name='collision'>
           <geometry>
             <sphere>
-              <radius>0.5</radius>
+              <radius>0.055</radius>
             </sphere>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -51,7 +51,7 @@
         <visual name='visual'>
           <geometry>
             <sphere>
-              <radius>0.5</radius>
+              <radius>0.055</radius>
             </sphere>
           </geometry>
           <material>
