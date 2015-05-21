@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+  <node pkg="vertical_control" name="viewer" type="viewer.py" />
+  <node pkg="vertical_control" name="sensors" type="tag_sensor.py" />
+  <node pkg="vertical_control" name="drone_controller" type="drone_controller.py" />
+  <node pkg="vertical_control" name="stabilizer" type="stabilizer.py" />
+  <node pkg="vertical_control" name="agent" type="agent_ex.py" />
+</launch>
