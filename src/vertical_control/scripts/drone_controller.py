@@ -51,12 +51,14 @@ class Controller():
 		cmd.linear.z = self.agent_twist.linear.z
 		self.drone_pub.publish(cmd)
 
+def land_drone():
+	controller.land_pub.publish(Empty())
+
 if __name__ == "__main__":
 	controller = Controller()
+	rospy.on_shutdown(land_drone)
 	time.sleep(.5)
 	controller.takeoff_pub.publish(Empty())
 	while not rospy.is_shutdown():
 		controller.run()
 		controller.rate.sleep()
-	
-	controller.land_pub.publish(Empty())

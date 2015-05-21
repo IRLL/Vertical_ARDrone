@@ -118,10 +118,14 @@ class Sim_sensor():
 		if contours: #check if we have any contours first
 			moment = cv2.moments(contours[0])
 			area = moment["m00"] #cv2.contourArea(contours[0])
-			
-			xpos = moment["m10"] / moment["m00"]
-			ypos = moment["m01"] / moment["m00"]
-			distance = area/self.AREA_DIST_CONST
+			if area != 0:
+				xpos = moment["m10"] / area
+				ypos = moment["m01"] / area
+				distance = area/self.AREA_DIST_CONST
+			else:
+				xpos = self.width/2
+				ypos = self.height/2
+				distance = 0
 		else:
 			xpos = self.width/2
 			ypos = self.height/2
