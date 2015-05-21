@@ -9,6 +9,7 @@ from sensor_msgs.msg import Image
 from std_msgs.msg import Float32
 from image_converter import ToOpenCV
 from std_msgs.msg import Float32MultiArray
+from ardrone_autonomy.msg import Navdata
 
 #from threading import Lock, Thread
 
@@ -21,8 +22,10 @@ class Viewer ():
 		self.vloc = 0
 		self.hloc = 0
 		self.height, self.width = (-1, -1)
+		self.battery = -1.0
 
 		self.video_sub = rospy.Subscriber('/ardrone/image_raw', Image, self.receive_image_callback)
+		self.nav_sub = rospy.Subscriber('/ardrone/navdata', Navdata, self.receive_nav_callback)
 		self.state_sub = rospy.Subscriber('v_controller/state', Float32, self.rx_state_callback)
 		self.controller_sub = rospy.Subscriber('v_controller/control_state', Float32MultiArray, self.rx_controller_state_callback)
 		rospy.init_node('viewer', anonymous=False)
@@ -43,10 +46,17 @@ class Viewer ():
 		#draw the lines line marking the y pos
 		cv2.line(image, (0, vloc), (639, vloc), 0)	#draw horizontal line	
 		cv2.line(image, (hloc, 0), (hloc, 479), 0)	#draw vertical line	
+		
+		#write current battery level on the image
+		cv2.putText(image, "{}%".format(self.battery), (int(self.width*.01
+),int(self.height*0.95)), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0))
 
 		#show the image
 		cv2.imshow('image', image)
 		cv2.waitKey(1)
+
+	def receive_nav_callback(self, data):
+		self.battery = data.batteryPercent
 			
 	def get_image_size(self, image):
 		self.height, self.width, _ = image.shape
