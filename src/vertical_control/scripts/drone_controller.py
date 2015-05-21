@@ -20,10 +20,10 @@ class Controller():
 
 		self.rate = rospy.Rate(self.UPDATE_SPEED)
 	def rx_agent_callback(self, data):
-		self.agent_twist = self.smooth(data, self.agent_twist)
+		self.agent_twist = data #self.smooth(data, self.agent_twist)
 
 	def rx_stabilizer_callback(self, data):
-		self.stabilizer_twist = self.smooth(data, self.stabilizer_twist)
+		self.stabilizer_twist = data #self.smooth(data, self.stabilizer_twist)
 
 	def smooth(self, new_cmd, prev_cmd):
 		new_cmd.linear.x += prev_cmd.linear.x 
@@ -59,6 +59,7 @@ if __name__ == "__main__":
 	rospy.on_shutdown(land_drone)
 	time.sleep(.5)
 	controller.takeoff_pub.publish(Empty())
+	rospy.sleep(5)
 	while not rospy.is_shutdown():
 		controller.run()
 		controller.rate.sleep()
