@@ -13,6 +13,7 @@ class Tag_sensor():
 	def __init__(self):
 		self.nav_lock = Lock()
 		self.latest_data = None
+		self.hover_distance = rospy.get_param("v_controller/hover_distance")
  
 		rospy.init_node('tag_sensors', anonymous=False)
 		
@@ -53,7 +54,7 @@ class Tag_sensor():
 				print x, y, distance
 			else:
 				print "can't see any tags"
-				x, y, distance = 0.0, 0.0, 1.0 #default_values
+				x, y, distance = 0.0, 0.0, self.hover_distance #default_values
 				
 
 			self.learner_pub.publish(y)		

@@ -28,8 +28,8 @@ class pi_controller():
 
 class pi_controller_2d():
 	def __init__(self, proportional, integral):
-		self.x_controller = pi_controller(proportional, integral)
-		self.y_controller = pi_controller(proportional, integral)
+		self.x_controller = pi_controller(proportional[0], integral[0])
+		self.y_controller = pi_controller(proportional[1], integral[1])
 
 	def run(self, error):
 		correction = xy()

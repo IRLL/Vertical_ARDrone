@@ -23,6 +23,7 @@ class Sim_sensor():
 
 		self.images = dict()
 		self.height, self.width = (-1, -1)
+		self.hover_distance = rospy.get_param("v_controller/hover_distance")
 		
 
 		self.video_sub = rospy.Subscriber('/ardrone/image_raw', Image, self.receive_image_callback)
@@ -128,11 +129,11 @@ class Sim_sensor():
 			else:
 				xpos = self.width/2
 				ypos = self.height/2
-				distance = 1
+				distance = self.hover_distance
 		else:
 			xpos = self.width/2
 			ypos = self.height/2
-			distance = 1
+			distance = self.hover_distance
 
 		return xpos, ypos, distance 
 
