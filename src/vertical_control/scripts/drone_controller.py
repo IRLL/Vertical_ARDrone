@@ -19,6 +19,7 @@ class Controller():
 		self.land_pub = rospy.Publisher('ardrone/land', Empty) 
 		self.agent_sub = rospy.Subscriber('v_controller/agent_cmd', Twist, self.rx_agent_callback)
 		self.stabilizer_sub = rospy.Subscriber('v_controller/stabilizer_cmd', Twist, self.rx_stabilizer_callback)
+		self.visible_sub = rospy.Subscriber('v_controller/not_visible', Empty, self.not_visible_callback)
 
 		self.rate = rospy.Rate(self.UPDATE_SPEED)
 	def rx_agent_callback(self, data):
@@ -26,6 +27,10 @@ class Controller():
 
 	def rx_stabilizer_callback(self, data):
 		self.stabilizer_twist = data
+
+	def not_visible_callback(self, data):
+		print "can't see the ball, resetting!"
+		self.reset()
 	
 	def run(self):
 		cmd = self.stabilizer_twist
@@ -43,7 +48,7 @@ class Controller():
 		controller.drone_pub.publish(Twist())
 
 		#sleep for a bit
-		rospy.sleep(1)
+		rospy.sleep(5)
 		
 		#command all other modules to reset themselves
 		controller.reset_pub.publish(Empty())
