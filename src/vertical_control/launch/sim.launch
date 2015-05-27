@@ -4,7 +4,7 @@
   <node pkg="vertical_control" name="sensors" type="sim_sensor.py" />
   <node pkg="vertical_control" name="drone_controller" type="drone_controller.py" />
   <node pkg="vertical_control" name="stabilizer" type="stabilizer.py" />
-  <node pkg="vertical_control" name="agent" type="agent_ex.py" />
+  <node pkg="vertical_control" name="agent" type="agent_pg.py" />
 
   <param name="/v_controller/gains/horizontal/p" type="double" value="1"/>
   <param name="/v_controller/gains/horizontal/i" type="double" value="0.001"/>
