@@ -5,8 +5,9 @@ from geometry_msgs.msg import Twist
 from std_msgs.msg import Empty
 import std_srvs.srv as services
 import time
+
 class Controller():
-	UPDATE_SPEED = 5 
+	UPDATE_SPEED = 40
 	def __init__(self):
 		self.agent_twist = Twist()
 		self.stabilizer_twist = Twist()

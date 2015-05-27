@@ -69,7 +69,7 @@
         <kinematic>0</kinematic>
         <gravity>0</gravity>
       </link>
-      <static>1</static>
+      <static>0</static>
     </model>
     
   </world>
