@@ -10,6 +10,7 @@ from std_msgs.msg import Float32MultiArray
 from image_converter import ToOpenCV
 from math import sqrt
 from std_msgs.msg import Empty
+from std_msgs.msg import Bool
 
 class Sim_sensor():
 	#class constants
@@ -29,7 +30,7 @@ class Sim_sensor():
 
 		self.video_sub = rospy.Subscriber('/ardrone/image_raw', Image, self.receive_image_callback)
 		self.learner_pub = rospy.Publisher('v_controller/state', Float32)
-		self.not_visible_pub = rospy.Publisher('v_controller/not_visible', Empty)
+		self.not_visible_pub = rospy.Publisher('v_controller/visible', Bool)
 		self.controller_pub = rospy.Publisher('v_controller/control_state', Float32MultiArray)
 		rospy.init_node('simulated_sensors', anonymous=False)
 		self.rate = rospy.Rate(self.UPDATE_SPEED)
@@ -126,18 +127,20 @@ class Sim_sensor():
 				xpos = moment["m10"] / area
 				ypos = moment["m01"] / area
 				distance = self.AREA_DIST_CONST * 1/sqrt(area)
+				self.not_visible_pub.publish(1)
 				#print "a", area
 				#print "d", distance
 			else:
 				xpos = self.width/2
 				ypos = self.height/2
 				distance = self.hover_distance
-				self.not_visible_pub.publish(Empty())
+				self.not_visible_pub.publish(0)
 		else:
 			xpos = self.width/2
 			ypos = self.height/2
 			distance = self.hover_distance
-			self.not_visible_pub.publish(Empty())
+			self.not_visible_pub.publish(0)
+
 
 		return xpos, ypos, distance 
 

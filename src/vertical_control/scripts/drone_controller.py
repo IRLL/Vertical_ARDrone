@@ -3,6 +3,7 @@
 import rospy
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Empty
+from std_msgs.msg import Bool
 import std_srvs.srv as services
 import time
 
@@ -11,11 +12,13 @@ class Controller():
 	def __init__(self):
 		self.agent_twist = Twist()
 		self.stabilizer_twist = Twist()
+		self.enabled = 1
 		self.gazebo_reset = rospy.ServiceProxy('/gazebo/reset_world', services.Empty)
 
 		rospy.init_node('drone_controller', anonymous=False)
 		self.drone_pub = rospy.Publisher('cmd_vel', Twist)
 		self.reset_sub = rospy.Subscriber('v_controller/soft_reset', Empty, self.reset)
+		self.enable_sub = rospy.Subscriber('v_controller/move_enable', Bool, self.move_en_callback)
 		self.agent_sub = rospy.Subscriber('v_controller/agent_cmd', Twist, self.rx_agent_callback)
 		self.stabilizer_sub = rospy.Subscriber('v_controller/stabilizer_cmd', Twist, self.rx_stabilizer_callback)
 
@@ -28,12 +31,19 @@ class Controller():
 		self.stabilizer_twist = data
 
 	def run(self):
-		cmd = self.stabilizer_twist
-		cmd.linear.z = self.agent_twist.linear.z
-		self.drone_pub.publish(cmd)
+		if self.enabled:
+			cmd = self.stabilizer_twist
+			cmd.linear.z = self.agent_twist.linear.z
+			self.drone_pub.publish(cmd)
+
+	def move_en_callback(self, data):
+		self.enabled = data.data
+		if not self.enabled:
+			self.drone_pub.publish(Twist())
 
 	def reset(self, empty):
-		pass	
+		self.drone_pub.publish(Twist())
+		self.enabled = 1	
 
 def land_drone():
 	controller.land_pub.publish(Empty())
