@@ -23,7 +23,8 @@ class Viewer ():
 		self.hloc = 0
 		self.height, self.width = (-1, -1)
 		self.battery = -1.0
-
+		
+		self.threshold = rospy.get_param("v_controller/threshold")
 		self.video_sub = rospy.Subscriber('/ardrone/image_raw', Image, self.receive_image_callback)
 		self.nav_sub = rospy.Subscriber('/ardrone/navdata', Navdata, self.receive_nav_callback)
 		self.state_sub = rospy.Subscriber('v_controller/state', Float32, self.rx_state_callback)
@@ -45,7 +46,16 @@ class Viewer ():
 		hloc, vloc = self.rescale(self.hloc, self.vloc)
 		#draw the lines line marking the y pos
 		cv2.line(image, (0, vloc), (639, vloc), 0)	#draw horizontal line	
-		cv2.line(image, (hloc, 0), (hloc, 479), 0)	#draw vertical line	
+		cv2.line(image, (hloc, 0), (hloc, 479), 0)	#draw vertical line
+
+		#draw lines for the vertical thresholds
+		high_t = int(self.height/2 + self.threshold*self.height/2)
+		low_t = int (self.height/2-self.threshold*self.height/2)
+		cv2.line(image, (0, high_t), (639, high_t), (255,0,0))
+		cv2.line(image, (0, low_t), (639, low_t), (255,0,0))
+		
+		#draw a center line
+		#cv2.line(image, (0, self.height/2), (639, self.height/2), (0,0,255))	
 		
 		#write current battery level on the image
 		cv2.putText(image, "{:.2f}%".format(self.battery), (int(self.width*.01
