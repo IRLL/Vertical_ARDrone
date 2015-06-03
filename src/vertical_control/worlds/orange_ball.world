@@ -18,7 +18,7 @@
     </physics>
     
     <model name='unit_sphere_4'>
-      <pose>3 0 1 0 -0 0</pose>
+      <pose>3 0 3 0 -0 0</pose>
       <link name='link'>
         <inertial>
           <mass>1</mass>
