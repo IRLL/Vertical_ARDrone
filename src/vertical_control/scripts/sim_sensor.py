@@ -22,6 +22,7 @@ class Sim_sensor():
 		self.latest_image = None
 
 		self.image_lock = Lock()
+		self.last = 0
 
 		self.images = dict()
 		self.height, self.width = (-1, -1)
@@ -44,6 +45,14 @@ class Sim_sensor():
 		finally:
 			self.image_lock.release()
 
+	def sign(self, value):
+		if (value > 0.0):
+			return 2
+		if (value < 0.0):
+			return -2
+		
+		return 0
+
 
 	def processing_function(self):
 		print "waiting for images to come in..."
@@ -64,7 +73,6 @@ class Sim_sensor():
 			image = np.asarray(ToOpenCV(image))
 
 			x, y, distance = self.find_orange(image)
-			x, y = self.rescale(x, y)
 
 			self.learner_pub.publish(y)		
 			self.controller_pub.publish(None, [x, distance])
@@ -128,16 +136,19 @@ class Sim_sensor():
 				ypos = moment["m01"] / area
 				distance = self.AREA_DIST_CONST * 1/sqrt(area)
 				self.not_visible_pub.publish(1)
+				
+				xpos, ypos = self.rescale(xpos, ypos)
+				self.last = self.sign(ypos)
 				#print "a", area
 				#print "d", distance
 			else:
-				xpos = self.width/2
-				ypos = self.height/2
+				xpos = 0
+				ypos = self.last 
 				distance = self.hover_distance
 				self.not_visible_pub.publish(0)
 		else:
-			xpos = self.width/2
-			ypos = self.height/2
+			xpos = 0
+			ypos = self.last
 			distance = self.hover_distance
 			self.not_visible_pub.publish(0)
 
