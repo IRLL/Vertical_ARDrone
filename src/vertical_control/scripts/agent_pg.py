@@ -1,5 +1,12 @@
 #!/usr/bin/env python
 
+# QUESTIONS:
+# Why sigma is random?
+# Should theta be set to zero?
+# How actions are selected using multivariate?
+# Do we need to completed the trajectories when ball is out of sight?
+# Are we giving enough delay for an action to complete?
+
 import rospy
 import time
 from geometry_msgs.msg import Twist
@@ -59,6 +66,7 @@ class Agent():
 
 		# Parameters for Gaussian policies
 		self._theta = np.random.random((self._n*self._m,1)) # Remember that the mean of the normal dis. is theta'*x
+		#self._theta = np.array([[0]])
 		self._sigma = np.random.random((1,self._m)) # Variance of the Gaussian dist.
 
 		self._data = [Data(self._n, self._traj_length) for i in range(self._rollouts)]
@@ -115,7 +123,7 @@ class Agent():
 					#reward = -sqrt(np.dot(self._data[trials].x[:,steps].conj().T, self._data[trials].x[:,steps])) - \
 					#		  sqrt(np.dot(self._data[trials].u[:,steps].conj().T, self._data[trials].u[:,steps]))
 					current_state = self._state
-					reward = -0.1
+					reward = -((0.0 - current_state) ** 2)
 					if current_state <= self.threshold and current_state >= -self.threshold:
 						reward = 0.0
 					if self.visible == 0:
