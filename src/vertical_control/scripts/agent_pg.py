@@ -53,11 +53,11 @@ class Agent():
 		self._n = 1 # Number of states
 		self._m = 1 # Number of inputs
 
-		self._rate = .75 # Learning rate for gradient descent
+		self._rate = .5 # Learning rate for gradient descent Original+0.75
 
 		self._traj_length = 100 # Number of time steps to simulate in the cart-pole system
 		self._rollouts = 50 # Number of trajectories for testing
-		self._num_iterations = 100 # Number of learning episodes/iterations	
+		self._num_iterations = 30 # Number of learning episodes/iterations	
 
 		time.sleep(.1)
 		#self._my0 = pi/6-2*pi/6*np.random.random((N,1)) # Initial state of the cart pole (between -60 and 50 deg)
@@ -65,9 +65,10 @@ class Agent():
 		self._s0 = 0.0001*np.eye(self._n)
 
 		# Parameters for Gaussian policies
-		self._theta = np.random.random((self._n*self._m,1)) # Remember that the mean of the normal dis. is theta'*x
-		#self._theta = np.array([[0]])
-		self._sigma = np.random.random((1,self._m)) # Variance of the Gaussian dist.
+		#self._theta = np.random.random((self._n*self._m,1)) # Remember that the mean of the normal dis. is theta'*x
+		self._theta = np.array([[0.1527085]])
+		#self._sigma = np.random.random((1,self._m)) # Variance of the Gaussian dist.
+		self._sigma = np.array([[0.6149359]])
 
 		self._data = [Data(self._n, self._traj_length) for i in range(self._rollouts)]
 
@@ -75,6 +76,10 @@ class Agent():
 		self._vec = np.empty(shape=(100,1))
 		self._r = np.empty(shape=(1,100))
 		self._reward_per_rates_per_iteration = np.empty(shape=(1,200))
+		
+		print "Initial Theta: ", self._theta
+		print "Sigma: ", self._sigma
+		print "Learning Rate: ", self._rate
 
 
 	def startEpisode(self):
@@ -114,7 +119,7 @@ class Agent():
 					command = Twist()
 					command.linear.z = action
 					self.action_pub.publish(command)
-					rospy.sleep(.1)
+					rospy.sleep(.2)
 
 					self._data[trials].u[:,steps] = action
 
@@ -122,7 +127,7 @@ class Agent():
 					# Calculating the reward (Remember: First term is the reward for accuracy, second is for control cost)
 					#reward = -sqrt(np.dot(self._data[trials].x[:,steps].conj().T, self._data[trials].x[:,steps])) - \
 					#		  sqrt(np.dot(self._data[trials].u[:,steps].conj().T, self._data[trials].u[:,steps]))
-					current_state = self._state
+					current_state = -self._state # negation to get correct states
 					reward = -((0.0 - current_state) ** 2)
 					if current_state <= self.threshold and current_state >= -self.threshold:
 						reward = 0.0
@@ -145,7 +150,7 @@ class Agent():
 
 					#state = data[trials].x[:,steps] + dt*xnDum
 					state = np.array([[current_state]])
-					print "State: %.2f Reward: %f" %(current_state, reward)
+					#print "State: %.2f Reward: %f" %(current_state, reward)
 
 					self._data[trials].x[:,steps+1] = state
 
@@ -191,6 +196,7 @@ class Agent():
 
 			# Update of the parameter vector theta using gradient descent
 			self._theta = self._theta + self._rate*dJdtheta;
+			print "Theta: ", self._theta
 
 			# Calculation of the average reward
 			for z in range(np.shape(self._data)[0]): #TODO:check
@@ -216,6 +222,7 @@ class Agent():
 			plt.draw()
 			time.sleep(0.05)
 		# end for k...
+		plt.show(block=True)
 
 
 	def reset(self,data):
