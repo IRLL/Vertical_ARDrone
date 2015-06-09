@@ -10,11 +10,14 @@
 import rospy
 import time
 from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Pose
 from std_msgs.msg import Float32
 from pi_controller import pi_controller
 from std_msgs.msg import Empty
 from std_msgs.msg import Bool
 import std_srvs.srv as services
+from gazebo_msgs.srv import SetModelState
+from gazebo_msgs.srv import SetModelStateRequest
 
 import numpy as np
 from math import pi, sqrt
@@ -42,7 +45,10 @@ class Agent():
 		print "waiting for service"
 		rospy.wait_for_service('/v_control/reset_world')
 		print "done"
-		self.reset_sim = rospy.ServiceProxy('/v_control/reset_world', services.Empty)
+		self.reset_pos = rospy.ServiceProxy('/gazebo/set_model_state', SetModelState)
+		self.enable_controller = rospy.Publisher('v_controller/move_enable', Bool)
+		self.soft_reset_pub = rospy.Publisher('v_controller/soft_reset', Empty)
+		self.takeoff_pub = rospy.Publisher('/ardrone/takeoff', Empty)
 		self.action_pub = rospy.Publisher('v_controller/agent_cmd', Twist)
 		self.state_sub = rospy.Subscriber('v_controller/state', Float32, self.getState)
 		self.visible_sub = rospy.Subscriber('v_controller/visible', Bool, self.visible_calback)
@@ -76,9 +82,22 @@ class Agent():
 		self._r = np.empty(shape=(1,100))
 		self._reward_per_rates_per_iteration = np.empty(shape=(1,200))
 
+	def reset_sim(self, z):
+		self.enable_controller.publish(Bool(0))
+		self.takeoff_pub.publish(Empty())
+		rospy.sleep(.1)
+		a = SetModelStateRequest() 
+		a.model_state.model_name = 'quadrotor'
+		a.model_state.pose.position.z = 3
+		self.reset_pos(a)
+		rospy.sleep(.5)
+		self.soft_reset_pub.publish(Empty())
+
 
 	def startEpisode(self):
-		self.reset_sim()
+		z = 3
+		self.reset_sim(z)
+		
 		
 	def getState(self, data):
 		self._state = data.data
@@ -225,5 +244,6 @@ class Agent():
 if __name__ == "__main__":
 	agent = Agent()
 	time.sleep(.1)
+	agent.reset_sim(3)
 	agent.train()
 	rospy.spin() 
