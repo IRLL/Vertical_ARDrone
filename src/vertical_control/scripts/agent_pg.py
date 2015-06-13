@@ -3,27 +3,23 @@
 # QUESTIONS:
 # Why sigma is random?
 # Should theta be set to zero?
-# How actions are selected using multivariate?
-# Do we need to completed the trajectories when ball is out of sight?
+# Do we need to complete the trajectories when ball is out of sight?
 # Are we giving enough delay for an action to complete?
+# How do you control the range of values for actions?
 
 import rospy
 import time
 from geometry_msgs.msg import Twist
-from geometry_msgs.msg import Pose
 from std_msgs.msg import Float32
-from pi_controller import pi_controller
 from std_msgs.msg import Empty
 from std_msgs.msg import Bool
-import std_srvs.srv as services
 from gazebo_msgs.srv import SetModelState
 from gazebo_msgs.srv import SetModelStateRequest
 
 import numpy as np
-from math import pi, sqrt
+import random
 import matplotlib.pyplot as plt
 from matplotlib import cm
-import time
 
 
 
@@ -39,7 +35,7 @@ class Agent():
 
 	def __init__(self):
 
-		gains = rospy.get_param("v_controller/gains/vertical")
+		#gains = rospy.get_param("v_controller/gains/vertical")
 		#self.controller = pi_controller(gains['p'], gains['i']) 
 		rospy.init_node('agent', anonymous=False)
 		print "waiting for service"
@@ -59,7 +55,7 @@ class Agent():
 		self._n = 1 # Number of states
 		self._m = 1 # Number of inputs
 
-		self._rate = .5 # Learning rate for gradient descent Original+0.75
+		self._rate = .001 # Learning rate for gradient descent Original+0.75
 
 		self._traj_length = 100 # Number of time steps to simulate in the cart-pole system
 		self._rollouts = 50 # Number of trajectories for testing
@@ -71,10 +67,10 @@ class Agent():
 		self._s0 = 0.0001*np.eye(self._n)
 
 		# Parameters for Gaussian policies
-		#self._theta = np.random.random((self._n*self._m,1)) # Remember that the mean of the normal dis. is theta'*x
-		self._theta = np.array([[0.1527085]])
-		#self._sigma = np.random.random((1,self._m)) # Variance of the Gaussian dist.
-		self._sigma = np.array([[0.6149359]])
+		self._theta = np.random.random((self._n*self._m,1)) # Remember that the mean of the normal dis. is theta'*x
+		#self._theta = np.array([[0.6906896]])
+		self._sigma = np.random.random((1,self._m)) # Variance of the Gaussian dist.
+		#self._sigma = np.array([[0.7918284]])
 
 		self._data = [Data(self._n, self._traj_length) for i in range(self._rollouts)]
 
@@ -93,14 +89,14 @@ class Agent():
 		rospy.sleep(.1)
 		a = SetModelStateRequest() 
 		a.model_state.model_name = 'quadrotor'
-		a.model_state.pose.position.z = 3
+		a.model_state.pose.position.z = z
 		self.reset_pos(a)
 		rospy.sleep(.5)
 		self.soft_reset_pub.publish(Empty())
 
 
 	def startEpisode(self):
-		z = 3
+		z = random.uniform(1.8, 4.2)
 		self.reset_sim(z)
 		
 		
@@ -112,6 +108,7 @@ class Agent():
 
 	def train(self):
 		plt.ion()
+		#plt.yscale("log")
 		plt.show()
 		for k in range(self._num_iterations): # Loop for learning
 			print "______@ Iteration: ", k
@@ -119,7 +116,7 @@ class Agent():
 			# In this section we obtain our data by simulating the cart-pole system
 			for trials in range(self._rollouts):
 				# reset
-				print "Trial #", (trials+1)
+				#print "____________@ Trial #", (trials+1)
 				self.startEpisode()
 
 				# Draw the initial state
@@ -134,7 +131,7 @@ class Agent():
 					action = np.random.multivariate_normal(np.dot(self._theta.conj().T, self._data[trials].x[:,steps]).conj().T, self._sigma)
 
 					# Execute action
-					#print action
+					#print "Action: ", action
 					command = Twist()
 					command.linear.z = action
 					self.action_pub.publish(command)
