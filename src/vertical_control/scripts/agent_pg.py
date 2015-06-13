@@ -9,6 +9,7 @@
 
 import rospy
 import time
+import sys
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float32
 from std_msgs.msg import Empty
@@ -63,14 +64,14 @@ class Agent():
 
 		time.sleep(.1)
 		#self._my0 = pi/6-2*pi/6*np.random.random((N,1)) # Initial state of the cart pole (between -60 and 50 deg)
-		self._my0 = np.array([[self._state]])
+		#self._my0 = np.array([[self._state]])
 		self._s0 = 0.0001*np.eye(self._n)
 
 		# Parameters for Gaussian policies
-		self._theta = np.random.random((self._n*self._m,1)) # Remember that the mean of the normal dis. is theta'*x
-		#self._theta = np.array([[0.6906896]])
-		self._sigma = np.random.random((1,self._m)) # Variance of the Gaussian dist.
-		#self._sigma = np.array([[0.7918284]])
+		#self._theta = np.random.random((self._n*self._m,1)) # Remember that the mean of the normal dis. is theta'*x
+		self._theta = np.array([[0.3855077]])
+		#self._sigma = np.random.random((1,self._m)) # Variance of the Gaussian dist.
+		self._sigma = np.array([[0.356513]])
 
 		self._data = [Data(self._n, self._traj_length) for i in range(self._rollouts)]
 
@@ -84,6 +85,7 @@ class Agent():
 		print "Learning Rate: ", self._rate
 
 	def reset_sim(self, z):
+		"""
 		self.enable_controller.publish(Bool(0))
 		self.takeoff_pub.publish(Empty())
 		rospy.sleep(.1)
@@ -93,6 +95,15 @@ class Agent():
 		self.reset_pos(a)
 		rospy.sleep(.5)
 		self.soft_reset_pub.publish(Empty())
+		"""
+		print "resetting!..."
+		time.sleep(1)
+		self.enable_controller.publish(Bool(0))
+		self.takeoff_pub.publish(Empty())
+		rospy.sleep(8)
+		self.soft_reset_pub.publish(Empty())
+		print "reset complete!"
+	
 
 
 	def startEpisode(self):
@@ -107,6 +118,7 @@ class Agent():
 		self.visible = visible.data
 
 	def train(self):
+		self._my0 = np.array([[self._state]])
 		plt.ion()
 		#plt.yscale("log")
 		plt.show()
@@ -126,6 +138,8 @@ class Agent():
 
 				# Perform a trial of length L
 				for steps in range(self._traj_length):
+					if rospy.is_shutdown():
+						sys.exit()
 
 					# Draw an action from the policy
 					action = np.random.multivariate_normal(np.dot(self._theta.conj().T, self._data[trials].x[:,steps]).conj().T, self._sigma)
