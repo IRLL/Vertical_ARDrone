@@ -17,18 +17,22 @@ class Agent():
 		print "waiting for service"
 		rospy.wait_for_service('/v_control/reset_world')
 		print "done"
-		self.reset_sim = rospy.ServiceProxy('/v_control/reset_world', services.Empty)
+		#self.reset_sim = rospy.ServiceProxy('/v_control/reset_world', services.Empty)
 		self.action_pub = rospy.Publisher('v_controller/agent_cmd', Twist)
+		self.soft_reset_pub = rospy.Publisher('v_controller/soft_reset', Empty)
+		self.takeoff_pub = rospy.Publisher('/ardrone/takeoff', Empty)
+		self.enable_controller = rospy.Publisher('v_controller/move_enable', Bool)
 		self.state_sub = rospy.Subscriber('v_controller/state', Float32, self.run)
 		self.visible_sub = rospy.Subscriber('v_controller/visible', Bool, self.visible_calback)
 		self.visible = 1
 
 	def run(self, data):
-
+		"""
 		if not self.visible:
 			print "reseting world"
 			self.reset_sim()
 			return
+		"""
 		
 		command = Twist()		
 
@@ -42,13 +46,15 @@ class Agent():
 		self.visible = visible.data
 
 	def reset(self):
-		self.controller.reset()
+		self.enable_controller.publish(Bool(0))
+		self.takeoff_pub.publish(Empty())
+		rospy.sleep(5)
+		self.soft_reset_pub.publish(Empty())
 		
 
 
 if __name__ == "__main__":
 	agent = Agent()
-	time.sleep(.1)
-	agent.reset_sim()
+	time.sleep(.5)
 	agent.reset()
 	rospy.spin() 
