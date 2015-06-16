@@ -53,10 +53,10 @@ class Agent():
 		self.visible = 1
 	
 		# Parameter definition
-		self._n = 1 # Number of states
+		self._n = 2 # Number of states
 		self._m = 1 # Number of inputs
 
-		self._rate = .001 # Learning rate for gradient descent Original+0.75
+		self._rate = .1 # Learning rate for gradient descent Original+0.75
 
 		self._traj_length = 100 # Number of time steps to simulate in the cart-pole system
 		self._rollouts = 50 # Number of trajectories for testing
@@ -68,10 +68,10 @@ class Agent():
 		self._s0 = 0.0001*np.eye(self._n)
 
 		# Parameters for Gaussian policies
-		#self._theta = np.random.random((self._n*self._m,1)) # Remember that the mean of the normal dis. is theta'*x
-		self._theta = np.array([[0.3855077]])
-		#self._sigma = np.random.random((1,self._m)) # Variance of the Gaussian dist.
-		self._sigma = np.array([[0.356513]])
+		self._theta = np.random.rand(self._n*self._m,1) # Remember that the mean of the normal dis. is theta'*x
+		#self._theta = np.array([[0.3855077]])
+		self._sigma = np.random.rand(1,self._m) # Variance of the Gaussian dist.
+		#self._sigma = np.array([[0.356513]])
 
 		self._data = [Data(self._n, self._traj_length) for i in range(self._rollouts)]
 
@@ -85,7 +85,7 @@ class Agent():
 		print "Learning Rate: ", self._rate
 
 	def reset_sim(self, z):
-		"""
+		
 		self.enable_controller.publish(Bool(0))
 		self.takeoff_pub.publish(Empty())
 		rospy.sleep(.1)
@@ -95,7 +95,8 @@ class Agent():
 		self.reset_pos(a)
 		rospy.sleep(.5)
 		self.soft_reset_pub.publish(Empty())
-		"""
+		
+		'''
 		print "resetting!..."
 		time.sleep(1)
 		self.enable_controller.publish(Bool(0))
@@ -103,6 +104,7 @@ class Agent():
 		rospy.sleep(8)
 		self.soft_reset_pub.publish(Empty())
 		print "reset complete!"
+		'''
 	
 
 
@@ -134,7 +136,7 @@ class Agent():
 				# Draw the initial state
 				#init_state = np.random.multivariate_normal(self._my0[:,0], self._s0, 1)
 				#self._data[trials].x[:,0] = init_state[0,:]
-				self._data[trials].x[:,0] = np.array([[self._state]])
+				self._data[trials].x[:,0] = np.array([[1.0, -self._state/2.0]])
 
 				# Perform a trial of length L
 				for steps in range(self._traj_length):
@@ -179,8 +181,9 @@ class Agent():
 					#xnDum = np.dot(A,data[trials].x[:,steps]) + np.dot(b,data[trials].u[:,steps])
 
 					#state = data[trials].x[:,steps] + dt*xnDum
-					state = np.array([[current_state]])
-					#print "State: %.2f Reward: %f" %(current_state, reward)
+					state = np.array([[1.0, current_state/2.0]])
+					#print "State: ", state
+					#print "Action: %.2f Reward: %f" %(action, reward)
 
 					self._data[trials].x[:,steps+1] = state
 
