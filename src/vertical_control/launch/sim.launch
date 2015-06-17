@@ -17,5 +17,5 @@
 
   <param name="/v_controller/hover_distance" type="double" value="3"/>
 
-  <param name="/v_controller/threshold" type="double" value="0.1"/>
+  <param name="/v_controller/threshold" type="double" value="0.00"/>
 </launch>

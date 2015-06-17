@@ -56,22 +56,20 @@ class Agent():
 		self._n = 2 # Number of states
 		self._m = 1 # Number of inputs
 
-		self._rate = .1 # Learning rate for gradient descent Original+0.75
+		self._rate = .03 # Learning rate for gradient descent Original+0.75
 
 		self._traj_length = 100 # Number of time steps to simulate in the cart-pole system
-		self._rollouts = 50 # Number of trajectories for testing
-		self._num_iterations = 30 # Number of learning episodes/iterations	
+		self._rollouts = 50 # Number of trajectories for testing 50
+		self._num_iterations = 30 # Number of learning episodes/iterations	30
 
 		time.sleep(.1)
 		#self._my0 = pi/6-2*pi/6*np.random.random((N,1)) # Initial state of the cart pole (between -60 and 50 deg)
 		#self._my0 = np.array([[self._state]])
-		self._s0 = 0.0001*np.eye(self._n)
+		#self._s0 = 0.0001*np.eye(self._n)
 
 		# Parameters for Gaussian policies
 		self._theta = np.random.rand(self._n*self._m,1) # Remember that the mean of the normal dis. is theta'*x
-		#self._theta = np.array([[0.3855077]])
 		self._sigma = np.random.rand(1,self._m) # Variance of the Gaussian dist.
-		#self._sigma = np.array([[0.356513]])
 
 		self._data = [Data(self._n, self._traj_length) for i in range(self._rollouts)]
 
@@ -85,7 +83,6 @@ class Agent():
 		print "Learning Rate: ", self._rate
 
 	def reset_sim(self, z):
-		
 		self.enable_controller.publish(Bool(0))
 		self.takeoff_pub.publish(Empty())
 		rospy.sleep(.1)
@@ -95,17 +92,6 @@ class Agent():
 		self.reset_pos(a)
 		rospy.sleep(.5)
 		self.soft_reset_pub.publish(Empty())
-		
-		'''
-		print "resetting!..."
-		time.sleep(1)
-		self.enable_controller.publish(Bool(0))
-		self.takeoff_pub.publish(Empty())
-		rospy.sleep(8)
-		self.soft_reset_pub.publish(Empty())
-		print "reset complete!"
-		'''
-	
 
 
 	def startEpisode(self):
@@ -119,11 +105,72 @@ class Agent():
 	def visible_calback(self, visible):
 		self.visible = visible.data
 
+
+	def test(self, theta, sigma, traj_length=100000):
+		self._traj_length = traj_length
+		self._theta = theta
+		self._sigma = sigma
+
+		self._data = [Data(self._n, self._traj_length) for i in range(self._rollouts)]		
+		
+		print "Quadrotor hovers!!!"
+		time.sleep(1)
+		self.enable_controller.publish(Bool(0))
+		self.takeoff_pub.publish(Empty())
+		rospy.sleep(15)
+		
+		while self.visible == 0:
+			print "Object not detected"
+			
+		self.soft_reset_pub.publish(Empty())
+		print "Object detected"
+		print "Test starting"
+
+		# initial state
+		self._data[0].x[:,0] = np.array([[1.0, -self._state/2.0]])	
+		
+		# Perform a trial of length L
+		for steps in range(self._traj_length):
+			if rospy.is_shutdown():
+				sys.exit()
+
+			action = np.random.multivariate_normal(np.dot(self._theta.conj().T, self._data[0].x[:,steps]).conj().T, self._sigma)
+			# Use action learned
+			action = np.dot(self._theta.conj().T, self._data[0].x[:,steps]).conj().T[0]
+				
+			action = round(action, 3)
+			if self.visible == 0:
+				action = 0.0
+
+			command = Twist()
+			command.linear.z = action
+			self.action_pub.publish(command)
+			rospy.sleep(1)
+
+			# Calculating the reward
+			current_state = -self._state # negation to get correct states
+			reward = current_state
+			if current_state > 0:
+				reward = -current_state
+			
+			#if current_state <= self.threshold and current_state >= -self.threshold:
+			#	reward = 0.0
+			if self.visible == 0:
+				reward += -100
+
+			state = np.array([[1.0, current_state/2.0]])
+			print "State: ", state
+			print "Action: %.2f Reward: %f" %(action, reward)
+
+			self._data[0].x[:,steps+1] = state
+
+		# end for steps...
+
+
 	def train(self):
-		self._my0 = np.array([[self._state]])
 		plt.ion()
-		#plt.yscale("log")
 		plt.show()
+			
 		for k in range(self._num_iterations): # Loop for learning
 			print "______@ Iteration: ", k
 
@@ -145,9 +192,11 @@ class Agent():
 
 					# Draw an action from the policy
 					action = np.random.multivariate_normal(np.dot(self._theta.conj().T, self._data[trials].x[:,steps]).conj().T, self._sigma)
+						
+					action = round(action, 3)
+					if self.visible == 0:
+						action = 0.0
 
-					# Execute action
-					#print "Action: ", action
 					command = Twist()
 					command.linear.z = action
 					self.action_pub.publish(command)
@@ -155,14 +204,16 @@ class Agent():
 
 					self._data[trials].u[:,steps] = action
 
-
 					# Calculating the reward (Remember: First term is the reward for accuracy, second is for control cost)
 					#reward = -sqrt(np.dot(self._data[trials].x[:,steps].conj().T, self._data[trials].x[:,steps])) - \
 					#		  sqrt(np.dot(self._data[trials].u[:,steps].conj().T, self._data[trials].u[:,steps]))
 					current_state = -self._state # negation to get correct states
-					reward = -((0.0 - current_state) ** 2)
-					if current_state <= self.threshold and current_state >= -self.threshold:
-						reward = 0.0
+					reward = current_state
+					if current_state > 0:
+						reward = -current_state
+					
+					#if current_state <= self.threshold and current_state >= -self.threshold:
+					#	reward = 0.0
 					if self.visible == 0:
 						reward += -100
 
@@ -265,6 +316,13 @@ class Agent():
 if __name__ == "__main__":
 	agent = Agent()
 	time.sleep(.1)
-	agent.reset_sim(3)
-	agent.train()
+	#agent.train()
+	# test learned policy
+	
+	agent.test(
+			theta = np.array([[0.1572069], [3.5357239]]), 
+			sigma = np.array([[0.3553431]]),
+			traj_length = 100000
+	)
+	
 	rospy.spin() 
