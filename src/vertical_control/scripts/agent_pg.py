@@ -48,9 +48,9 @@ class Agent():
 		self.takeoff_pub = rospy.Publisher('/ardrone/takeoff', Empty)
 		self.action_pub = rospy.Publisher('v_controller/agent_cmd', Twist)
 		self.state_sub = rospy.Subscriber('v_controller/state', Float32, self.getState)
-		self.visible_sub = rospy.Subscriber('v_controller/visible', Bool, self.visible_calback)
+		self.visible_sub = rospy.Subscriber('v_controller/visible', Bool, self.visible_callback)
 		self.threshold = rospy.get_param("v_controller/threshold")
-		self.visible = 1
+		self.visible = 0
 	
 		# Parameter definition
 		self._n = 2 # Number of states
@@ -102,14 +102,17 @@ class Agent():
 	def getState(self, data):
 		self._state = data.data
 
-	def visible_calback(self, visible):
+	def visible_callback(self, visible):
 		self.visible = visible.data
+		print "Visible: ", self.visible
 
 
-	def test(self, theta, sigma, traj_length=100000):
+	def test(self, theta=None, sigma=None, traj_length=100000):
 		self._traj_length = traj_length
-		self._theta = theta
-		self._sigma = sigma
+		
+		if theta != None and sigma != None:
+			self._theta = theta
+			self._sigma = sigma
 
 		self._data = [Data(self._n, self._traj_length) for i in range(self._rollouts)]		
 		
@@ -120,6 +123,8 @@ class Agent():
 		rospy.sleep(15)
 		
 		while self.visible == 0:
+			if rospy.is_shutdown():
+				sys.exit()
 			print "Object not detected"
 			
 		self.soft_reset_pub.publish(Empty())
@@ -134,7 +139,6 @@ class Agent():
 			if rospy.is_shutdown():
 				sys.exit()
 
-			action = np.random.multivariate_normal(np.dot(self._theta.conj().T, self._data[0].x[:,steps]).conj().T, self._sigma)
 			# Use action learned
 			action = np.dot(self._theta.conj().T, self._data[0].x[:,steps]).conj().T[0]
 				
@@ -145,7 +149,7 @@ class Agent():
 			command = Twist()
 			command.linear.z = action
 			self.action_pub.publish(command)
-			rospy.sleep(1)
+			rospy.sleep(.2)
 
 			# Calculating the reward
 			current_state = -self._state # negation to get correct states

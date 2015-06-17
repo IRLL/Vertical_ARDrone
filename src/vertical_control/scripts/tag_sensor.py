@@ -5,6 +5,7 @@ from threading import Lock
 from std_msgs.msg import Float32
 from std_msgs.msg import Float32MultiArray
 from ardrone_autonomy.msg import Navdata
+from std_msgs.msg import Bool
 
 class Tag_sensor():
 	#class constants
@@ -18,6 +19,7 @@ class Tag_sensor():
 		rospy.init_node('tag_sensors', anonymous=False)
 		
 		self.learner_pub = rospy.Publisher('v_controller/state', Float32)
+		self.not_visible_pub = rospy.Publisher('v_controller/visible', Bool)
 		self.controller_pub = rospy.Publisher('v_controller/control_state', Float32MultiArray)
 		self.nav_sub = rospy.Subscriber('/ardrone/navdata', Navdata, self.receive_nav_callback)
 		
@@ -52,9 +54,11 @@ class Tag_sensor():
 				x, y, distance = self.read_tag(data)
 				x, y = self.rescale(x, y)
 				print x, y, distance
+				self.not_visible_pub.publish(1)
 			else:
 				print "can't see any tags"
 				x, y, distance = 0.0, 0.0, self.hover_distance #default_values
+				self.not_visible_pub.publish(0)
 				
 
 			self.learner_pub.publish(y)		
