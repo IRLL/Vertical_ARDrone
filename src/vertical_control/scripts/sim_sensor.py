@@ -30,7 +30,7 @@ class Sim_sensor():
 		
 
 		self.video_sub = rospy.Subscriber('/ardrone/image_raw', Image, self.receive_image_callback)
-		self.learner_pub = rospy.Publisher('v_controller/state', Float32)
+		self.learner_pub = rospy.Publisher('v_controller/state', Float32MultiArray)
 		self.not_visible_pub = rospy.Publisher('v_controller/visible', Bool)
 		self.controller_pub = rospy.Publisher('v_controller/control_state', Float32MultiArray)
 		rospy.init_node('simulated_sensors', anonymous=False)
@@ -74,8 +74,8 @@ class Sim_sensor():
 
 			x, y, distance = self.find_orange(image)
 
-			self.learner_pub.publish(y)		
-			self.controller_pub.publish(None, [x, distance])
+			self.learner_pub.publish(None,[x,y])		
+			self.controller_pub.publish(None, [distance])
 			#need to add publisher for other info
 			self.rate.sleep()
 		

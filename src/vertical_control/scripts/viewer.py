@@ -27,16 +27,14 @@ class Viewer ():
 		self.threshold = rospy.get_param("v_controller/threshold")
 		self.video_sub = rospy.Subscriber('/ardrone/image_raw', Image, self.receive_image_callback)
 		self.nav_sub = rospy.Subscriber('/ardrone/navdata', Navdata, self.receive_nav_callback)
-		self.state_sub = rospy.Subscriber('v_controller/state', Float32, self.rx_state_callback)
-		self.controller_sub = rospy.Subscriber('v_controller/control_state', Float32MultiArray, self.rx_controller_state_callback)
+		self.state_sub = rospy.Subscriber('v_controller/state', Float32MultiArray, self.rx_state_callback)
 		rospy.init_node('viewer', anonymous=False)
 
 			
 	
 	def rx_state_callback(self, data):
-		self.vloc = data.data;
-	def rx_controller_state_callback(self, data):
-		self.hloc = data.data[0]
+		self.hloc = data.data[0];
+		self.vloc = data.data[1]
 
 	def receive_image_callback(self, data):
 		image = np.asarray(ToOpenCV(data)) #convert image
