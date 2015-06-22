@@ -7,7 +7,7 @@ class dronedrv():
 		self.cmd_pub = rospy.Publisher('cmd_vel', Twist)
 		self.takeoff_pub = rospy.Publisher('ardrone/takeoff', Empty)
 		self.land_pub = rospy.Publisher('ardrone/land', Empty)
-		rospy.init_node('dronedrv', anonymous=True)
+	#	rospy.init_node('dronedrv', anonymous=True)
 		self.kill_pub = rospy.Publisher('ardrone/reset', Empty)
 
 	def land(self):

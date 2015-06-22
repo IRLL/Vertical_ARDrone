@@ -76,6 +76,7 @@ class xboxcontroller():
 		print "exiting xbox controller"
 
 if __name__ == '__main__':
+	rospy.init_node('xbox_controller', anonymous=True)
 	controller = xboxcontroller()
 
 	controller.run()
