@@ -12,6 +12,7 @@ import time
 import sys
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float32
+from std_msgs.msg import Float32MultiArray
 from std_msgs.msg import Empty
 from std_msgs.msg import Bool
 from gazebo_msgs.srv import SetModelState
@@ -47,7 +48,7 @@ class Agent():
 		self.soft_reset_pub = rospy.Publisher('v_controller/soft_reset', Empty)
 		self.takeoff_pub = rospy.Publisher('/ardrone/takeoff', Empty)
 		self.action_pub = rospy.Publisher('v_controller/agent_cmd', Twist)
-		self.state_sub = rospy.Subscriber('v_controller/state', Float32, self.getState)
+		self.state_sub = rospy.Subscriber('v_controller/state', Float32MultiArray, self.getState)
 		self.visible_sub = rospy.Subscriber('v_controller/visible', Bool, self.visible_callback)
 		self.threshold = rospy.get_param("v_controller/threshold")
 		self.visible = 0
@@ -82,25 +83,29 @@ class Agent():
 		print "Sigma: ", self._sigma
 		print "Learning Rate: ", self._rate
 
-	def reset_sim(self, z):
+	def reset_sim(self, x, y, angle):
 		self.enable_controller.publish(Bool(0))
 		self.takeoff_pub.publish(Empty())
 		rospy.sleep(.1)
 		a = SetModelStateRequest() 
 		a.model_state.model_name = 'quadrotor'
-		a.model_state.pose.position.z = z
+		a.model_state.pose.position.z = 3
+		a.model_state.pose.position.x = 3 + x
+		a.model_state.pose.position.y = 0 + y
 		self.reset_pos(a)
 		rospy.sleep(.5)
 		self.soft_reset_pub.publish(Empty())
 
 
 	def startEpisode(self):
-		z = random.uniform(1.8, 4.2)
-		self.reset_sim(z)
+		x = random.uniform(-1, 1)
+		y = random.uniform(-1, 1)
+		self.reset_sim(x,y,0)
 		
 		
 	def getState(self, data):
-		self._state = data.data
+		self._statex = data.data[0]
+		self._statey = data.data[1]
 
 	def visible_callback(self, visible):
 		self.visible = visible.data
