@@ -14,6 +14,8 @@ from std_msgs.msg import Bool
 from gazebo_msgs.srv import SetModelState
 from gazebo_msgs.srv import SetModelStateRequest
 
+from xbox_controller import xboxcontroller
+
 import numpy as np
 import random
 import matplotlib.pyplot as plt
@@ -54,7 +56,7 @@ class Agent():
 		self._n = 1 # Number of states
 		self._m = 1 # Number of inputs
 
-		self._rate = .03 # Learning rate for gradient descent Original+0.75
+		self._rate = .01 # Learning rate for gradient descent Original+0.75
 
 		self._traj_length = 100 # Number of time steps to simulate in the cart-pole system
 		self._rollouts = 50 # Number of trajectories for testing 50
@@ -68,8 +70,8 @@ class Agent():
 		# Parameters for Gaussian policies
 		self._theta = np.random.rand(self._n*self._m,1) # Remember that the mean of the normal dis. is theta'*x
 		self._sigma = np.random.rand(1,self._m) # Variance of the Gaussian dist.
-		self._theta = np.array([[ 4.5509869]])
-		self._sigma = np.array([[ 0.7623104]])
+		#self._theta = np.array([[ 4.5509869]])
+		#self._sigma = np.array([[ 0.7623104]])
 
 		self._data = [Data(self._n, self._traj_length) for i in range(self._rollouts)]
 
@@ -94,8 +96,8 @@ class Agent():
 		self.soft_reset_pub.publish(Empty())
 
 
-	def startEpisode(self):
-		z = random.uniform(1.8, 4.2)
+	def startEpisode(self, rMin=1.8, rMax=4.2):
+		z = random.uniform(rMin, rMax)
 		self.reset_sim(z)
 		
 		
@@ -105,7 +107,7 @@ class Agent():
 	def visible_callback(self, visible):
 		self.visible = visible.data
 
-	def test(self, theta=None, sigma=None, traj_length=100000):
+	def test(self, theta=None, sigma=None, traj_length=100000, xbox_control=False, physical=False):
 		self._traj_length = traj_length
 		
 		if theta != None and sigma != None:
@@ -115,28 +117,29 @@ class Agent():
 		self._data = [Data(self._n, self._traj_length) for i in range(self._rollouts)]		
 		
 
-		#print "Quadrotor hovers!!!"
-		print "starting human control"
-		time.sleep(1)
-		self.enable_controller.publish(Bool(0)) #disable modules like stabilizer
-
-		"""
-		self.takeoff_pub.publish(Empty())
-		rospy.sleep(15)
+		if xbox_control and physical:
+			print "starting human control"
+			time.sleep(1)
+			self.enable_controller.publish(Bool(0)) #disable modules like stabilizer
+			gamecontroller = xboxcontroller()
+			gamecontroller.run() #run xbox controller for human to get drone into position (blocking call)
+			print "human control over"
+		else:
+			if physical:
+				print "Quadrotor hovers"
+				self.takeoff_pub.publish(Empty())
+				rospy.sleep(15)
 		
-		while self.visible == 0:
-			if rospy.is_shutdown():
-				sys.exit()
-			print "Object not detected"
-			
+				while self.visible == 0:
+					if rospy.is_shutdown():
+						sys.exit()
+					print "Object not detected"
+			else:
+				self.startEpisode(3, 3)
+				
 		self.soft_reset_pub.publish(Empty())
-		print "Object detected"
 		print "Test starting"
-		"""
-		
-		gamecontroller = xboxcontroller()
-		gamecontroller.run() #run xbox controller for human to get drone into position (blocking call)
-		print "human control over"
+			
 
 		self.soft_reset_pub.publish(Empty()) #re-enable modules like stabilizer
 
@@ -185,9 +188,7 @@ class Agent():
 				#print "____________@ Trial #", (trials+1)
 				self.startEpisode()
 
-				# Draw the initial state
-				#init_state = np.random.multivariate_normal(self._my0[:,0], self._s0, 1)
-				#self._data[trials].x[:,0] = init_state[0,:]
+				# Get initial state
 				self._data[trials].x[:,0] = np.array([[-self._state/2.0]])
 
 				# Perform a trial of length L
@@ -202,6 +203,7 @@ class Agent():
 					if self.visible == 0:
 						action = 0.0
 
+					# Perform action
 					command = Twist()
 					command.linear.z = action
 					self.action_pub.publish(command)
@@ -209,37 +211,18 @@ class Agent():
 
 					self._data[trials].u[:,steps] = action
 
-					# Calculating the reward (Remember: First term is the reward for accuracy, second is for control cost)
-					#reward = -sqrt(np.dot(self._data[trials].x[:,steps].conj().T, self._data[trials].x[:,steps])) - \
-					#		  sqrt(np.dot(self._data[trials].u[:,steps].conj().T, self._data[trials].u[:,steps]))
+					# Get next state
 					current_state = -self._state # negation to get correct states
-					#reward = current_state
 					
 					# Calculating the reward (Remember: First term is the reward for accuracy, second is for control cost)
 					reward = -sqrt(current_state**2) - sqrt(0.0001*action**2)
 					if reward == -0.0:
 						reward = 0.0
-					
-					#if self.visible == 0:
-					#	reward += -100
-					
+	
 					#print "Reward: ", reward
 
 					self._data[trials].r[:,steps] = [reward]
 
-					# Draw next state from envrionment
-					# This is the solution of the typical linear model dx/dt = Ax + bu
-					#commonD = I*(mc + mp) + mc*mp*l**2
-					#A = np.array([ [0,                          1,                          0, 0],
-					#               [0, -((I + mp*l**2)*d)/commonD,               mp**2*g*l**2, 0],
-					#               [0,                          0,                          0, 1],
-					#               [0,          -(mp*l*d)/commonD, (mp*g*l*(mc + mp))/commonD, 0] ])
-
-					#b = np.array([ [0], [(I + mp*l**2)/commonD], [0], [(mp*l)/commonD] ])
-
-					#xnDum = np.dot(A,data[trials].x[:,steps]) + np.dot(b,data[trials].u[:,steps])
-
-					#state = data[trials].x[:,steps] + dt*xnDum
 					state = np.array([[current_state/2.0]])
 					#print "State: ", state
 					#print "Action: %.2f Reward: %f" %(action, reward)
