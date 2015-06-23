@@ -21,6 +21,7 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 from matplotlib import cm
+from math import sqrt
 
 
 
@@ -53,7 +54,7 @@ class Agent():
 		self.visible = 0
 	
 		# Parameter definition
-		self._n = 2 # Number of states
+		self._n = 1 # Number of states
 		self._m = 1 # Number of inputs
 
 		self._rate = .03 # Learning rate for gradient descent Original+0.75
@@ -70,6 +71,8 @@ class Agent():
 		# Parameters for Gaussian policies
 		self._theta = np.random.rand(self._n*self._m,1) # Remember that the mean of the normal dis. is theta'*x
 		self._sigma = np.random.rand(1,self._m) # Variance of the Gaussian dist.
+		self._theta = np.array([[ 4.5509869]])
+		self._sigma = np.array([[ 0.7623104]])
 
 		self._data = [Data(self._n, self._traj_length) for i in range(self._rollouts)]
 
@@ -104,8 +107,6 @@ class Agent():
 
 	def visible_callback(self, visible):
 		self.visible = visible.data
-		print "Visible: ", self.visible
-
 
 	def test(self, theta=None, sigma=None, traj_length=100000):
 		self._traj_length = traj_length
@@ -116,6 +117,7 @@ class Agent():
 
 		self._data = [Data(self._n, self._traj_length) for i in range(self._rollouts)]		
 		
+		'''
 		print "Quadrotor hovers!!!"
 		time.sleep(1)
 		self.enable_controller.publish(Bool(0))
@@ -130,9 +132,11 @@ class Agent():
 		self.soft_reset_pub.publish(Empty())
 		print "Object detected"
 		print "Test starting"
+		'''
+		self.startEpisode()
 
 		# initial state
-		self._data[0].x[:,0] = np.array([[1.0, -self._state/2.0]])	
+		self._data[0].x[:,0] = np.array([[-self._state/2.0]])	
 		
 		# Perform a trial of length L
 		for steps in range(self._traj_length):
@@ -153,18 +157,9 @@ class Agent():
 
 			# Calculating the reward
 			current_state = -self._state # negation to get correct states
-			reward = current_state
-			if current_state > 0:
-				reward = -current_state
-			
-			#if current_state <= self.threshold and current_state >= -self.threshold:
-			#	reward = 0.0
-			if self.visible == 0:
-				reward += -100
-
-			state = np.array([[1.0, current_state/2.0]])
+			state = np.array([[current_state/2.0]])
 			print "State: ", state
-			print "Action: %.2f Reward: %f" %(action, reward)
+			print "Action: %.2f" %(action)
 
 			self._data[0].x[:,steps+1] = state
 
@@ -187,7 +182,7 @@ class Agent():
 				# Draw the initial state
 				#init_state = np.random.multivariate_normal(self._my0[:,0], self._s0, 1)
 				#self._data[trials].x[:,0] = init_state[0,:]
-				self._data[trials].x[:,0] = np.array([[1.0, -self._state/2.0]])
+				self._data[trials].x[:,0] = np.array([[-self._state/2.0]])
 
 				# Perform a trial of length L
 				for steps in range(self._traj_length):
@@ -212,14 +207,17 @@ class Agent():
 					#reward = -sqrt(np.dot(self._data[trials].x[:,steps].conj().T, self._data[trials].x[:,steps])) - \
 					#		  sqrt(np.dot(self._data[trials].u[:,steps].conj().T, self._data[trials].u[:,steps]))
 					current_state = -self._state # negation to get correct states
-					reward = current_state
-					if current_state > 0:
-						reward = -current_state
+					#reward = current_state
 					
-					#if current_state <= self.threshold and current_state >= -self.threshold:
-					#	reward = 0.0
-					if self.visible == 0:
-						reward += -100
+					# Calculating the reward (Remember: First term is the reward for accuracy, second is for control cost)
+					reward = -sqrt(current_state**2) - sqrt(0.0001*action**2)
+					if reward == -0.0:
+						reward = 0.0
+					
+					#if self.visible == 0:
+					#	reward += -100
+					
+					#print "Reward: ", reward
 
 					self._data[trials].r[:,steps] = [reward]
 
@@ -236,7 +234,7 @@ class Agent():
 					#xnDum = np.dot(A,data[trials].x[:,steps]) + np.dot(b,data[trials].u[:,steps])
 
 					#state = data[trials].x[:,steps] + dt*xnDum
-					state = np.array([[1.0, current_state/2.0]])
+					state = np.array([[current_state/2.0]])
 					#print "State: ", state
 					#print "Action: %.2f Reward: %f" %(action, reward)
 
@@ -320,13 +318,18 @@ class Agent():
 if __name__ == "__main__":
 	agent = Agent()
 	time.sleep(.1)
-	#agent.train()
+	agent.train()
 	# test learned policy
-	
+	'''
 	agent.test(
 			theta = np.array([[0.1572069], [3.5357239]]), 
 			sigma = np.array([[0.3553431]]),
 			traj_length = 100000
 	)
-	
+	agent.test(
+			theta = np.array([[ 0.9644904]]), 
+			sigma = np.array([[ 0.0288127]]),
+			traj_length = 100000
+	)
+	'''
 	rospy.spin() 
