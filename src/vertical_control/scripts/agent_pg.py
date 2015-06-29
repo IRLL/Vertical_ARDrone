@@ -362,14 +362,15 @@ class Agent():
 if __name__ == "__main__":
 	agent = Agent()
 	time.sleep(.1)
-	agent.train()
+	#agent.train()
 	# test learned policy
-	'''
+
+
 	agent.test(
-			theta = [np.array([[-0.0914757],[ 3.2248725]]),
-                         np.array([[ 0.5932982],[ 1.2036282]])],
-			sigma = [np.array([[ 0.7688973]]), np.array([[ 0.1623072]])],
+			theta = [np.array([[ 0.4004521],[ 1.6403012]]),
+                         np.array([[ 1.0060473],[ 0.9353602]])],
+			sigma = [np.array([[ 0.3357318]]), np.array([[ 0.0624016]])],
 			traj_length = 100000
 	)
-	'''
+
 	rospy.spin()
