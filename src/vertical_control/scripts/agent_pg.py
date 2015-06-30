@@ -134,11 +134,11 @@ class Agent():
 		self._data = [Data(self._n, self._m, self._traj_length) for i in range(self._rollouts)]
 
 		#print "Quadrotor hovers!!!"
-		#print "starting human control"
-		#time.sleep(1)
-		#self.enable_controller.publish(Bool(0)) #disable modules like stabilizer
+		print "starting human control"
+		time.sleep(1)
+		self.enable_controller.publish(Bool(0)) #disable modules like stabilizer
 
-
+		"""
 		self.takeoff_pub.publish(Empty())
 		rospy.sleep(5)
 
@@ -150,13 +150,13 @@ class Agent():
 		self.soft_reset_pub.publish(Empty())
 		print "Object detected"
 		print "Test starting"
+		"""
 
+		gamecontroller = xboxcontroller()
+		gamecontroller.run() #run xbox controller for human to get drone into position (blocking call)
+		print "human control over"
 
-		#gamecontroller = xboxcontroller()
-		#gamecontroller.run() #run xbox controller for human to get drone into position (blocking call)
-		#print "human control over"
-
-		#self.soft_reset_pub.publish(Empty()) #re-enable modules like stabilizer
+		self.soft_reset_pub.publish(Empty()) #re-enable modules like stabilizer
 
 		# initial state
 		self._data[0].x[:,0] = np.array([[-self._state_x/2.0, -self._state_y/2.0]])
@@ -361,7 +361,7 @@ class Agent():
 
 if __name__ == "__main__":
 	agent = Agent()
-	time.sleep(.1)
+	time.sleep(.5)
 	#agent.train()
 	# test learned policy
 

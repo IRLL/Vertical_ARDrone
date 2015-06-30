@@ -48,9 +48,9 @@ class Controller():
 		def run(self):
 			while self.running:
 				if(self.xboxdrv.poll() is not None):
-					print "subprocess has died, raising SIGINT"
+					#print "subprocess has died, raising SIGINT"
 					self.running = False
-					os.kill(os.getpid(), signal.SIGINT)
+					#os.kill(os.getpid(), signal.SIGINT)
 
 				line = self.xboxdrv.stdout.readline()
 
@@ -102,12 +102,12 @@ class Controller():
 		self._return_values = return_values
 		self._return_as = return_as
 
-		controller = subprocess.Popen(["sudo", "xboxdrv", "-d"], stdout=subprocess.PIPE)
+		self.controller = subprocess.Popen(["sudo", "xboxdrv", "-d"], stdout=subprocess.PIPE)
 
 		# This waits for password input
 		sleep(2)
 
-		self.line_parser = self.__parser__(controller)
+		self.line_parser = self.__parser__(self.controller)
 		self.line_parser.daemon = True
 		self.line_parser.start()
 
@@ -166,6 +166,10 @@ class Controller():
 		for key in self.line_parser.control_inputs.keys():
 			names.append(key)
 		return names
+	def kill_controller(self):
+		#kill the subprocess, so we can exit cleanly
+		self.controller.terminate()
+		
 
 	def get_values(self):
 		"""

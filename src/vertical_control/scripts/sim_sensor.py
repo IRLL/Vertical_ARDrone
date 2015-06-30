@@ -11,6 +11,7 @@ from image_converter import ToOpenCV
 from math import sqrt
 from std_msgs.msg import Empty
 from std_msgs.msg import Bool
+from sensor_msgs.msg import Range
 
 class Sim_sensor():
 	#class constants
@@ -29,11 +30,12 @@ class Sim_sensor():
 		self.hover_distance = rospy.get_param("v_controller/hover_distance")
 		
 
-		self.video_sub = rospy.Subscriber('/ardrone/image_raw', Image, self.receive_image_callback)
+		rospy.init_node('simulated_sensors', anonymous=False)
 		self.learner_pub = rospy.Publisher('v_controller/state', Float32MultiArray)
 		self.not_visible_pub = rospy.Publisher('v_controller/visible', Bool)
 		self.controller_pub = rospy.Publisher('v_controller/control_state', Float32MultiArray)
-		rospy.init_node('simulated_sensors', anonymous=False)
+		self.video_sub = rospy.Subscriber('/ardrone/image_raw', Image, self.receive_image_callback)
+		self.height_sub = rospy.Subscriber('/sonar_height', Range, self.receive_height_callback)
 		self.rate = rospy.Rate(self.UPDATE_SPEED)
 
 		
@@ -44,6 +46,9 @@ class Sim_sensor():
 			self.latest_image = data 
 		finally:
 			self.image_lock.release()
+	def receive_height_callback(self, Range_data):
+		height = Range_data.range
+		self.controller_pub.publish(None, [height])
 
 	def sign(self, value):
 		if (value > 0.0):
@@ -75,7 +80,7 @@ class Sim_sensor():
 			x, y, distance = self.find_orange(image)
 
 			self.learner_pub.publish(None,[x,y])		
-			self.controller_pub.publish(None, [distance])
+			#self.controller_pub.publish(None, [distance])
 			#need to add publisher for other info
 			self.rate.sleep()
 		

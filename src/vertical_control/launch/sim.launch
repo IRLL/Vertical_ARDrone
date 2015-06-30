@@ -5,7 +5,6 @@
   <node pkg="vertical_control" name="drone_controller" type="drone_controller.py" />
   <node pkg="vertical_control" name="stabilizer" type="stabilizer.py" />
   <node pkg="vertical_control" name="main" type="main.py" />
-  <node pkg="vertical_control" name="agent" type="agent_ex.py" />
 
   <param name="/v_controller/gains/horizontal/p" type="double" value="1"/>
   <param name="/v_controller/gains/horizontal/i" type="double" value="0.001"/>
@@ -13,10 +12,10 @@
   <param name="/v_controller/gains/distance/p" type="double" value="1"/>
   <param name="/v_controller/gains/distance/i" type="double" value="0.001"/>
 
-  <param name="/v_controller/gains/vertical/p" type="double" value="1"/>
+  <param name="/v_controller/gains/vertical/p" type="double" value="0.5"/>
   <param name="/v_controller/gains/vertical/i" type="double" value="0.001"/>
 
-  <param name="/v_controller/hover_distance" type="double" value="3"/>
+  <param name="/v_controller/hover_distance" type="double" value="0.6"/>
 
   <param name="/v_controller/threshold" type="double" value="0.00"/>
 </launch>

@@ -26,14 +26,15 @@ class Vision_sensor():
 
 		self.images = dict()
 		self.height, self.width = (-1, -1)
+		rospy.init_node('real_sensors', anonymous=False)
 		self.hover_distance = rospy.get_param("v_controller/hover_distance")
 		
-
-		self.video_sub = rospy.Subscriber('/ardrone/image_raw', Image, self.receive_image_callback)
 		self.learner_pub = rospy.Publisher('v_controller/state', Float32MultiArray)
 		self.not_visible_pub = rospy.Publisher('v_controller/visible', Bool)
 		self.controller_pub = rospy.Publisher('v_controller/control_state', Float32MultiArray)
-		rospy.init_node('real_sensors', anonymous=False)
+
+		self.video_sub = rospy.Subscriber('/ardrone/image_raw', Image, self.receive_image_callback)
+		self.height_sub = rospy.Subscriber('/sonar_height', Range, self.receive_height_callback)
 		self.rate = rospy.Rate(self.UPDATE_SPEED)
 
 		
@@ -44,6 +45,11 @@ class Vision_sensor():
 			self.latest_image = data 
 		finally:
 			self.image_lock.release()
+
+	def receive_height_callback(self, Range_data):
+		height = Range_data.range
+		self.controller_pub.publish(None, [height])
+
 
 	def sign(self, value):
 		if (value > 0.0):
@@ -134,7 +140,8 @@ class Vision_sensor():
 			contour = self.find_max_contour(contours)
 			moment = cv2.moments(contour)
 			area = moment["m00"] #cv2.contourArea(contours[0])
-			if area > 50:
+			print area
+			if area > 800:
 				xpos = moment["m10"] / area
 				ypos = moment["m01"] / area
 				distance = self.AREA_DIST_CONST * 1/sqrt(area)

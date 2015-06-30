@@ -58,6 +58,7 @@ class xboxcontroller():
 				if (control_packet["takeover"] > button_threshold):
 					cmd = Twist()
 					drone.cmd(cmd)
+					controller.kill_controller()
 					sleep(1)
 					break	
 
