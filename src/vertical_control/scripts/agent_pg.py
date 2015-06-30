@@ -138,6 +138,7 @@ class Agent():
 		time.sleep(1)
 		self.enable_controller.publish(Bool(0)) #disable modules like stabilizer
 
+
 		"""
 		self.takeoff_pub.publish(Empty())
 		rospy.sleep(5)
