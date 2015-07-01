@@ -60,11 +60,11 @@ class Agent():
 		self._n = 2 # Number of states
 		self._m = 2 # Number of inputs
 
-		self._rate = .1 # Learning rate for gradient descent Original+0.75
+		self._rate = .03 # Learning rate for gradient descent Original+0.75
 
 		self._traj_length = 100 # Number of time steps to simulate in the cart-pole system 100
 		self._rollouts = 50 # Number of trajectories for testing 50
-		self._num_iterations = 50 # Number of learning episodes/iterations	30
+		self._num_iterations = 100 # Number of learning episodes/iterations	30
 
 		time.sleep(.1)
 		#self._my0 = pi/6-2*pi/6*np.random.random((N,1)) # Initial state of the cart pole (between -60 and 50 deg)
@@ -79,8 +79,8 @@ class Agent():
 		for i in range(self._m):
 			self._theta.append(np.random.random((self._n,1)))
 			self._sigma.append(np.random.random((1,1)))
-		self._theta = [np.array([[ 0.4821164],[ 1.3026664]]), np.array([[ 1.0021907],[ 0.9163436]])]
-		self._sigma = [np.array([[ 0.3357318]]), np.array([[ 0.0624016]])]
+		#self._theta = [np.array([[ 0.4821164],[ 1.3026664]]), np.array([[ 1.0021907],[ 0.9163436]])]
+		#self._sigma = [np.array([[ 0.3357318]]), np.array([[ 0.0624016]])]
 
 		self._data = [Data(self._n, self._m, self._traj_length) for i in range(self._rollouts)]
 
@@ -102,17 +102,22 @@ class Agent():
 		rospy.sleep(.1)
 		a = SetModelStateRequest()
 		a.model_state.model_name = 'quadrotor'
-		a.model_state.pose.position.z = 3
+		a.model_state.pose.position.z = 2
 		a.model_state.pose.position.x = 3 + x
 		a.model_state.pose.position.y = 0 + y
+		self.reset_pos(a)
+		a.model_state.model_name = 'unit_sphere_4'
+		a.model_state.pose.position.z = 0.052
+		a.model_state.pose.position.x = 3
+		a.model_state.pose.position.y = 0
 		self.reset_pos(a)
 		rospy.sleep(.5)
 		self.soft_reset_pub.publish(Empty())
 
 
 	def startEpisode(self):
-		x = random.uniform(-1, 1)
-		y = random.uniform(-1, 1)
+		x = random.uniform(-.35, .35)
+		y = random.uniform(-.35, .35)
 		self.reset_sim(x,y,0)
 
 
@@ -194,9 +199,9 @@ class Agent():
 			self._data[0].x[:,steps+1] = state
 
 			# Calculating the reward (Remember: First term is the reward for accuracy, second is for control cost)
-			#u = self._data[0].u[][:,steps]
-			#u_p = self._data[0].u[:,steps].conj().T
-			reward = -sqrt(state[0][0]**2 + state[0][1]**2) #- sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.0001).conj().T, u_p))
+			u = np.array([action])
+			u_p = u.conj().T
+			reward = -sqrt(state[0][0]**2 + state[0][1]**2) - sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.2), u_p))
 
 			self._data[0].r[:,steps] = [reward]
 
@@ -363,15 +368,15 @@ class Agent():
 if __name__ == "__main__":
 	agent = Agent()
 	time.sleep(.5)
-	#agent.train()
+	agent.train()
 	# test learned policy
 
 
-	agent.test(
+	'''agent.test(
 			theta = [np.array([[ 0.4004521],[ 1.6403012]]),
                          np.array([[ 1.0060473],[ 0.9353602]])],
 			sigma = [np.array([[ 0.3357318]]), np.array([[ 0.0624016]])],
 			traj_length = 100000
-	)
+	)'''
 
 	rospy.spin()

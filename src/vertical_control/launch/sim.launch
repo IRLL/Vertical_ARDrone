@@ -15,7 +15,7 @@
   <param name="/v_controller/gains/vertical/p" type="double" value="0.5"/>
   <param name="/v_controller/gains/vertical/i" type="double" value="0.001"/>
 
-  <param name="/v_controller/hover_distance" type="double" value="0.6"/>
+  <param name="/v_controller/hover_distance" type="double" value="2"/>
 
   <param name="/v_controller/threshold" type="double" value="0.00"/>
 </launch>
