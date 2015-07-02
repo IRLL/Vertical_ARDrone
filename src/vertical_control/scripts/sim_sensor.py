@@ -23,7 +23,8 @@ class Sim_sensor():
 		self.latest_image = None
 
 		self.image_lock = Lock()
-		self.last = 0
+		self.lastx = 0
+		self.lasty = 0
 
 		self.images = dict()
 		self.height, self.width = (-1, -1)
@@ -143,17 +144,18 @@ class Sim_sensor():
 				self.not_visible_pub.publish(1)
 				
 				xpos, ypos = self.rescale(xpos, ypos)
-				self.last = self.sign(ypos)
+				self.lasty= self.sign(ypos)
+				self.lastx= self.sign(xpos)
 				#print "a", area
 				#print "d", distance
 			else:
-				xpos = 0
-				ypos = self.last 
+				xpos = self.lastx
+				ypos = self.lasty
 				distance = self.hover_distance
 				self.not_visible_pub.publish(0)
 		else:
-			xpos = 0
-			ypos = self.last
+			xpos = self.lastx 
+			ypos = self.lasty
 			distance = self.hover_distance
 			self.not_visible_pub.publish(0)
 
