@@ -60,7 +60,7 @@ class Agent():
 		self._n = 2 # Number of states
 		self._m = 2 # Number of inputs
 
-		self._rate = .03 # Learning rate for gradient descent Original+0.75
+		self._rate = .01 # Learning rate for gradient descent Original+0.75
 
 		self._traj_length = 100 # Number of time steps to simulate in the cart-pole system 100
 		self._rollouts = 50 # Number of trajectories for testing 50
@@ -138,13 +138,14 @@ class Agent():
 
 		self._data = [Data(self._n, self._m, self._traj_length) for i in range(self._rollouts)]
 
+		"""
 		#print "Quadrotor hovers!!!"
 		print "starting human control"
 		time.sleep(1)
 		self.enable_controller.publish(Bool(0)) #disable modules like stabilizer
-
-
 		"""
+
+
 		self.takeoff_pub.publish(Empty())
 		rospy.sleep(5)
 
@@ -156,11 +157,12 @@ class Agent():
 		self.soft_reset_pub.publish(Empty())
 		print "Object detected"
 		print "Test starting"
-		"""
 
+		"""
 		gamecontroller = xboxcontroller()
 		gamecontroller.run() #run xbox controller for human to get drone into position (blocking call)
 		print "human control over"
+		"""
 
 		self.soft_reset_pub.publish(Empty()) #re-enable modules like stabilizer
 
@@ -201,7 +203,7 @@ class Agent():
 			# Calculating the reward (Remember: First term is the reward for accuracy, second is for control cost)
 			u = np.array([action])
 			u_p = u.conj().T
-			reward = -sqrt(state[0][0]**2 + state[0][1]**2) - sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.2), u_p))
+			reward = -sqrt(state[0][0]**2 + state[0][1]**2) - sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.1), u_p))
 
 			self._data[0].r[:,steps] = [reward]
 
@@ -271,7 +273,7 @@ class Agent():
 					#u_p = self._data[trials].u[:,steps].conj().T
 					u = np.array([action])
 					u_p = u.conj().T
-					reward = -sqrt(state[0][0]**2 + state[0][1]**2) - sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.1), u_p))
+					reward = -sqrt(state[0][0]**2 + state[0][1]**2) - sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.01), u_p))
 					#print "Action: ", action
 					#print "Reward 1: ", -sqrt(state[0][0]**2 + state[0][1]**2)
 					#print "Reward 2: ", -sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.01), u_p))
@@ -368,7 +370,7 @@ class Agent():
 if __name__ == "__main__":
 	agent = Agent()
 	time.sleep(.5)
-	agent.train()
+	#agent.train()
 	# test learned policy
 
 
@@ -378,5 +380,13 @@ if __name__ == "__main__":
 			sigma = [np.array([[ 0.3357318]]), np.array([[ 0.0624016]])],
 			traj_length = 100000
 	)'''
+
+	agent.test(
+			theta = [np.array([[ 0.1877877],[ 0.8377135]]), np.array([[ 1.7215034],[ 0.4890135]])],
+			sigma = [np.array([[ 0.4352247]]), array([[ 0.8679435]])],
+			traj_length = 100000
+	)
+
+
 
 	rospy.spin()
