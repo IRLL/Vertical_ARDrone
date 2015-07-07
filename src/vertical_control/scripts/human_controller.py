@@ -3,16 +3,17 @@
 import rospy
 from xboxdrv.xboxdrv_parser import Controller
 from geometry_msgs.msg import Twist
-from std_msgs.msg import Empty
+from std_msgs.msg import Empty,Bool
 from dronedrv import dronedrv
 from time import sleep
 from sys import exit 
 import signal
 
 
-class xboxcontroller():
+class humancontroller():
 	def __init__(self):
-		pass
+		self.human_pub = rospy.Publisher('v_controller/human_cmd', Twist)
+		self.enable_pub = rospy.Publisher('v_controller/move_enable', Bool)
 
 	def hysteresis(self, value, threshold = .1):
 		if (abs(value) > threshold):
@@ -45,22 +46,19 @@ class xboxcontroller():
 				if (control_packet["kill"] > -1):
 					drone.kill()
 					print "toggling reset"
-					sleep(1)
+					sleep(.2)
 				if (control_packet["takeoff"] > button_threshold):
 					drone.takeoff()
 					print "taking off!"
-					sleep(1)
+					sleep(.2)
 				if (control_packet["land"] > button_threshold):
 					drone.land()
 					print "landing!"
-					sleep(1)
+					sleep(.2)
 
 				if (control_packet["takeover"] > button_threshold):
-					cmd = Twist()
-					drone.cmd(cmd)
-					controller.kill_controller()
-					sleep(1)
-					break	
+					self.enable_pub.publish(Bool(1))	
+					sleep(.2)
 
 				cmd.linear.x = self.hysteresis(-control_packet["pitch"])
 				cmd.linear.y = self.hysteresis(-control_packet["roll"])
@@ -71,13 +69,13 @@ class xboxcontroller():
 				print "dropped control signal: ", e
 				cmd = Twist() #clear out message if bad control signal
 
-			drone.cmd(cmd)
+			self.human_pub.publish(cmd) 
 
 			sleep (.1)
-		print "exiting xbox controller"
+		print "exiting human controller"
 
 if __name__ == '__main__':
-	rospy.init_node('xbox_controller', anonymous=True)
-	controller = xboxcontroller()
+	rospy.init_node('human_controller', anonymous=False)
+	controller = humancontroller()
 
 	controller.run()

@@ -11,6 +11,8 @@ from image_converter import ToOpenCV
 from math import sqrt
 from std_msgs.msg import Empty
 from std_msgs.msg import Bool
+from sensor_msgs.msg import Range
+from ardrone_autonomy.msg import Navdata
 
 class Vision_sensor():
 	#class constants
@@ -34,7 +36,7 @@ class Vision_sensor():
 		self.controller_pub = rospy.Publisher('v_controller/control_state', Float32MultiArray)
 
 		self.video_sub = rospy.Subscriber('/ardrone/image_raw', Image, self.receive_image_callback)
-		self.height_sub = rospy.Subscriber('/sonar_height', Range, self.receive_height_callback)
+		self.height_sub = rospy.Subscriber('/ardrone/navdata', Navdata, self.receive_height_callback)
 		self.rate = rospy.Rate(self.UPDATE_SPEED)
 
 		
@@ -46,8 +48,8 @@ class Vision_sensor():
 		finally:
 			self.image_lock.release()
 
-	def receive_height_callback(self, Range_data):
-		height = Range_data.range
+	def receive_height_callback(self, navdata):
+		height = float(navdata.altd)/1000 
 		self.controller_pub.publish(None, [height])
 
 
@@ -81,7 +83,7 @@ class Vision_sensor():
 			x, y, distance = self.find_target(image)
 
 			self.learner_pub.publish(None,[x,y])		
-			self.controller_pub.publish(None, [distance])
+			#self.controller_pub.publish(None, [distance])
 			#need to add publisher for other info
 			self.rate.sleep()
 		

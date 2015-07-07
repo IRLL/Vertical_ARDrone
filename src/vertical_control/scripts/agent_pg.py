@@ -137,14 +137,11 @@ class Agent():
 			self._sigma = sigma
 
 		self._data = [Data(self._n, self._m, self._traj_length) for i in range(self._rollouts)]
-
 		"""
 		#print "Quadrotor hovers!!!"
 		print "starting human control"
 		time.sleep(1)
 		self.enable_controller.publish(Bool(0)) #disable modules like stabilizer
-		"""
-
 
 		self.takeoff_pub.publish(Empty())
 		rospy.sleep(5)
@@ -158,7 +155,6 @@ class Agent():
 		print "Object detected"
 		print "Test starting"
 
-		"""
 		gamecontroller = xboxcontroller()
 		gamecontroller.run() #run xbox controller for human to get drone into position (blocking call)
 		print "human control over"
@@ -382,8 +378,8 @@ if __name__ == "__main__":
 	)'''
 
 	agent.test(
-			theta = [np.array([[ 0.1877877],[ 0.8377135]]), np.array([[ 1.7215034],[ 0.4890135]])],
-			sigma = [np.array([[ 0.4352247]]), array([[ 0.8679435]])],
+			theta = [np.array([[ 0.1709186],[ 0.9476404]]), np.array([[ 2.0177121],[ 0.4239711]])],
+			sigma = [np.array([[ 0.4352247]]), np.array([[ 0.8679435]])],
 			traj_length = 100000
 	)
 
