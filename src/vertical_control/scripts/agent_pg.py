@@ -64,7 +64,7 @@ class Agent():
 
 		self._traj_length = 100 # Number of time steps to simulate in the cart-pole system 100
 		self._rollouts = 50 # Number of trajectories for testing 50
-		self._num_iterations = 100 # Number of learning episodes/iterations	30
+		self._num_iterations = 50 # Number of learning episodes/iterations	30
 
 		time.sleep(.1)
 		#self._my0 = pi/6-2*pi/6*np.random.random((N,1)) # Initial state of the cart pole (between -60 and 50 deg)
@@ -79,8 +79,8 @@ class Agent():
 		for i in range(self._m):
 			self._theta.append(np.random.random((self._n,1)))
 			self._sigma.append(np.random.random((1,1)))
-		#self._theta = [np.array([[ 0.4821164],[ 1.3026664]]), np.array([[ 1.0021907],[ 0.9163436]])]
-		#self._sigma = [np.array([[ 0.3357318]]), np.array([[ 0.0624016]])]
+		self._theta = [np.array([[ 0.1877877],[ 0.8377135]]), np.array([[ 1.7215034],[ 0.4890135]])]
+		self._sigma = [np.array([[ 0.4352247]]), np.array([[ 0.8679435]])]
 
 		self._data = [Data(self._n, self._m, self._traj_length) for i in range(self._rollouts)]
 
@@ -184,7 +184,7 @@ class Agent():
 
 				self._data[0].u[j][:,steps] = action[j]
 
-			#print "Action: ", action
+			print "Action: ", action
 
 			command = Twist()
 			command.linear.x = action[0]
