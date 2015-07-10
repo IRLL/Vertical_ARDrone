@@ -5,12 +5,17 @@ project(vertical_control)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  roscpp
   rospy
   std_msgs
+  sensor_msgs
+  image_transport
+  cv_bridge
 )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
+find_package( OpenCV REQUIRED )
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -94,6 +99,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
@@ -103,15 +109,17 @@ include_directories(
 
 ## Declare a cpp executable
 # add_executable(vertical_control_node src/vertical_control_node.cpp)
+add_executable(real_sensor src/real_sensor.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(vertical_control_node vertical_control_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(vertical_control_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(real_sensor
+   ${catkin_LIBRARIES}
+   ${OpenCV_LIBRARIES}
+)
 
 #############
 ## Install ##

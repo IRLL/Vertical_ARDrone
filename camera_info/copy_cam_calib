@@ -1,0 +1,5 @@
+#!/bin/bash
+
+mkdir -p ~/.ros/camera_info
+cp -f ardrone_bottom.yaml ~/.ros/camera_info
+cp -f ardrone_front.yaml ~/.ros/camera_info
