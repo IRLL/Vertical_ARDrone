@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   image_transport
   cv_bridge
+  ardrone_autonomy
 )
 
 ## System dependencies are found with CMake's conventions
