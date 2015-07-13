@@ -18,12 +18,14 @@ class Agent():
 		self.hcontroller = pi_controller(hgains['p'] , hgains['i'] ) 
 		self.vcontroller = pi_controller(vgains['p'] , vgains['i'] ) 
 		rospy.init_node('agent', anonymous=False)
+		"""
 		print "waiting for service"
 		rospy.wait_for_service('/v_control/reset_world')
 		rospy.wait_for_service('/gazebo/set_model_state')
 		print "done"
+		"""
 		#self.reset_sim = rospy.ServiceProxy('/v_control/reset_world', services.Empty)
-		self.reset_pos = rospy.ServiceProxy('/gazebo/set_model_state', SetModelState)
+		#self.reset_pos = rospy.ServiceProxy('/gazebo/set_model_state', SetModelState)
 		self.action_pub = rospy.Publisher('v_controller/agent_cmd', Twist)
 		self.soft_reset_pub = rospy.Publisher('v_controller/soft_reset', Empty)
 		self.takeoff_pub = rospy.Publisher('/ardrone/takeoff', Empty)
@@ -33,23 +35,16 @@ class Agent():
 		self.visible = 1
 
 	def run(self, data):
-		"""
-		if not self.visible:
-			print "reseting world"
-			self.reset_sim()
-			return
-		"""
-		
 		command = Twist()		
+		if self.visible:
+			herror = data.data[0]
+			verror = data.data[1]
 
-		herror = data.data[0]
-		verror = data.data[1]
-
-		hcorrection = self.hcontroller.run(herror)
-		vcorrection = self.vcontroller.run(verror)
-		
-		command.linear.x = -vcorrection
-		command.linear.y = -hcorrection
+			hcorrection = self.hcontroller.run(herror)
+			vcorrection = self.vcontroller.run(verror)
+			
+			command.linear.x = -vcorrection
+			command.linear.y = -hcorrection
 
 		self.action_pub.publish(command)
 	def visible_calback(self, visible):
@@ -67,13 +62,14 @@ if __name__ == "__main__":
 
 	agent = Agent()
 	time.sleep(.5)
-	agent.takeoff_pub.publish(Empty())
-	a = SetModelStateRequest() 
-	a.model_state.model_name = 'quadrotor'
-	a.model_state.pose.position.z = 3
-	a.model_state.pose.position.x = 3
-	agent.reset_pos(a)
+#	agent.takeoff_pub.publish(Empty())
+
+#	a = SetModelStateRequest() 
+#	a.model_state.model_name = 'quadrotor'
+#	a.model_state.pose.position.z = 3
+#	a.model_state.pose.position.x = 3
+#	agent.reset_pos(a)
 
 	time.sleep(.5)
-	agent.reset()
+	#agent.reset()
 	rospy.spin() 
