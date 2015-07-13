@@ -142,7 +142,7 @@ class Agent():
 		print "starting human control"
 		time.sleep(1)
 		self.enable_controller.publish(Bool(0)) #disable modules like stabilizer
-
+		"""
 		self.takeoff_pub.publish(Empty())
 		rospy.sleep(5)
 
@@ -154,13 +154,13 @@ class Agent():
 		self.soft_reset_pub.publish(Empty())
 		print "Object detected"
 		print "Test starting"
-
+		"""
 		gamecontroller = xboxcontroller()
 		gamecontroller.run() #run xbox controller for human to get drone into position (blocking call)
 		print "human control over"
 		"""
 
-		self.soft_reset_pub.publish(Empty()) #re-enable modules like stabilizer
+		#self.soft_reset_pub.publish(Empty()) #re-enable modules like stabilizer
 
 		# initial state
 		self._data[0].x[:,0] = np.array([[-self._state_x/2.0, -self._state_y/2.0]])

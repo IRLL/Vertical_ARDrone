@@ -1,4 +1,5 @@
 #include <ros/ros.h>
+#include <ros/time.h>
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
@@ -16,6 +17,7 @@
 #include <ardrone_autonomy/Navdata.h>
 #include <stdlib.h>
 
+
 // default capture width and height
 static const int FRAME_WIDTH = 640;
 static const int FRAME_HEIGHT = 480;
@@ -31,7 +33,6 @@ static const float AREA_DIST_CONST = 35.623f;
 
 class VisionSensor {
 
-    ros::NodeHandle nh_;
     ros::Publisher learner_pub;
     ros::Publisher not_visible_pub;
     ros::Publisher controller_pub;
@@ -59,7 +60,7 @@ class VisionSensor {
     bool is_first_img;
 
 public:
-    VisionSensor():it_(nh_)
+    VisionSensor(ros::NodeHandle &nh_):it_(nh_)
     {
         is_first_img = true;
         //latest_image = 0;
@@ -91,6 +92,12 @@ public:
         video_sub = it_.subscribe("/ardrone/image_raw", 1, &VisionSensor::receive_image_cb, this);
         height_sub = nh_.subscribe("/ardrone/navdata", 1, &VisionSensor::receive_height_cb, this);
 
+        ros::spinOnce();
+    }
+
+    bool isFirstImgLoaded()
+    {
+        return is_first_img;
     }
 
     void start()
@@ -143,6 +150,7 @@ public:
 
     void processing_function()
     {
+        ros::WallTime startt = ros::WallTime::now();
         //while (true)
         //    if (ros::ok() && latest_image != 0) break;
 
@@ -154,6 +162,10 @@ public:
         pose.data.push_back(y);
 
         learner_pub.publish(pose);
+
+        ros::WallTime endt = ros::WallTime::now();
+        ros::WallDuration diff = endt - startt;
+        ROS_DEBUG_STREAM_NAMED("vertical_control", "Object Detection duration " << diff.toSec());
     }
 
     void find_target(cv_bridge::CvImagePtr img, float &x, float &y, float &distance)
@@ -270,8 +282,20 @@ public:
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "real_sensors");
-    VisionSensor vs;
-    vs.start();
+    ros::NodeHandle nh;
+
+    VisionSensor vs(nh);
+    //vs.start();
+
+    ros::Rate loop_rate(UPDATE_SPEED);
+
+    while (ros::ok())
+    {
+        if (!vs.isFirstImgLoaded())
+            vs.processing_function();
+        ros::spinOnce();
+        loop_rate.sleep();
+    }
 
     return 0;
 }
