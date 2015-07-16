@@ -254,10 +254,10 @@ public:
 
     void rescale(float &x, float &y)
     {
-        float width_div = float(width) / 2.0f;
-        float height_div = float(height) / 2.0f;
-        x = (x - width_div) / width_div;
-        y = (y - height_div) / height_div;
+        float width_div = float(width) / 4.0f;
+        float height_div = float(height) / 3.0f;
+        x = (x - width/2) / width_div;
+        y = (y - height/2) / height_div;
     }
 
     void morphOps(cv::Mat &threshold)
