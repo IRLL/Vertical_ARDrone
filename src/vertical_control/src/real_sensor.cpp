@@ -24,12 +24,14 @@ static const int FRAME_HEIGHT = 480;
 
 // max number of objects to be detected in frame
 static const int MAX_NUM_OBJECTS = 10; //50
-// minimum and maximum object area
-static const int MIN_OBJECT_AREA = 2*2; // 5*5
+// minimum and maximum object areai
+static const int MIN_OBJECT_AREA = 50; // 5*5
 static const int MAX_OBJECT_AREA = FRAME_HEIGHT*FRAME_WIDTH/1.5;
 
-static const int UPDATE_SPEED = 10; // process at 10hz
+static const int UPDATE_SPEED = 200; // process at 10hz
 static const float AREA_DIST_CONST = 35.623f;
+
+static const float PI = 3.1415;
 
 class VisionSensor {
 
@@ -72,12 +74,12 @@ public:
         v_min_ = 50;
         v_max_ = 255;
         // orange
-        h_min_ = 0;
-        h_max_ = 200;
-        s_min_ = 170;
-        s_max_ = 255;
-        v_min_ = 0;
-        v_max_ = 255;
+        //h_min_ = 0;
+        //h_max_ = 200;
+        //s_min_ = 170;
+        //s_max_ = 255;
+        //v_min_ = 0;
+        //v_max_ = 255;
 
         height = width = -1.0f;
         last = 0.0f;
@@ -177,7 +179,7 @@ public:
         // Use smaller image for faster processing
         cv::Mat hsv_small(cv::Size(160,120), hsv.type());
         cv::resize(hsv, hsv_small, hsv_small.size());
-
+ 
         // filter for color
         cv::Mat color_filter;
         cv::inRange(hsv_small, cv::Scalar(h_min_, s_min_, v_min_), cv::Scalar(h_max_, s_max_, v_max_), color_filter);
@@ -185,23 +187,29 @@ public:
         // eliminate noise
         morphOps(color_filter);
 
-        trackFilteredObject(color_filter, x, y, distance);
+        std::string text;
+        trackFilteredObject(color_filter, x, y, distance, text);
+
+        cv::putText(img->image, text, cv::Point(0,50), 2, 1, cv::Scalar(0,255,0), 2);
+        cv::imshow("threshold", color_filter);
+        cv::imshow("frame", img->image);
+        cv::waitKey(5);
     }
 
 
-    void trackFilteredObject(cv::Mat &threshold, float &x, float &y, float &distance)
+    void trackFilteredObject(cv::Mat &threshold, float &x, float &y, float &distance, std::string &text)
     {
-        cv::Mat temp = threshold.clone(); // TODO: Don't need this later
+        cv::Mat temp = threshold.clone();
+        bool object_found = false;
+        std_msgs::Bool b;
+        float ref_area = 0.0f;
 
+        // find contours of filtered image using openCV findContours functions
         // two vectors needed for output of findContours
         cv::vector< cv::vector<cv::Point> > contours;
         cv::vector<cv::Vec4i> hierarchy;
-        // find contours of filtered image using openCV findContours functions
         cv::findContours(temp, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
         // use moments method to find our filtered object
-        float ref_area = 0.0f;
-        bool object_found = false;
-        std_msgs::Bool b;
         if (hierarchy.size() > 0)
         {
             int numObjects = hierarchy.size();
@@ -213,12 +221,14 @@ public:
                 {
                     cv::Moments moment = cv::moments((cv::Mat)contours[index]);
                     double area = moment.m00;
+                    //double area = cv::contourArea(contours[index]);
 
                     // if the area is less than 20px by 20px then it is probably just noise
                     // if the area is the same as the 3/2 of the image size, probably just a bad filter
                     // we only want the object with the largest area so we safe a reference area each
                     // iteration and compare it to the area in the next iteration.
                     if (area > MIN_OBJECT_AREA && area < MAX_OBJECT_AREA && area > ref_area)
+                    //if (area > ref_area)
                     {
                         x = moment.m10/area;
                         y = moment.m01/area;
@@ -238,6 +248,7 @@ public:
                     not_visible_pub.publish(b);
                     rescale(x, y);
                     last = sign(y);
+                    text = "Largest Contour found";
                     return; // ends function when object is found
                     //cv::putText(frame, "Tracking Object", cv::Point(0,50), 2, 1, cv::Scalar(0,255,0), 2);
                 }
@@ -250,6 +261,7 @@ public:
         distance = hover_distance;
         b.data = 0;
         not_visible_pub.publish(b);
+        text = "Nothing found";
     }
 
     void rescale(float &x, float &y)
@@ -267,14 +279,14 @@ public:
       cv::Mat erode_kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(2,2));
       // dilate with larger element so make sure object is nicely visible
       cv::Mat dilate_kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(2,2)); //8,8
+      cv::Mat dilate_kernel4 = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(4,4)); //8,8
 
       cv::erode(threshold, threshold, erode_kernel);
-      cv::dilate(threshold, threshold, dilate_kernel);
-      cv::dilate(threshold, threshold, dilate_kernel);
+      cv::erode(threshold, threshold, erode_kernel);
       cv::erode(threshold, threshold, erode_kernel);
       cv::dilate(threshold, threshold, dilate_kernel);
-      cv::dilate(threshold, threshold, dilate_kernel);
-      cv::dilate(threshold, threshold, dilate_kernel);
+      cv::dilate(threshold, threshold, dilate_kernel4);
+
     }
 
 };
@@ -288,7 +300,7 @@ int main(int argc, char** argv)
     //vs.start();
 
     ros::Rate loop_rate(UPDATE_SPEED);
-
+    
     while (ros::ok())
     {
         if (!vs.isFirstImgLoaded())

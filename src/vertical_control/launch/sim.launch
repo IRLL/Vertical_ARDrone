@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
   <node pkg="vertical_control" name="viewer" type="viewer.py" />
-  <node pkg="vertical_control" name="sensors" type="real_sensor" />
+  <node pkg="vertical_control" name="sensors" type="sim_sensor.py" />
   <node pkg="vertical_control" name="drone_controller" type="drone_mux.py" />
   <node pkg="vertical_control" name="stabilizer" type="stabilizer.py" />
   <node pkg="vertical_control" name="main" type="main.py" />
@@ -15,7 +15,7 @@
   <param name="/v_controller/gains/vertical/p" type="double" value="0.5"/>
   <param name="/v_controller/gains/vertical/i" type="double" value="0.001"/>
 
-  <param name="/v_controller/hover_distance" type="double" value="2"/>
+  <param name="/v_controller/hover_distance" type="double" value="1.5"/>
 
   <param name="/v_controller/threshold" type="double" value="0.00"/>
 </launch>

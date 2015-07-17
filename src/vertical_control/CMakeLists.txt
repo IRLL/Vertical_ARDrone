@@ -111,16 +111,25 @@ include_directories(
 ## Declare a cpp executable
 # add_executable(vertical_control_node src/vertical_control_node.cpp)
 add_executable(real_sensor src/real_sensor.cpp)
+add_executable(test_sub src/test_sub.cpp)
+add_executable(test_pub src/test_pub.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(vertical_control_node vertical_control_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(real_sensor
+target_link_libraries(real_sensor 
    ${catkin_LIBRARIES}
    ${OpenCV_LIBRARIES}
 )
+target_link_libraries(test_sub
+   ${catkin_LIBRARIES}
+)
+target_link_libraries(test_pub
+   ${catkin_LIBRARIES}
+)
+
 
 #############
 ## Install ##

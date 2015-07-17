@@ -64,7 +64,7 @@ class Agent():
 
 		self._traj_length = 100 # Number of time steps to simulate in the cart-pole system 100
 		self._rollouts = 50 # Number of trajectories for testing 50
-		self._num_iterations = 50 # Number of learning episodes/iterations	30
+		self._num_iterations = 100 # Number of learning episodes/iterations	30
 
 		time.sleep(.1)
 		#self._my0 = pi/6-2*pi/6*np.random.random((N,1)) # Initial state of the cart pole (between -60 and 50 deg)
@@ -77,10 +77,21 @@ class Agent():
 		self._theta = []
 		self._sigma = []
 		for i in range(self._m):
-			self._theta.append(np.random.random((self._n,1)))
+			th = np.random.random((self._n,1))
+			for j in range(self._n):
+				#th[:,0][j] = th[:,0][j] if np.random.randint(2, size=1) == 1 else -th[:,0][j]
+				th[:,0][j] = 0.0
+			self._theta.append(th)
 			self._sigma.append(np.random.random((1,1)))
-		self._theta = [np.array([[ 0.1877877],[ 0.8377135]]), np.array([[ 1.7215034],[ 0.4890135]])]
-		self._sigma = [np.array([[ 0.4352247]]), np.array([[ 0.8679435]])]
+		#self._theta = [np.array([[ 0.1877877],[ 0.8377135]]), np.array([[ 1.7215034],[ 0.4890135]])]
+		#self._sigma = [np.array([[ 0.4352247]]), np.array([[ 0.8679435]])]
+
+		# theta [array([[-0.0009055],
+	     #[ 0.2194222]]), array([[ 0.0800124],
+		#[-0.0012494]])]
+		# sigma Sigma:  [array([[ 0.2622844]]), array([[ 0.1004269]])]
+
+
 
 		self._data = [Data(self._n, self._m, self._traj_length) for i in range(self._rollouts)]
 
@@ -92,9 +103,6 @@ class Agent():
 		self._r = np.empty(shape=(1,100))
 		self._reward_per_rates_per_iteration = np.empty(shape=(1,200))
 
-		print "Initial Theta: ", self._theta
-		print "Sigma: ", self._sigma
-		print "Learning Rate: ", self._rate
 
 	def reset_sim(self, x, y, angle):
 		self.enable_controller.publish(Bool(0))
@@ -116,9 +124,12 @@ class Agent():
 
 
 	def startEpisode(self):
-		x = random.uniform(-.35, .35)
-		y = random.uniform(-.35, .35)
+		#x = random.uniform(-.23, .23)
+		#y = random.uniform(-.23, .23)
+		x = random.uniform(-.8, .8)
+		y = random.uniform(-.23, .23)
 		self.reset_sim(x,y,0)
+		rospy.sleep(.5)
 
 
 	def getState(self, data):
@@ -129,12 +140,14 @@ class Agent():
 		self.visible = visible.data
 
 
-	def test(self, theta=None, sigma=None, traj_length=100000):
+	def test(self, theta=None, traj_length=100000):
+
 		self._traj_length = traj_length
 
-		if theta != None and sigma != None:
+		if theta != None:
 			self._theta = theta
-			self._sigma = sigma
+
+		print "Initial Theta: ", self._theta
 
 		self._data = [Data(self._n, self._m, self._traj_length) for i in range(self._rollouts)]
 		"""
@@ -199,7 +212,7 @@ class Agent():
 			# Calculating the reward (Remember: First term is the reward for accuracy, second is for control cost)
 			u = np.array([action])
 			u_p = u.conj().T
-			reward = -sqrt(state[0][0]**2 + state[0][1]**2) - sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.1), u_p))
+			reward = -sqrt(state[0][0]**2 + state[0][1]**2) - sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.0998), u_p))
 
 			self._data[0].r[:,steps] = [reward]
 
@@ -210,6 +223,9 @@ class Agent():
 
 
 	def train(self):
+		print "Initial Theta: ", self._theta
+		print "Sigma: ", self._sigma
+		print "Learning Rate: ", self._rate
 		plt.ion()
 		plt.show()
 
@@ -241,6 +257,7 @@ class Agent():
 						action[j] = np.random.multivariate_normal(np.dot(th_p, xx).conj().T, sig)
 
 						action[j] = round(action[j], 3)
+						#print "action ", j, ":", action[j]
 						if self.visible == 0:# or (sqrt(xx[0][0]**2) <= .5 and sqrt(xx[0][1]**2) <= .5):
 							action[j] = 0.0
 						elif action[j] > 1.0: # saturate
@@ -250,7 +267,7 @@ class Agent():
 
 						self._data[trials].u[j][:,steps] = action[j]
 
-					#print "Action: ", action
+					#print "Action: ", action[0], " ", action[1]
 
 					command = Twist()
 					command.linear.x = action[0]
@@ -269,7 +286,8 @@ class Agent():
 					#u_p = self._data[trials].u[:,steps].conj().T
 					u = np.array([action])
 					u_p = u.conj().T
-					reward = -sqrt(state[0][0]**2 + state[0][1]**2) - sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.01), u_p))
+					#reward = -sqrt(state[0][0]**2 + state[0][1]**2) - sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.01), u_p))
+					reward = -sqrt(state[0][0]**2 + state[0][1]**2) - sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.0998), u_p))
 					#print "Action: ", action
 					#print "Reward 1: ", -sqrt(state[0][0]**2 + state[0][1]**2)
 					#print "Reward 2: ", -sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.01), u_p))
@@ -366,22 +384,37 @@ class Agent():
 if __name__ == "__main__":
 	agent = Agent()
 	time.sleep(.5)
-	#agent.train()
+	agent.train()
 	# test learned policy
 
 
 	'''agent.test(
 			theta = [np.array([[ 0.4004521],[ 1.6403012]]),
                          np.array([[ 1.0060473],[ 0.9353602]])],
-			sigma = [np.array([[ 0.3357318]]), np.array([[ 0.0624016]])],
 			traj_length = 100000
 	)'''
 
+	''' action cost 0.1 very small actions
 	agent.test(
-			theta = [np.array([[ 0.1709186],[ 0.9476404]]), np.array([[ 2.0177121],[ 0.4239711]])],
-			sigma = [np.array([[ 0.4352247]]), np.array([[ 0.8679435]])],
+			theta = [np.array([[-0.0010017],[ 0.1943709]]), np.array([[ 0.0700936],[-0.0014179]])],
 			traj_length = 100000
 	)
+	'''
+
+	'''# action cost 0.03 normal actions
+	agent.test(
+			theta = [np.array([[ 0.0012831],[ 1.2272073]]), np.array([[  1.1457246e+00],[  9.0374841e-04]])],
+			traj_length = 100000
+	)
+	'''
+
+	# action cost 0.08 normal actions
+	'''agent.test(
+			theta = [np.array([[  9.3849396e-04],[  1.3003893e+00]]), np.array([[ 0.2314742],[ 0.000232 ]])],
+			traj_length = 100000
+	)'''
+
+
 
 
 
