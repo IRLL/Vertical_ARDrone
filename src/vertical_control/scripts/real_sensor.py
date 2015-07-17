@@ -24,7 +24,8 @@ class Vision_sensor():
 		self.latest_image = None
 
 		self.image_lock = Lock()
-		self.last = 0
+		self.lastx = 0
+		self.lasty = 0
 
 		self.images = dict()
 		self.height, self.width = (-1, -1)
@@ -55,9 +56,9 @@ class Vision_sensor():
 
 	def sign(self, value):
 		if (value > 0.0):
-			return 2
+			return 1
 		if (value < 0.0):
-			return -2
+			return -1
 
 		return 0
 
@@ -106,10 +107,10 @@ class Vision_sensor():
 		self.height, self.width, _ = image.shape
 
 	def rescale(self, x, y):
-		width_div = float(self.width)/2
-		height_div = float(self.height)/2
-		newx = float(x - width_div)/width_div
-		newy = float(y - height_div)/height_div
+		width_div = float(self.width)/4.0
+		height_div = float(self.height)/3.0
+		newx = float(x - self.width/2)/width_div
+		newy = float(y - self.height/2)/height_div
 		return newx,newy
 
 	def process_image (self, image, lower_range, upper_range):
@@ -150,17 +151,18 @@ class Vision_sensor():
 				self.not_visible_pub.publish(1)
 
 				xpos, ypos = self.rescale(xpos, ypos)
-				self.last = self.sign(ypos)
+				self.lasty = 3 * self.sign(ypos)
+				self.lastx = 4 * self.sign(xpos)
 				#print "a", area
 				#print "d", distance
 			else:
-				xpos = 0
-				ypos = self.last
+				xpos = self.lastx
+				ypos = self.lasty
 				distance = self.hover_distance
 				self.not_visible_pub.publish(0)
 		else:
-			xpos = 0
-			ypos = self.last
+			xpos = self.lastx
+			ypos = self.lasty
 			distance = self.hover_distance
 			self.not_visible_pub.publish(0)
 
