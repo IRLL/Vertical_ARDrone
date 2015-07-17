@@ -64,7 +64,7 @@ class Agent():
 
 		self._traj_length = 100 # Number of time steps to simulate in the cart-pole system 100
 		self._rollouts = 50 # Number of trajectories for testing 50
-		self._num_iterations = 100 # Number of learning episodes/iterations	30
+		self._num_iterations = 50 # Number of learning episodes/iterations	30
 
 		time.sleep(.1)
 		#self._my0 = pi/6-2*pi/6*np.random.random((N,1)) # Initial state of the cart pole (between -60 and 50 deg)
@@ -83,8 +83,8 @@ class Agent():
 				th[:,0][j] = 0.0
 			self._theta.append(th)
 			self._sigma.append(np.random.random((1,1)))
-		#self._theta = [np.array([[ 0.1877877],[ 0.8377135]]), np.array([[ 1.7215034],[ 0.4890135]])]
-		#self._sigma = [np.array([[ 0.4352247]]), np.array([[ 0.8679435]])]
+		self._theta = [np.array([[ 0.0024157],[ 0.7418576]]), np.array([[ 0.8569861],[-0.003895 ]])]
+		self._sigma = [np.array([[ 0.6094814]]), np.array([[ 0.8811964]])]
 
 		# theta [array([[-0.0009055],
 	     #[ 0.2194222]]), array([[ 0.0800124],
@@ -371,6 +371,7 @@ class Agent():
 
 			print "Mean: ", np.mean(self._r)
 			plt.scatter(k, np.mean(self._r), marker=u'x', c=np.random.random((2,3)), cmap=cm.jet)
+			plt.grid()
 			plt.draw()
 			time.sleep(0.05)
 		# end for k...
@@ -384,7 +385,7 @@ class Agent():
 if __name__ == "__main__":
 	agent = Agent()
 	time.sleep(.5)
-	agent.train()
+	#agent.train()
 	# test learned policy
 
 
@@ -414,8 +415,10 @@ if __name__ == "__main__":
 			traj_length = 100000
 	)'''
 
-
-
-
+	# action cost 0.0998 with states NOT normalized
+	agent.test(
+			theta = [np.array([[ 0.0019655],[ 0.9171811]]), np.array([[ 1.041202 ],[-0.0031267]])],
+			traj_length = 100000
+	)
 
 	rospy.spin()

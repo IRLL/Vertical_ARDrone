@@ -106,8 +106,8 @@ class Sim_sensor():
 	def rescale(self, x, y):
 		width_div = float(self.width)/4.0
 		height_div = float(self.height)/3.0
-		newx = float(x - width/2)/width_div
-		newy = float(y - height/2)/height_div
+		newx = float(x - self.width/2)/width_div
+		newy = float(y - self.height/2)/height_div
 		return newx,newy
 
 	def process_image (self, image, lower_range, upper_range):
