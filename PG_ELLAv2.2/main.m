@@ -2,7 +2,7 @@
 close all
 clear all
 
-nSystems = 10; % Integer number of tasks
+nSystems = 5; % Integer number of tasks
 learningRate = .3; % Learning rate for stochastic gradient descent
 
 % Parameters for policy
@@ -32,7 +32,7 @@ trajLength = 10;
 numRollouts = 100;
 mu1 = exp(-5); % Sparsity coefficient
 mu2 = exp(-5); % Regularization coefficient
-k = 1; % Number of inner layers
+k = 2; % Number of inner layers
 
 [modelPGELLA] = initPGELLA(Tasks,1,mu1,mu2,learningRate);
 

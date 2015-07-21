@@ -4,9 +4,9 @@ nSystems = size(Params,2);
 
 for i = 1:nSystems
     clc;
-    R = rand;
-    G = rand;
-    B = rand;
+%     R = rand;
+%     G = rand;
+%     B = rand;
     policy = Policies(i).policy; % Resetting policy IMP  
     for k = 1:numIterations
         disp(['@ Iteration: ', num2str(k)]);    
