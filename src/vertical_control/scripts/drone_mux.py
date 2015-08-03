@@ -8,7 +8,7 @@ import std_srvs.srv as services
 import time
 
 class Controller():
-	UPDATE_SPEED = 40
+	UPDATE_SPEED = 15
 	def __init__(self):
 		self.agent_twist = Twist()
 		self.stabilizer_twist = Twist()

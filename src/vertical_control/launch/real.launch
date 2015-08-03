@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
   <node pkg="vertical_control" name="viewer" type="viewer.py" />
-  <node pkg="vertical_control" name="sensors" type="real_sensor" />
+  <node pkg="vertical_control" name="sensors" type="real_sensor.py" />
   <node pkg="vertical_control" name="drone_mux" type="drone_mux.py" />
   <node pkg="vertical_control" name="stabilizer" type="stabilizer.py" />
   <node pkg="vertical_control" name="human_controller" type="human_controller.py" />

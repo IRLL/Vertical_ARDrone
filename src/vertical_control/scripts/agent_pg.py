@@ -191,7 +191,9 @@ class Agent():
 				# Use action learned
 				action[j] = np.dot(th_p, xx).conj().T[0]
 
-				action[j] = round(action[j], 3)
+				action[j] = action[j] * 0.05
+
+				action[j] = round(action[j], 5)
 				if self.visible == 0:
 					action[j] = 0.0
 
@@ -256,7 +258,7 @@ class Agent():
 						sig = self._sigma[j]
 						action[j] = np.random.multivariate_normal(np.dot(th_p, xx).conj().T, sig)
 
-						action[j] = round(action[j], 3)
+						action[j] = round(action[j], 5)
 						#print "action ", j, ":", action[j]
 						if self.visible == 0:# or (sqrt(xx[0][0]**2) <= .5 and sqrt(xx[0][1]**2) <= .5):
 							action[j] = 0.0

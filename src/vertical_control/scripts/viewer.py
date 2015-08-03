@@ -15,7 +15,7 @@ from ardrone_autonomy.msg import Navdata
 
 class Viewer ():
 	#class constants
-	UPDATE_SPEED = 10 #process at 10 hz
+	UPDATE_SPEED = 15 #process at 10 hz
 	AREA_DIST_CONST = 1
 
 	def __init__(self):
@@ -47,11 +47,11 @@ class Viewer ():
 		cv2.line(image, (hloc, 0), (hloc, 479), 0)	#draw vertical line
 
 		#draw lines for the vertical thresholds
-		high_t = int(self.height/2 + self.threshold*self.height/2)
-		low_t = int (self.height/2-self.threshold*self.height/2)
-		cv2.line(image, (0, high_t), (639, high_t), (255,0,0))
-		cv2.line(image, (0, low_t), (639, low_t), (255,0,0))
-		
+		#high_t = int(self.height/2 + self.threshold*self.height/2)
+		#low_t = int (self.height/2-self.threshold*self.height/2)
+		#cv2.line(image, (0, high_t), (639, high_t), (255,0,0))
+		#cv2.line(image, (0, low_t), (639, low_t), (255,0,0))
+
 		#draw a center line
 		#cv2.line(image, (0, self.height/2), (639, self.height/2), (0,0,255))	
 		
