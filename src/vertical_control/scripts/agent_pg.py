@@ -202,7 +202,7 @@ class Agent():
 			print "Action: ", action
 
 			command = Twist()
-			command.linear.x = action[0]
+			command.linear.x = action[0] + 0.05
 			command.linear.y = action[1]
 			self.action_pub.publish(command)
 			rospy.sleep(.2)
