@@ -55,6 +55,7 @@ class Agent():
 		self.visible_sub = rospy.Subscriber('v_controller/visible', Bool, self.visible_callback)
 		self.threshold = rospy.get_param("v_controller/threshold")
 		self.visible = 0
+        self.disturbance = 0.005
 
 		# Parameter definition
 		self._n = 2 # Number of states
@@ -202,7 +203,7 @@ class Agent():
 			print "Action: ", action
 
 			command = Twist()
-			command.linear.x = action[0] + 0.05
+			command.linear.x = action[0] + self.disturbance
 			command.linear.y = action[1]
 			self.action_pub.publish(command)
 			rospy.sleep(.2)
@@ -272,7 +273,7 @@ class Agent():
 					#print "Action: ", action[0], " ", action[1]
 
 					command = Twist()
-					command.linear.x = action[0] + 0.05
+					command.linear.x = action[0] + self.disturbance
 					command.linear.y = action[1]
 					self.action_pub.publish(command)
 					rospy.sleep(.2)
