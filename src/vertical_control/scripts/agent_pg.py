@@ -55,7 +55,7 @@ class Agent():
 		self.visible_sub = rospy.Subscriber('v_controller/visible', Bool, self.visible_callback)
 		self.threshold = rospy.get_param("v_controller/threshold")
 		self.visible = 0
-        self.disturbance = [0.005, 0]
+		self.disturbance = [0.005, 0]
 
 		# Parameter definition
 		self._n = 2 # Number of states
