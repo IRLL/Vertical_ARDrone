@@ -2,11 +2,13 @@
 """
 Created on Mon Jul 20 14:32:05 2015
 
+@author: brownyoda
 @desc: Creating Systems and calculating learning rates
 """
 
 from createSys import createSys
 from constructPolicies import constructPolicies
+from calcThetaStar import calcThetaStar
 
 nSystems = 10 # Integer number of tasks
 learningRate = .3 # Learning rate for stochastic gradient descent
@@ -15,7 +17,7 @@ learningRate = .3 # Learning rate for stochastic gradient descent
 # Parameters for policy
 poliType = 'Gauss' # Policy Type (Only supports Gaussian Policies)
 				# 'Gauss' => Gaussian Policy
-baseLearner = 'NAC' # Base Learner
+baseLearner = 'REINFORCE' # Base Learner
 				# 'REINFORCE' => Episodic REINFORCE
 				# 'NAC' => Episodic Natural Actor Critic
 gamma = 0.9 # Discount factor gamma
@@ -26,16 +28,16 @@ Tasks = createSys(nSystems, poliType, baseLearner, gamma)
 
 
 # Constructing policies
-[Policies] = constructPolicies(Tasks)
+Policies = constructPolicies(Tasks)
 
-'''
+
 # Calculating theta
 trajLength = 10
 numRollouts = 100
-numIterations = 200
-[Policies] = calcThetaStar(Tasks, Policies, learningRate, trajLength, numRollouts, numIterations)
+numIterations = 100
+Policies = calcThetaStar(Tasks, Policies, learningRate, trajLength, numRollouts, numIterations)
 
-
+'''
 # Learning the PGELLA
 
 trajLength = 10

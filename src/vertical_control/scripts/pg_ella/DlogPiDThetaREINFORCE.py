@@ -7,15 +7,17 @@ Created on Tue Aug 11 12:35:20 2015
 
 import numpy as np
 
+
 def DlogPiDThetaREINFORCE(policy, x, u, param):
-    N = param.param.N
-    M = param.param.M
+	N = param.param.N
+	M = param.param.M
 
-    sigma = max(policy.sigma, 0.00001)
-    k = policy.theta
-    xx = x;
-    der = []
-    for i in range(M):
-        #TODO: der = [der;(u(i)-k(1+N*(i-1):N*(i-1)+N)'*xx)*xx/(sigma(i)^2)];
+	sigma = np.max(policy.sigma, 0.00001)
+	k = policy.theta
+	xx = x
 
-    return der, der2
+	der = np.empty(shape=(0, N))
+	for i in range(M):
+		der = np.concatenate((der, np.dot((u[i]-np.dot(k[N*(i):N*(i)+N].conj().T, xx)), xx.conj().T) / (sigma[i]**2)))
+
+	return der # TODO: der2 never used
