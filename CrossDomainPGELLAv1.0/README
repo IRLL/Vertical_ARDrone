@@ -1,0 +1,65 @@
+CROSS DOMAIN POLICY GRADIENT EFFICIENT LIFELONG LEARNING ALGORITHM (Cross-Domain-PG-ELLA)
+
+Version 1.0  (July 29, 2015)
+
+Copyright (c) 2015  José Marcio Luna, Haitham Bou Ammar & Eric Eaton
+
+
+The copyright extends to all implementation files for Cross-Domain PG-ELLA under this distribution.
+
+This program is free software; you can redistribute it and/or modify it under the terms 
+of the GNU General Public License Version 3 
+
+DESCRIPTION
+
+The code runs Cross-Domain-PG-ELLA over two domains conformed by the Simple Mass (SM) and Double-Mass (DM) systems. Each domain contains two randomly parameterized tasks for a total of four tasks to be observed. The SM and DM systems are illustrated below.
+
+Simple mass system (or spring-mass system)
+
+||		  |—————————|
+||      k	  |         |
+||——\/\/\/\——————-|         |
+||		  |    M    |
+||    ———	  |         |
+||————|  |———————-|         |
+||    ———	  |         |
+||      b	  |—————————|
+——————————————————————————————————————
+//////////////////////////////////////
+
+
+Double mass system (or double spring-mass system)
+
+||		  |—————————|		    |—————————|
+||      k1	  |         |	  k2	    |         |
+||——\/\/\/\——————-|         |——\/\/\/\——————|         |
+||		  |    M1   |		    |    M2   |
+||    ———	  |         |    ———	    |         |
+||————|  |———————-|         |————|  |———————|         |
+||    ———	  |         |    ———	    |         |
+||      b1	  |—————————|     b2        |—————————|
+—————————————————————————————————————————————————————————
+/////////////////////////////////////////////////////////
+
+
+BUILDING
+
+The Cross-Domain-PG-ELLA code is written in pure matlab and thus does not need to be built.
+However, Cross-Domain PG-ELLA does have a dependency on the Sparse Additive Modeling Toolbox of
+Julien Mairal et al. (http://spams-devel.gforge.inria.fr/).  In order to use
+Cross-Domain PG-ELLA one must first go to the subdirectory 'externalLibs/spams-matlab' and
+follow the instructions for building this toolbox.
+
+
+RUNNING THE CODE
+
+We have included one demo for utilizing the different aspects of the Cross-Domain PG-ELLA
+software.  The demo file is called ‘CrossDomainSavedData.m’. The calculation of theta* has been carried out previously. The file ‘Data.mat’ contains al the parameters used to calculate theta* and the relevant ones are shown in the command window during the execution.
+
+CITING OUR WORK
+
+If you use or adapt this code, please cite the following paper:
+
+Haitham Bou Ammar, Eric Eaton, Jose Marcio Luna & Paul Ruvolo. Autonomous Cross-Domain Knowledge Transfer in Lifelong Policy Gradient Reinforcement Learning. In Proceedings of the International Joint Conference on Artificial Intelligence. Buenos Aires, Argentina, July.
+
+Haitham Bou Ammar, Eric Eaton, Paul Ruvolo and Matthew Taylor. Online Multi-Task Learning for Policy Gradient Methods. In Proceedings of the International Conference on Machine Learning. Beijing. June.
