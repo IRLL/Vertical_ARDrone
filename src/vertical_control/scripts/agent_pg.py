@@ -55,7 +55,7 @@ class Agent():
 		self.visible_sub = rospy.Subscriber('v_controller/visible', Bool, self.visible_callback)
 		self.threshold = rospy.get_param("v_controller/threshold")
 		self.visible = 0
-		self.disturbance = [0.005, 0]
+		self.disturbance = [0.2, 0.5]
 
 		# Parameter definition
 		self._n = 2 # Number of states
@@ -65,7 +65,7 @@ class Agent():
 
 		self._traj_length = 100 # Number of time steps to simulate in the cart-pole system 100
 		self._rollouts = 50 # Number of trajectories for testing 50
-		self._num_iterations = 50 # Number of learning episodes/iterations	30
+		self._num_iterations = 130 # Number of learning episodes/iterations	30
 
 		time.sleep(.1)
 		#self._my0 = pi/6-2*pi/6*np.random.random((N,1)) # Initial state of the cart pole (between -60 and 50 deg)
@@ -84,8 +84,8 @@ class Agent():
 				th[:,0][j] = 0.0
 			self._theta.append(th)
 			self._sigma.append(np.random.random((1,1)))
-		self._theta = [np.array([[ 0.0024157],[ 0.7418576]]), np.array([[ 0.8569861],[-0.003895 ]])]
-		self._sigma = [np.array([[ 0.6094814]]), np.array([[ 0.8811964]])]
+		#self._theta = [np.array([[ 0.0024157],[ 0.7418576]]), np.array([[ 0.8569861],[-0.003895 ]])]
+		#self._sigma = [np.array([[ 0.6094814]]), np.array([[ 0.8811964]])]
 
 		# theta [array([[-0.0009055],
 	     #[ 0.2194222]]), array([[ 0.0800124],
@@ -177,7 +177,7 @@ class Agent():
 		#self.soft_reset_pub.publish(Empty()) #re-enable modules like stabilizer
 
 		# initial state
-		self._data[0].x[:,0] = np.array([[-self._state_x/2.0, -self._state_y/2.0]])
+		self._data[0].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0]])
 
 		# Perform a trial of length L
 		for steps in range(self._traj_length):
@@ -192,13 +192,14 @@ class Agent():
 				# Use action learned
 				action[j] = np.dot(th_p, xx).conj().T[0]
 
-				action[j] = action[j] * 0.05
+				action[j] = action[j]
 
-				action[j] = round(action[j], 5)
+				action[j] = round(action[j], 5)  + self.disturbance[j]
+
 				if self.visible == 0:
 					action[j] = 0.0
 
-				self._data[0].u[j][:,steps] = action[j] + self.disturbance[j]
+				self._data[0].u[j][:,steps] = action[j]
 
 			print "Action: ", action
 
@@ -209,15 +210,17 @@ class Agent():
 			rospy.sleep(.2)
 
 			# Get next state
-			state = np.array([[-self._state_x/2.0, -self._state_y/2.0]])
+			state = np.array([[-self._state_x/4.0, -self._state_y/3.0]])
 			self._data[0].x[:,steps+1] = state
 
 			# Calculating the reward (Remember: First term is the reward for accuracy, second is for control cost)
 			u = np.array([action])
 			u_p = u.conj().T
-			reward = -sqrt(state[0][0]**2 + state[0][1]**2) - sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.0998), u_p))
+			#reward = -sqrt(state[0][0]**2 + state[0][1]**2) - sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.0998), u_p))
+			reward = -sqrt(np.dot(np.dot(state, np.eye(self._n) * 10), state.conj().T)) - \
+			          sqrt(np.dot(np.dot(u, np.eye(self._m) * 5), u_p))
 
-			self._data[0].r[:,steps] = [reward]
+			self._data[0].r[:,steps] = [reward]maybe some
 
 			#print "State: ", state
 			#print "Action: %.2f Reward: %f" %(action, reward)
@@ -244,7 +247,7 @@ class Agent():
 				# Draw the initial state
 				#init_state = np.random.multivariate_normal(self._my0[:,0], self._s0, 1)
 				#self._data[trials].x[:,0] = init_state[0,:]
-				self._data[trials].x[:,0] = np.array([[-self._state_x/2.0, -self._state_y/2.0]])
+				self._data[trials].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0]])
 
 				# Perform a trial of length L
 				for steps in range(self._traj_length):
@@ -259,7 +262,7 @@ class Agent():
 						sig = self._sigma[j]
 						action[j] = np.random.multivariate_normal(np.dot(th_p, xx).conj().T, sig)
 
-						action[j] = round(action[j], 5)
+						action[j] = round(action[j], 5) + self.disturbance[j]
 						#print "action ", j, ":", action[j]
 						if self.visible == 0:# or (sqrt(xx[0][0]**2) <= .5 and sqrt(xx[0][1]**2) <= .5):
 							action[j] = 0.0
@@ -268,7 +271,7 @@ class Agent():
 						elif action[j] < -1.0:
 							action[j] = -1.0
 
-						self._data[trials].u[j][:,steps] = action[j] + self.disturbance[j]
+						self._data[trials].u[j][:,steps] = action[j]
 
 					#print "Action: ", action[0], " ", action[1]
 
@@ -281,7 +284,7 @@ class Agent():
 
 
 					# Get next state
-					state = np.array([[-self._state_x/2.0, -self._state_y/2.0]])
+					state = np.array([[-self._state_x/4.0, -self._state_y/3.0]])
 					self._data[trials].x[:,steps+1] = state
 
 					# Calculating the reward (Remember: First term is the reward for accuracy, second is for control cost)
@@ -290,7 +293,9 @@ class Agent():
 					u = np.array([action])
 					u_p = u.conj().T
 					#reward = -sqrt(state[0][0]**2 + state[0][1]**2) - sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.01), u_p))
-					reward = -sqrt(state[0][0]**2 + state[0][1]**2) - sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.0998), u_p))
+					#reward = -sqrt(state[0][0]**2 + state[0][1]**2) - sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.0998), u_p))
+					reward = -sqrt(np.dot(np.dot(state, np.eye(self._n) * 10), state.conj().T)) - \
+			                     sqrt(np.dot(np.dot(u, np.eye(self._m) * 5), u_p))
 					#print "Action: ", action
 					#print "Reward 1: ", -sqrt(state[0][0]**2 + state[0][1]**2)
 					#print "Reward 2: ", -sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.01), u_p))
@@ -388,7 +393,7 @@ class Agent():
 if __name__ == "__main__":
 	agent = Agent()
 	time.sleep(.5)
-	#agent.train()
+	agent.train()
 	# test learned policy
 
 
@@ -419,9 +424,39 @@ if __name__ == "__main__":
 	)'''
 
 	# action cost 0.0998 with states NOT normalized
-	agent.test(
+	'''agent.test(
 			theta = [np.array([[ 0.0019655],[ 0.9171811]]), np.array([[ 1.041202 ],[-0.0031267]])],
 			traj_length = 100000
-	)
+	)'''
+
+	# action cost 5, state cost 10 with states NOT normalized
+	'''agent.test(
+			theta = [np.array([[ -4.3366630e-04],[  7.9010378e-01]]), np.array([[ 0.3179737],[-0.000511 ]])],
+			traj_length = 100000
+	)'''
+
+	# action cost 10, state cost 5
+	'''agent.test(
+			theta = [np.array([[ 0.0001588],[ 0.0282988]]), np.array([[ 0.976089],[ 0.001861]])],
+			traj_length = 100000
+	)'''
+
+	# state cost 100, action cost 50, this oscillates
+	'''agent.test(
+			theta = [np.array([[ 0.0073254],[ 2.984608 ]]), np.array([[ 3.1756507],[ 0.005221 ]])],
+			traj_length = 100000
+	)'''
+
+	# state cost 10, action cost 5 # GOOD
+	'''agent.test(
+			theta = [np.array([[-0.0053609],[ 1.6501616]]), np.array([[ 1.6068529],[-0.0034744]])],
+			traj_length = 100000
+	)'''
+
+	# with disturbance [0.2, 0.0]
+	'''agent.test(
+			theta = [np.array([[ 0.0101827],[ 0.3086256]]), np.array([[ 2.048411 ],[ 0.0144213]])],
+			traj_length = 100000
+	)'''
 
 	rospy.spin()

@@ -14,10 +14,9 @@ def DlogPiDThetaREINFORCE(policy, x, u, param):
 
 	sigma = np.max(policy.sigma, 0.00001)
 	k = policy.theta
-	xx = x
 
 	der = np.empty(shape=(0, N))
 	for i in range(M):
-		der = np.concatenate((der, np.dot((u[i]-np.dot(k[N*(i):N*(i)+N].conj().T, xx)), xx.conj().T) / (sigma[i]**2)))
+		der = np.concatenate((der, np.dot((u[i]-np.dot(k[N*(i):N*(i)+N].conj().T, x)), x.conj().T) / (sigma[i]**2)))
 
 	return der # TODO: der2 never used

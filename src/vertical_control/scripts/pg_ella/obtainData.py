@@ -11,6 +11,7 @@ from drawAction import drawAction
 from rewardFnc import rewardFnc
 from drawNextState import drawNextState
 
+
 def obtainData(policy, L, H, param):
 	N = param.param.N
 	M = param.param.M
@@ -23,7 +24,7 @@ def obtainData(policy, L, H, param):
 		data[trials].policy = policy
 
 		# Draw the first state
-		data[trials].x[:,1] = drawStartState(param)
+		data[trials].x[:,0] = drawStartState(param)
 
 		# Perform a trial of length L
 		for steps in range(L):

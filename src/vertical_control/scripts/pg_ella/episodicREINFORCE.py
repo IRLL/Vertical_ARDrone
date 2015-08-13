@@ -23,11 +23,11 @@ def episodicREINFORCE(policy, data, param):
         sumR = 0
 
         for Steps in range(np.max(np.shape(data[Trials].u))):
-            dSumPi = dSumPi + DlogPiDThetaREINFORCE(policy, np.reshape(data[Trials].x[:,Steps], (N, 1)), [data[Trials].u[:,Steps]], param)
-            sumR = sumR + np.dot(gamma**Steps, data[Trials].r[0][Steps]) # TODO: double check power
+            dSumPi = dSumPi + DlogPiDThetaREINFORCE(policy, np.reshape(data[Trials].x[:,Steps], (N, 1)), np.reshape(data[Trials].u[:,Steps], (M,1)), param)
+            sumR = sumR + gamma**Steps * data[Trials].r[0][Steps] # TODO: double check power
 
-        dJdtheta = dJdtheta + np.dot(dSumPi, sumR)
+        dJdtheta = dJdtheta + dSumPi * sumR
 
-    dJdTheta = np.dot(1-gamma, dJdtheta) / np.max(np.shape(data))
+    dJdTheta = (1-gamma) * dJdtheta / np.max(np.shape(data))
 
     return dJdTheta

@@ -34,7 +34,7 @@ Policies = constructPolicies(Tasks)
 # Calculating theta
 trajLength = 10
 numRollouts = 100
-numIterations = 100
+numIterations = 200
 Policies = calcThetaStar(Tasks, Policies, learningRate, trajLength, numRollouts, numIterations)
 
 '''

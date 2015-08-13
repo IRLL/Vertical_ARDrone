@@ -10,7 +10,7 @@ import numpy as np
 from obtainData import obtainData
 from episodicREINFORCE import episodicREINFORCE
 from episodicNaturalActorCritic import episodicNaturalActorCritic
-import sys
+
 
 def calcThetaStar(Params, Policies, rates, trajlength, rollouts, numIterations):
 
@@ -20,6 +20,7 @@ def calcThetaStar(Params, Policies, rates, trajlength, rollouts, numIterations):
 		# TODO: Clear screen
 
 		policy = Policies[i].policy # Resetting policy IMP
+
 		for k in range(numIterations):
 			print "@ Iteration: ", k
 			data = obtainData(policy, trajlength, rollouts, Params[i])
@@ -30,7 +31,8 @@ def calcThetaStar(Params, Policies, rates, trajlength, rollouts, numIterations):
 				dJdtheta = episodicNaturalActorCritic(policy, data, Params[i]) # TODO: won't use but should finish
 
 			policy.theta = policy.theta + rates*dJdtheta.conj().T
+			print policy.theta
 
 		Policies[i].policy = policy # Calculating theta
-		print "Policy ", i, ": ", policy.theta
+
 	return Policies
