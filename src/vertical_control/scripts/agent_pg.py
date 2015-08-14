@@ -55,7 +55,7 @@ class Agent():
 		self.visible_sub = rospy.Subscriber('v_controller/visible', Bool, self.visible_callback)
 		self.threshold = rospy.get_param("v_controller/threshold")
 		self.visible = 0
-		self.disturbance = [0.2, 0.5]
+		self.disturbance = [0.02, 0.05]
 
 		# Parameter definition
 		self._n = 2 # Number of states
@@ -220,7 +220,7 @@ class Agent():
 			reward = -sqrt(np.dot(np.dot(state, np.eye(self._n) * 10), state.conj().T)) - \
 			          sqrt(np.dot(np.dot(u, np.eye(self._m) * 5), u_p))
 
-			self._data[0].r[:,steps] = [reward]maybe some
+			self._data[0].r[:,steps] = [reward] #maybe some
 
 			#print "State: ", state
 			#print "Action: %.2f Reward: %f" %(action, reward)
@@ -303,6 +303,7 @@ class Agent():
 
 					self._data[trials].r[:,steps] = [reward]
 
+#[0.2, 0.0]
 
 					#print "State: ", state
 					#print "Action: %.2f Reward: %f" %(action, reward)
@@ -396,6 +397,12 @@ if __name__ == "__main__":
 	agent.train()
 	# test learned policy
 
+	#Disturbance of [0.2, 0.5]
+	'''
+	agent.test( theta = [np.array([[0.0058927],[1.7222126]]),
+			     np.array([[-0.0193379],[1.8907322]])],
+		    traj_length = 100000)
+	'''
 
 	'''agent.test(
 			theta = [np.array([[ 0.4004521],[ 1.6403012]]),
