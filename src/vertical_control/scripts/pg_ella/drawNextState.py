@@ -12,9 +12,9 @@ def drawNextState(x, u, param, i):
 	# Based on Jan Peters' code.
 
 	A = np.array([ [0                              , 1],
-                    [-param.param.k/param.param.Mass, - param.param.d/param.param.Mass] ])
+                    [-param.param.k/param.param.Mass, -param.param.d/param.param.Mass] ])
 	b = np.array([ [0], [1.0/param.param.Mass] ])
 	xd = np.dot(A, x) + np.dot(b, u)
-	xn = x + np.dot(param.param.dt, xd)
+	xn = x + param.param.dt * xd
 
 	return xn

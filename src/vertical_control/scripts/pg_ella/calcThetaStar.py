@@ -10,7 +10,7 @@ import numpy as np
 from obtainData import obtainData
 from episodicREINFORCE import episodicREINFORCE
 from episodicNaturalActorCritic import episodicNaturalActorCritic
-
+import sys
 
 def calcThetaStar(Params, Policies, rates, trajlength, rollouts, numIterations):
 

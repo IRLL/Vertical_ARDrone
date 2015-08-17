@@ -10,12 +10,12 @@ import numpy as np
 class Data():
 	def __init__(self, n, m, traj_length):
 		self.policy = None
-		self.x = np.empty(shape=(n,traj_length+1))
-		self.u = np.empty(shape=(m,traj_length))
+		self.x = np.empty(shape=(n,traj_length+1)) * np.nan
+		self.u = np.empty(shape=(m,traj_length)) * np.nan
 		'''self.u = []
 		for i in range(m):
 			self.u.append(np.empty(shape=(1,traj_length)))'''
-		self.r = np.empty(shape=(1,traj_length))
+		self.r = np.empty(shape=(1,traj_length)) * np.nan
 
 class Param():
 

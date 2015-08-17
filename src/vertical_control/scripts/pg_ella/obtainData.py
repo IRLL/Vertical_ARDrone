@@ -10,7 +10,8 @@ from drawStartState import drawStartState
 from drawAction import drawAction
 from rewardFnc import rewardFnc
 from drawNextState import drawNextState
-
+import numpy as np
+import sys
 
 def obtainData(policy, L, H, param):
 	N = param.param.N

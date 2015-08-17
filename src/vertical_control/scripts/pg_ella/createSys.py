@@ -32,7 +32,7 @@ def createSys(nSystems, poliType, baseLearner, gamma):
 		param.M = 1 # Number of inputs
 
 		# Differential for integration of dynamical system
-		param.dt = .000001
+		param.dt = .000000001
 
 		# Calculation of random parameters
 		param.Mass = (tasks[0].MassMax - tasks[0].MassMin) * np.random.rand() + tasks[0].MassMin
@@ -40,7 +40,7 @@ def createSys(nSystems, poliType, baseLearner, gamma):
 		param.d = (tasks[0].Maxd - tasks[0].Mind) * np.random.rand() + tasks[0].Mind
 
 		# Initial and reference (final) states
-		param.mu0 = 2 * np.random.random((2, 1))
+		param.mu0 = 2 * np.random.rand(2, 1)
 		param.Xref = np.zeros((2, 1))
 
 		# Parameters for policy

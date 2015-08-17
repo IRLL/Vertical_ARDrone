@@ -10,7 +10,7 @@ from createSys import createSys
 from constructPolicies import constructPolicies
 from calcThetaStar import calcThetaStar
 
-nSystems = 10 # Integer number of tasks
+nSystems = 5 # Integer number of tasks
 learningRate = .3 # Learning rate for stochastic gradient descent
 
 
