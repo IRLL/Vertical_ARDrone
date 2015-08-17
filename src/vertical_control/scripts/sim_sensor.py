@@ -28,6 +28,7 @@ class Sim_sensor():
 
 		self.images = dict()
 		self.height, self.width = (-1, -1)
+		self.elevation = 0.0
 		self.hover_distance = rospy.get_param("v_controller/hover_distance")
 
 
@@ -49,6 +50,7 @@ class Sim_sensor():
 			self.image_lock.release()
 	def receive_height_callback(self, Range_data):
 		height = Range_data.range
+		self.elevation = height
 		self.controller_pub.publish(None, [height])
 
 	def sign(self, value):
@@ -80,7 +82,7 @@ class Sim_sensor():
 
 			x, y, distance = self.find_orange(image)
 
-			self.learner_pub.publish(None,[x,y])
+			self.learner_pub.publish(None,[x,y,elevation])
 			#self.controller_pub.publish(None, [distance])
 			#need to add publisher for other info
 			self.rate.sleep()

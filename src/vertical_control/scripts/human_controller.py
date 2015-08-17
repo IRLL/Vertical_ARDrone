@@ -15,7 +15,12 @@ class humancontroller():
 		self.human_pub = rospy.Publisher('v_controller/human_cmd', Twist)
 		self.enable_pub = rospy.Publisher('v_controller/move_enable', Bool)
 
-	def hysteresis(self, value, threshold = .1):
+	def hysteresis(self, value, threshold = .05):
+		if value < 0:
+			value = -1 * (value**2)
+		else:
+			value = value**2
+		
 		if (abs(value) > threshold):
 			return value
 		else: return 0
@@ -64,7 +69,7 @@ class humancontroller():
 				cmd.linear.y = self.hysteresis(-control_packet["roll"])
 				cmd.angular.z = self.hysteresis(-control_packet["yaw"])
 
-				cmd.linear.z = -control_packet["descend"] - -control_packet["ascend"] 
+				cmd.linear.z = 0.5 * (-control_packet["descend"] - -control_packet["ascend"]) 
 			except KeyError, e:
 				print "dropped control signal: ", e
 				cmd = Twist() #clear out message if bad control signal

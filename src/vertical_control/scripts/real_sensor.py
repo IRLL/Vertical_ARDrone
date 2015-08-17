@@ -29,6 +29,7 @@ class Vision_sensor():
 
 		self.images = dict()
 		self.height, self.width = (-1, -1)
+		self.elevation = 0.0
 		rospy.init_node('real_sensors', anonymous=False)
 		self.hover_distance = rospy.get_param("v_controller/hover_distance")
 
@@ -38,6 +39,7 @@ class Vision_sensor():
 
 		self.video_sub = rospy.Subscriber('/ardrone/image_raw', Image, self.receive_image_callback)
 		self.height_sub = rospy.Subscriber('/ardrone/navdata', Navdata, self.receive_height_callback)
+		self.height_sub = rospy.Subscriber('/ardrone/navdata_altitude', Navdata, self.receive_height_callback)
 		self.rate = rospy.Rate(self.UPDATE_SPEED)
 
 
@@ -50,8 +52,8 @@ class Vision_sensor():
 			self.image_lock.release()
 
 	def receive_height_callback(self, navdata):
-		height = float(navdata.altd)/1000
-		self.controller_pub.publish(None, [height])
+		self.elevation = float(navdata.altd)/1000
+		self.controller_pub.publish(None, [self.elevation])
 
 
 	def sign(self, value):
@@ -83,7 +85,7 @@ class Vision_sensor():
 
 			x, y, distance = self.find_target(image)
 
-			self.learner_pub.publish(None,[x,y])
+			self.learner_pub.publish(None,[x,y,self.elevation])
 			#self.controller_pub.publish(None, [distance])
 			#need to add publisher for other info
 			self.rate.sleep()
