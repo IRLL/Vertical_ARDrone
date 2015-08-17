@@ -55,11 +55,11 @@ class Agent():
 		self.visible_sub = rospy.Subscriber('v_controller/visible', Bool, self.visible_callback)
 		self.threshold = rospy.get_param("v_controller/threshold")
 		self.visible = 0
-		self.disturbance = [0.02, 0.05]
+		self.disturbance = [0.02, 0.05, 0]
 
 		# Parameter definition
-		self._n = 2 # Number of states
-		self._m = 2 # Number of inputs
+		self._n = 3 # Number of states
+		self._m = 3 # Number of inputs
 
 		self._rate = .01 # Learning rate for gradient descent Original+0.75
 
@@ -136,6 +136,7 @@ class Agent():
 	def getState(self, data):
 		self._state_x = data.data[0]
 		self._state_y = data.data[1]
+		self._state_z = data.data[2] - 1.5 #dc bias so that it floats at 1.5 meters
 
 	def visible_callback(self, visible):
 		self.visible = visible.data
@@ -177,7 +178,7 @@ class Agent():
 		#self.soft_reset_pub.publish(Empty()) #re-enable modules like stabilizer
 
 		# initial state
-		self._data[0].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0]])
+		self._data[0].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0], self._state_z])
 
 		# Perform a trial of length L
 		for steps in range(self._traj_length):
@@ -206,11 +207,12 @@ class Agent():
 			command = Twist()
 			command.linear.x = action[0]
 			command.linear.y = action[1]
+			command.linear.z = action[2]
 			self.action_pub.publish(command)
 			rospy.sleep(.2)
 
 			# Get next state
-			state = np.array([[-self._state_x/4.0, -self._state_y/3.0]])
+			state = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z]])
 			self._data[0].x[:,steps+1] = state
 
 			# Calculating the reward (Remember: First term is the reward for accuracy, second is for control cost)
@@ -247,7 +249,7 @@ class Agent():
 				# Draw the initial state
 				#init_state = np.random.multivariate_normal(self._my0[:,0], self._s0, 1)
 				#self._data[trials].x[:,0] = init_state[0,:]
-				self._data[trials].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0]])
+				self._data[trials].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z]])
 
 				# Perform a trial of length L
 				for steps in range(self._traj_length):
@@ -278,13 +280,14 @@ class Agent():
 					command = Twist()
 					command.linear.x = action[0]
 					command.linear.y = action[1]
+					command.linear.z = action[2]
 					self.action_pub.publish(command)
 					rospy.sleep(.2)
 
 
 
 					# Get next state
-					state = np.array([[-self._state_x/4.0, -self._state_y/3.0]])
+					state = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z]])
 					self._data[trials].x[:,steps+1] = state
 
 					# Calculating the reward (Remember: First term is the reward for accuracy, second is for control cost)
