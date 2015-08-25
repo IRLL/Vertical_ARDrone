@@ -50,7 +50,8 @@ class Controller():
 		elif self.enabled:
 			print "and here"
 			cmd = self.agent_twist
-			cmd.linear.z = self.stabilizer_twist.linear.z
+			#disable the stabilizer
+			#cmd.linear.z = self.stabilizer_twist.linear.z
 		self.drone_pub.publish(cmd)
 
 	def move_en_callback(self, data):
