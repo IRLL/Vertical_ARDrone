@@ -14,25 +14,24 @@ import sys
 
 def calcThetaStar(Params, Policies, rates, trajlength, rollouts, numIterations):
 
-	nSystems = np.shape(Params)[0]
+    nSystems = np.shape(Params)[0]
 
-	for i in range(nSystems):
-		# TODO: Clear screen
+    for i in range(nSystems):
+        # TODO: Clear screen
 
-		policy = Policies[i].policy # Resetting policy IMP
+        policy = Policies[i].policy # Resetting policy IMP
 
-		for k in range(numIterations):
-			print "@ Iteration: ", k
-			data = obtainData(policy, trajlength, rollouts, Params[i])
-			dJdtheta = None
-			if Params[i].param.baseLearner == "REINFORCE":
-				dJdtheta = episodicREINFORCE(policy, data, Params[i])
-			else:
-				dJdtheta = episodicNaturalActorCritic(policy, data, Params[i]) # TODO: won't use but should finish
+        for k in range(numIterations):
+            print "@ Iteration: ", k
+            data = obtainData(policy, trajlength, rollouts, Params[i])
+            dJdtheta = None
+            if Params[i].param.baseLearner == "REINFORCE":
+                dJdtheta = episodicREINFORCE(policy, data, Params[i])
+            else:
+                dJdtheta = episodicNaturalActorCritic(policy, data, Params[i]) # TODO: won't use but should finish
 
-			policy.theta = policy.theta + rates*dJdtheta.conj().T
-			print policy.theta
+            policy.theta = policy.theta + rates*dJdtheta.conj().T
 
-		Policies[i].policy = policy # Calculating theta
+        Policies[i].policy = policy # Calculating theta
 
-	return Policies
+    return Policies
