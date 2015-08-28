@@ -82,7 +82,7 @@ class Sim_sensor():
 
 			x, y, distance = self.find_orange(image)
 
-			self.learner_pub.publish(None,[x,y,elevation])
+			self.learner_pub.publish(None,[x,y,self.elevation])
 			#self.controller_pub.publish(None, [distance])
 			#need to add publisher for other info
 			self.rate.sleep()

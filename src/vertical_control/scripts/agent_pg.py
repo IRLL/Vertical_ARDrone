@@ -55,11 +55,15 @@ class Agent():
 		self.visible_sub = rospy.Subscriber('v_controller/visible', Bool, self.visible_callback)
 		self.threshold = rospy.get_param("v_controller/threshold")
 		self.visible = 0
-		self.disturbance = [0.02, 0.05]
+		self.disturbance = [0.02, 0.05, 0]
+
+		self._state_x = 0.0
+		self._state_y = 0.0
+		self._state_z = 0.0
 
 		# Parameter definition
-		self._n = 2 # Number of states
-		self._m = 2 # Number of inputs
+		self._n = 3 # Number of states
+		self._m = 3 # Number of inputs
 
 		self._rate = .01 # Learning rate for gradient descent Original+0.75
 
@@ -87,6 +91,13 @@ class Agent():
 		#self._theta = [np.array([[ 0.0024157],[ 0.7418576]]), np.array([[ 0.8569861],[-0.003895 ]])]
 		#self._sigma = [np.array([[ 0.6094814]]), np.array([[ 0.8811964]])]
 
+		'''
+		self._theta = [np.array([[ 0.0164401], [ 0.1132551], [-0.0096009]]),
+			np.array([[ 0.1602953], [ 0.0176124], [-0.0151627]]),
+			np.array([[-1.2416426], [ 0.0120084], [-0.0366072]])]	
+		'''
+		#Sigma:  [array([[ 0.2944765]]), array([[ 0.0391102]]), array([[ 0.3594744]])]	
+
 		# theta [array([[-0.0009055],
 	     #[ 0.2194222]]), array([[ 0.0800124],
 		#[-0.0012494]])]
@@ -105,13 +116,13 @@ class Agent():
 		self._reward_per_rates_per_iteration = np.empty(shape=(1,200))
 
 
-	def reset_sim(self, x, y, angle):
+	def reset_sim(self, x, y, z=0, angle=0):
 		self.enable_controller.publish(Bool(0))
 		self.takeoff_pub.publish(Empty())
 		rospy.sleep(.1)
 		a = SetModelStateRequest()
 		a.model_state.model_name = 'quadrotor'
-		a.model_state.pose.position.z = 2
+		a.model_state.pose.position.z = 2 + z
 		a.model_state.pose.position.x = 3 + x
 		a.model_state.pose.position.y = 0 + y
 		self.reset_pos(a)
@@ -136,6 +147,7 @@ class Agent():
 	def getState(self, data):
 		self._state_x = data.data[0]
 		self._state_y = data.data[1]
+		self._state_z = data.data[2]/1000 - 1.5 #dc bias so that it floats at 1.5 meters
 
 	def visible_callback(self, visible):
 		self.visible = visible.data
@@ -177,7 +189,7 @@ class Agent():
 		#self.soft_reset_pub.publish(Empty()) #re-enable modules like stabilizer
 
 		# initial state
-		self._data[0].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0]])
+		self._data[0].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/3.0]])
 
 		# Perform a trial of length L
 		for steps in range(self._traj_length):
@@ -206,11 +218,12 @@ class Agent():
 			command = Twist()
 			command.linear.x = action[0]
 			command.linear.y = action[1]
+			command.linear.z = action[2]
 			self.action_pub.publish(command)
 			rospy.sleep(.2)
 
 			# Get next state
-			state = np.array([[-self._state_x/4.0, -self._state_y/3.0]])
+			state = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/3.0]])
 			self._data[0].x[:,steps+1] = state
 
 			# Calculating the reward (Remember: First term is the reward for accuracy, second is for control cost)
@@ -247,7 +260,7 @@ class Agent():
 				# Draw the initial state
 				#init_state = np.random.multivariate_normal(self._my0[:,0], self._s0, 1)
 				#self._data[trials].x[:,0] = init_state[0,:]
-				self._data[trials].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0]])
+				self._data[trials].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/3.0]])
 
 				# Perform a trial of length L
 				for steps in range(self._traj_length):
@@ -274,17 +287,22 @@ class Agent():
 						self._data[trials].u[j][:,steps] = action[j]
 
 					#print "Action: ", action[0], " ", action[1]
+					
+					#tell drone to descend if it is too high	
+					if self._state_z > 2.8:
+						action[2] = -0.1
 
 					command = Twist()
 					command.linear.x = action[0]
 					command.linear.y = action[1]
+					command.linear.z = action[2]
 					self.action_pub.publish(command)
 					rospy.sleep(.2)
 
 
 
 					# Get next state
-					state = np.array([[-self._state_x/4.0, -self._state_y/3.0]])
+					state = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/3.0]])
 					self._data[trials].x[:,steps+1] = state
 
 					# Calculating the reward (Remember: First term is the reward for accuracy, second is for control cost)

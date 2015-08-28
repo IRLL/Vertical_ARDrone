@@ -2,8 +2,8 @@
 <launch>
   <node pkg="vertical_control" name="viewer" type="viewer.py" />
   <node pkg="vertical_control" name="sensors" type="sim_sensor.py" />
-  <node pkg="vertical_control" name="drone_controller" type="drone_mux.py" />
-  <node pkg="vertical_control" name="stabilizer" type="stabilizer.py" />
+  <node pkg="vertical_control" name="drone_mux" type="drone_mux.py" />
+  <node pkg="vertical_control" name="human_controller" type="human_controller.py" />
   <node pkg="vertical_control" name="main" type="main.py" />
 
   <param name="/v_controller/gains/horizontal/p" type="double" value="1"/>
