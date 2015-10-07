@@ -94,9 +94,9 @@ class Agent():
 		'''
 		self._theta = [np.array([[ 0.0164401], [ 0.1132551], [-0.0096009]]),
 			np.array([[ 0.1602953], [ 0.0176124], [-0.0151627]]),
-			np.array([[-1.2416426], [ 0.0120084], [-0.0366072]])]	
+			np.array([[-1.2416426], [ 0.0120084], [-0.0366072]])]
 		'''
-		#Sigma:  [array([[ 0.2944765]]), array([[ 0.0391102]]), array([[ 0.3594744]])]	
+		#Sigma:  [array([[ 0.2944765]]), array([[ 0.0391102]]), array([[ 0.3594744]])]
 
 		# theta [array([[-0.0009055],
 	     #[ 0.2194222]]), array([[ 0.0800124],
@@ -287,8 +287,8 @@ class Agent():
 						self._data[trials].u[j][:,steps] = action[j]
 
 					#print "Action: ", action[0], " ", action[1]
-					
-					#tell drone to descend if it is too high	
+
+					#tell drone to descend if it is too high
 					if self._state_z > 2.8:
 						action[2] = -0.1
 
@@ -308,18 +308,18 @@ class Agent():
 					# Calculating the reward (Remember: First term is the reward for accuracy, second is for control cost)
 					#u = self._data[trials].u[:,steps]
 					#u_p = self._data[trials].u[:,steps].conj().T
-					u = np.array([action])
-					u_p = u.conj().T
-					#reward = -sqrt(state[0][0]**2 + state[0][1]**2) - sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.01), u_p))
-					#reward = -sqrt(state[0][0]**2 + state[0][1]**2) - sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.0998), u_p))
-					reward = -sqrt(np.dot(np.dot(state, np.eye(self._n) * 10), state.conj().T)) - \
-			                     sqrt(np.dot(np.dot(u, np.eye(self._m) * 5), u_p))
-					#print "Action: ", action
-					#print "Reward 1: ", -sqrt(state[0][0]**2 + state[0][1]**2)
-					#print "Reward 2: ", -sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.01), u_p))
-					#print "The Reward: ", reward
+  					u = np.array([action])
+  					u_p = u.conj().T
+  					#reward = -sqrt(state[0][0]**2 + state[0][1]**2) - sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.01), u_p))
+  					#reward = -sqrt(state[0][0]**2 + state[0][1]**2) - sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.0998), u_p))
+  					reward = -sqrt(np.dot(np.dot(state, np.eye(self._n) * 10), state.conj().T)) - \
+  			                     sqrt(np.dot(np.dot(u, np.eye(self._m) * 5), u_p))
+  					#print "Action: ", action
+  					#print "Reward 1: ", -sqrt(state[0][0]**2 + state[0][1]**2)
+  					#print "Reward 2: ", -sqrt(np.dot(np.dot(u, np.eye(self._m) * 0.01), u_p))
+  					#print "The Reward: ", reward
 
-					self._data[trials].r[:,steps] = [reward]
+  					self._data[trials].r[:,steps] = [reward]
 
 #[0.2, 0.0]
 

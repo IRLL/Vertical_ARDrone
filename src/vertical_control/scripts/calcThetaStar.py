@@ -45,6 +45,7 @@ def calcThetaStar(Params, Policies, rates, trajlength, rollouts, numIterations):
 
             policy.theta = policy.theta + rates*dJdtheta.reshape(9, 1)
 
+
             for z in range(rollouts):
                 r[0, z] = np.sum(data[z].r)
 
@@ -55,7 +56,7 @@ def calcThetaStar(Params, Policies, rates, trajlength, rollouts, numIterations):
                 sys.exit(1)
 
             print "Mean: ", np.mean(r)
-            time.sleep(3)
+            time.sleep(1)
             ax.scatter(k, np.mean(r), marker=u'x', c=np.random.random((2,3)), cmap=cm.jet)
             ax.figure.canvas.draw()
             fig.canvas.draw()

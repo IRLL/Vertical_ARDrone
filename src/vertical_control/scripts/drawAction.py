@@ -10,19 +10,12 @@ import numpy as np
 def drawAction(policy, x, param):
 
     _theta = policy.theta.reshape(param.param.N, param.param.M)
-    _x = x.reshape(3, 1)
+    _x = x.reshape(param.param.M, 1)
 
-    print "Reshape Theta: ", _theta
-    print "X: ", _x
-    print "Sigma: ", np.diag(policy.sigma[0])
-    #print x
-    #print policy.sigma
-    # Based on Jan Peters' code.
-    #u = np.random.multivariate_normal(np.dot(policy.theta.reshape(param.param.N, param.param.M).conj().T, x).conj().T, policy.sigma)
+    _u = np.zeros((1, param.param.M))
+    for i in range(param.param.M):
+        mean = np.dot(_theta[i], _x)
+        cov = np.array([[policy.sigma[0, i]]])
+        _u[0, i] = np.random.multivariate_normal(mean, cov)
 
-    print "Dot product: ", np.dot(_theta, _x).conj().T[0]
-    print
-    u = np.random.multivariate_normal(np.dot(_theta, _x).conj().T[0], np.diag(policy.sigma[0]))
-
-    print "ACTION u: ", u
-    return u
+    return _u[0]

@@ -26,6 +26,7 @@ def constructPolicies(Tasks):
         if poliType == 'Gauss':
             #policy.theta = np.random.rand(N * M,1)
             policy.theta = np.zeros((N * M, 1))
+            #policy.theta = np.array([[1,2,3,4,5,6,7,8,9]])
             policy.sigma = np.random.rand(1, M)
         else:
             sys.stderr.write("Undefined Policy Type")

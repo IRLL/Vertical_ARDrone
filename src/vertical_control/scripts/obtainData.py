@@ -7,6 +7,7 @@ Created on Tue Aug 11 12:54:40 2015
 
 import rospy
 import sys
+import time
 import numpy as np
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float32MultiArray
@@ -45,6 +46,7 @@ def getState(data):
     _state_x = data.data[0]
     _state_y = data.data[1]
     _state_z = data.data[2] - 1.5 #dc bias so that it floats at 1.5 meters
+    #print "x:%s y:%s z:%s" %(_state_x, _state_y, _state_z)
 
 def visible_callback(visible):
     global _visible
@@ -53,7 +55,7 @@ def visible_callback(visible):
 def reset_sim(x, y, z=0, angle=0):
     _enable_controller.publish(Bool(0))
     _takeoff_pub.publish(Empty())
-    rospy.sleep(.1)
+    rospy.sleep(.5)
     a = SetModelStateRequest()
     a.model_state.model_name = 'quadrotor'
     a.model_state.pose.position.z = 2 + z
@@ -74,7 +76,7 @@ def startEpisode():
     x = random.uniform(-.8, .8)
     y = random.uniform(-.23, .23)
     reset_sim(x,y,0)
-    rospy.sleep(.5)
+    rospy.sleep(1)
 
 def obtainData(policy, L, H, param):
     global _reset_pos, _enable_controller, \
@@ -98,6 +100,9 @@ def obtainData(policy, L, H, param):
     M = param.param.M
     data = [Data(N, M, L) for i in range(H)]
 
+    time.sleep(.5)
+
+
     # Based on Jan Peters; codes.
     # Perform H
 
@@ -108,7 +113,7 @@ def obtainData(policy, L, H, param):
         data[trials].policy = policy
 
         # Draw the first state
-        data[trials].x[:,0] = np.array([[-_state_x/4.0, -_state_y/3.0, _state_z/3.0]])
+        data[trials].x[:,0] = np.array([[-_state_x/4.0, -_state_y/3.0, _state_z/1.5]])
 
         # Perform a trial of length L
         for steps in range(L):
@@ -116,19 +121,26 @@ def obtainData(policy, L, H, param):
                 sys.exit()
             # Draw an action from the policy
             xx = data[trials].x[:,steps]
+            print "current state: ", xx
             data[trials].u[:,steps] = drawAction(policy, xx, param)
+            print "action: ", data[trials].u[:,steps]
 
 
-            for j in range(M):
-                data[trials].u[:,steps][j] = round(data[trials].u[:,steps][j], 5) + param.param.disturbance[j]
-                print "action ", j, ":", data[trials].u[:,steps][j]
+            if _visible == 0:
+                data[trials].u[:,steps] *= 0.0
+            else:
+                for j in range(M):
+                    data[trials].u[:,steps][j] = round(data[trials].u[:,steps][j], 5) + param.param.disturbance[j]
 
-                if _visible == 0:# or (sqrt(xx[0][0]**2) <= .5 and sqrt(xx[0][1]**2) <= .5):
-                    data[trials].u[:,steps][j] = 0.0
-                elif data[trials].u[:,steps][j] > 1.0: # saturate
-                    data[trials].u[:,steps][j] = 1.0
-                elif data[trials].u[:,steps][j] < -1.0:
-                    data[trials].u[:,steps][j] = -1.0
+                    if data[trials].u[:,steps][j] > 1.0: # saturate
+                        data[trials].u[:,steps][j] = 1.0
+                    elif data[trials].u[:,steps][j] < -1.0:
+                        data[trials].u[:,steps][j] = -1.0
+
+            if xx[2] >= .9:
+                data[trials].u[:,steps][2] = -0.1
+            elif xx[2] <= -.7:
+                data[trials].u[:,steps][2] = 0.1
 
 
             command = Twist()
@@ -142,7 +154,7 @@ def obtainData(policy, L, H, param):
 
             # Draw next state from environment
             #data[trials].x[:,steps+1] = drawNextState(data[trials].x[:,steps], data[trials].u[:,steps], param, i)
-            state = np.array([[-_state_x/4.0, -_state_y/3.0, _state_z/3.0]])
+            state = np.array([[-_state_x/4.0, -_state_y/3.0, _state_z/1.5]])
             #state = np.array([[-_state_x/4.0, -_state_y/3.0]])
             data[trials].x[:,steps+1] = state
 
@@ -151,9 +163,12 @@ def obtainData(policy, L, H, param):
 
             u = data[trials].u[:,steps]
             u_p = u.conj().T
-
-            reward = -sqrt(np.dot(np.dot(state, np.eye(N) * 10), state.conj().T)) - \
-                      sqrt(np.dot(np.dot(u, np.eye(M) * 5), u_p))
+            imp_eye_state = np.zeros((3,3))
+            imp_eye_act = np.zeros((3,3))
+            np.fill_diagonal(imp_eye_state, [10, 10, 5])
+            np.fill_diagonal(imp_eye_act, [5, 5, 2.5])
+            reward = -sqrt(np.dot(np.dot(state, imp_eye_state), state.conj().T)) - \
+                      sqrt(np.dot(np.dot(u, imp_eye_act), u_p))
             print "reward: ", reward
 
             if isinf(reward):
