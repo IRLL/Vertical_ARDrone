@@ -20,7 +20,7 @@ def calcThetaStar(Params, Policies, rates, trajlength, rollouts, numIterations):
     plt.ion()
 
     nSystems = np.shape(Params)[0]
-    r = np.empty(shape=(1, trajlength))
+    r = np.empty(shape=(1, rollouts))
 
     for i in range(nSystems):
         # TODO: Clear screen
@@ -44,7 +44,6 @@ def calcThetaStar(Params, Policies, rates, trajlength, rollouts, numIterations):
                 dJdtheta = episodicNaturalActorCritic(policy, data, Params[i]) # TODO: won't use but should finish
 
             policy.theta = policy.theta + rates*dJdtheta.reshape(9, 1)
-
 
             for z in range(rollouts):
                 r[0, z] = np.sum(data[z].r)

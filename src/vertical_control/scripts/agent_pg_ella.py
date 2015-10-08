@@ -38,7 +38,7 @@ Policies = constructPolicies(Tasks)
 # Calculating theta
 trajLength = 100 # Number of time steps to simulate in the cart-pole system
 numRollouts = 5 # Number of trajectories for testing
-numIterations = 130 # Number of learning episodes/iterations # 200
+numIterations = 500 # Number of learning episodes/iterations # 200
 Policies = calcThetaStar(Tasks, Policies, learningRate,
                          trajLength, numRollouts, numIterations)
 
@@ -78,7 +78,7 @@ modelPGELLA = learnPGELLA(Tasks, Policies, learningRate,
 print "Test Phase"
 trajLength = 100
 numRollouts = 5 # 100
-numIterations = 130 # 200
+numIterations = 500 # 200
 
 # Creating new PG policies
 PGPol = constructPolicies(Tasks)
