@@ -110,10 +110,10 @@ class Agent():
 		self._mat = []
 		self._vec = []
 		for i in range(self._m):
-			self._mat.append(np.empty(shape=(100,self._n+1)))
-			self._vec.append(np.empty(shape=(100,1)))
-		self._r = np.empty(shape=(1,100))
-		self._reward_per_rates_per_iteration = np.empty(shape=(1,200))
+			self._mat.append(np.empty(shape=(self._traj_length,self._n+1)))
+			self._vec.append(np.empty(shape=(self._traj_length,1)))
+		self._r = np.empty(shape=(1,self._rollouts))
+		self._reward_per_rates_per_iteration = np.empty(shape=(1,self._num_iterations))
 
 
 	def reset_sim(self, x, y, z=0, angle=0):
@@ -336,51 +336,53 @@ class Agent():
 
 			# This section calculates the derivative of the lower bound of the expected average return
 			# using Natural Actor Critic
-			j = 0
+			J = 0
 
 			if self._gamma == 1:
 				for Trials in range(np.max(np.shape(self._data))):
-				    j = j + np.sum(self._data[Trials].r)/np.max(np.shape(self._data[Trials].r))
+				    J = J + np.sum(self._data[Trials].r)/np.max(np.shape(self._data[Trials].r))
 				#end for Trials...
-				j = j / np.max(np.shape(self._data))
+				J = J / np.max(np.shape(self._data))
 			# end if gamma...
 
 			# OBTAIN GRADIENTS
-			for j in range(self._m):
+			for l in range(self._m):
 				i = 0
 				for Trials in range(np.max(np.shape(self._data))):
-					self._mat[j][i,:] = np.append(np.zeros((1,self._n)),np.array([[1]]),axis=1)
-					self._vec[j][i,0] = 0
-					for Steps in range(np.max(np.shape(self._data[Trials].u[j]))):
+					self._mat[l][i,:] = np.append(np.zeros((1,self._n)),np.array([[1]]),axis=1)
+					self._vec[l][i,0] = 0
+					for Steps in range(np.max(np.shape(self._data[Trials].u[l]))):
 						xx = self._data[Trials].x[:,Steps]
-						u  = self._data[Trials].u[j][:,Steps]
-						th_p = self._theta[j].conj().T
-						sig = self._sigma[j]
+						u  = self._data[Trials].u[l][:,Steps]
+						th_p = self._theta[l].conj().T
+						sig = self._sigma[l]
 						DlogPiDThetaNAC = np.dot((u-np.dot(th_p,xx)),np.array([xx]))/(sig**2) # TODO:check
 						decayGamma = self._gamma**Steps
-						self._mat[j][i,:] = self._mat[j][i,:] + decayGamma*np.append(DlogPiDThetaNAC, np.array([[0]]), axis=1) # TODO:check
-						self._vec[j][i,0] = self._vec[j][i,0] + decayGamma*(self._data[Trials].r[:,Steps][0]-j) # TODO:check
+						self._mat[l][i,:] = self._mat[l][i,:] + decayGamma*np.append(DlogPiDThetaNAC, np.array([[0]]), axis=1) # TODO:check
+						self._vec[l][i,0] = self._vec[l][i,0] + decayGamma*(self._data[Trials].r[:,Steps][0]-J) # TODO:check
 					# end for Steps
 					i = i+1
 				#end for Trials
 
 				# cond(Mat)
-				mat = self._mat[j]
-				mat_p = self._mat[j].conj().T
-				vec = self._vec[j]
-				nrm = np.diag(np.append(np.std(self._mat[j][:,0:self._n],ddof=1,axis=0),[1],axis=0))
+				mat = self._mat[l]
+				mat_p = self._mat[l].conj().T
+				vec = self._vec[l]
+				nrm = np.diag(np.append(1 / np.std(self._mat[l][:,0:self._n],ddof=1,axis=0),[1],axis=0))
 				w = np.dot(nrm,np.dot(np.linalg.inv(np.dot(nrm,np.dot(mat_p,np.dot(mat,nrm)))),np.dot(nrm,np.dot(mat_p,vec)))) #TODO:check
 				dJdtheta = w[0:(np.max(np.shape(w))-1)]; #TODO:check
 				# the expected average return
 
 				# Update of the parameter vector theta using gradient descent
-				self._theta[j] = self._theta[j] + self._rate*dJdtheta;
+				self._theta[l] = self._theta[l] + self._rate*dJdtheta;
 			print "Theta: ", self._theta
+
 
 			# Calculation of the average reward
 			for z in range(np.shape(self._data)[0]): #TODO:check
 				self._r[0,z] = np.sum(self._data[z].r) #TODO:check
 			# end for z...
+
 
 			if np.isnan(self._r.any()): #TODO:check
 				print "System has NAN:", i
