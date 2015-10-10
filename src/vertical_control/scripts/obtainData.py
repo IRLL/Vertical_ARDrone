@@ -27,6 +27,7 @@ from math import sqrt, isinf
 
 import random
 
+
 _reset_pos = None
 _enable_controller = None
 _soft_reset_pub = None
@@ -40,6 +41,7 @@ _state_x = 0.0
 _state_y = 0.0
 _state_z = 0.0
 _visible = 0
+
 
 def getState(data):
     global _state_x, _state_y, _state_z
@@ -78,6 +80,30 @@ def startEpisode():
     reset_sim(x,y,0)
     rospy.sleep(1)
 
+'''
+class obtainData:
+
+    def __init__(self, policy, L, H, param):
+        rospy.init_node('agent', anonymous=False)
+        print "waiting for service"
+        rospy.wait_for_service('/v_control/reset_world')
+        print "done"
+        self._reset_pos = rospy.ServiceProxy('/gazebo/set_model_state', SetModelState)
+        self._enable_controller = rospy.Publisher('v_controller/move_enable', Bool)
+        self._soft_reset_pub = rospy.Publisher('v_controller/soft_reset', Empty)
+        self._takeoff_pub = rospy.Publisher('/ardrone/takeoff', Empty)
+        self._action_pub = rospy.Publisher('v_controller/agent_cmd', Twist)
+        self._state_sub = rospy.Subscriber('v_controller/state', Float32MultiArray, getState)
+        self._visible_sub = rospy.Subscriber('v_controller/visible', Bool, visible_callback)
+        self._threshold = rospy.get_param("v_controller/threshold")
+
+        self.N = param.param.N
+        self.M = param.param.M
+        self.data = [Data(N, M, L) for i in range(H)]
+
+        time.sleep(.5)
+'''
+
 def obtainData(policy, L, H, param):
     global _reset_pos, _enable_controller, \
            _soft_reset_pub, _takeoff_pub, \
@@ -96,11 +122,13 @@ def obtainData(policy, L, H, param):
     _visible_sub = rospy.Subscriber('v_controller/visible', Bool, visible_callback)
     _threshold = rospy.get_param("v_controller/threshold")
 
+
     N = param.param.N
     M = param.param.M
     data = [Data(N, M, L) for i in range(H)]
 
     time.sleep(.5)
+
 
 
     # Based on Jan Peters; codes.
@@ -113,7 +141,7 @@ def obtainData(policy, L, H, param):
         data[trials].policy = policy
 
         # Draw the first state
-        data[trials].x[:,0] = np.array([[-_state_x/4.0, -_state_y/3.0, _state_z/1.5]])
+        data[trials].x[:,0] = np.array([[-_state_x/4.0, -_state_y/3.0, _state_z/3.0]])
 
         # Perform a trial of length L
         for steps in range(L):
@@ -137,10 +165,14 @@ def obtainData(policy, L, H, param):
                     elif data[trials].u[:,steps][j] < -1.0:
                         data[trials].u[:,steps][j] = -1.0
 
+            if _state_z > 2.8:
+                data[trials].u[:,steps][2] = -0.1
+            '''
             if xx[2] >= .9:
                 data[trials].u[:,steps][2] = -0.1
             elif xx[2] <= -.7:
                 data[trials].u[:,steps][2] = 0.1
+		 '''
 
 
             command = Twist()
@@ -154,7 +186,7 @@ def obtainData(policy, L, H, param):
 
             # Draw next state from environment
             #data[trials].x[:,steps+1] = drawNextState(data[trials].x[:,steps], data[trials].u[:,steps], param, i)
-            state = np.array([[-_state_x/4.0, -_state_y/3.0, _state_z/1.5]])
+            state = np.array([[-_state_x/4.0, -_state_y/3.0, _state_z/3.0]])
             #state = np.array([[-_state_x/4.0, -_state_y/3.0]])
             data[trials].x[:,steps+1] = state
 
@@ -163,12 +195,14 @@ def obtainData(policy, L, H, param):
 
             u = data[trials].u[:,steps]
             u_p = u.conj().T
-            imp_eye_state = np.zeros((3,3))
-            imp_eye_act = np.zeros((3,3))
-            np.fill_diagonal(imp_eye_state, [10, 10, 5])
-            np.fill_diagonal(imp_eye_act, [5, 5, 2.5])
-            reward = -sqrt(np.dot(np.dot(state, imp_eye_state), state.conj().T)) - \
-                      sqrt(np.dot(np.dot(u, imp_eye_act), u_p))
+            #imp_eye_state = np.zeros((3,3))
+            #imp_eye_act = np.zeros((3,3))
+            #np.fill_diagonal(imp_eye_state, [10, 10, 5])
+            #np.fill_diagonal(imp_eye_act, [5, 5, 2.5])
+            #reward = -sqrt(np.dot(np.dot(state, imp_eye_state), state.conj().T)) - \
+            #          sqrt(np.dot(np.dot(u, imp_eye_act), u_p))
+            reward = -sqrt(np.dot(np.dot(state, np.eye(N) * 10), state.conj().T)) - \
+                      sqrt(np.dot(np.dot(u, np.eye(M) * 5), u_p))
             print "reward: ", reward
 
             if isinf(reward):

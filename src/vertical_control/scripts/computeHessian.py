@@ -6,7 +6,7 @@ Created on Tue Aug 18 11:38:10 2015
 """
 
 import numpy as np
-import sys
+
 
 def computeHessian(data, sigma):
 
