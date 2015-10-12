@@ -22,34 +22,14 @@ def episodicNaturalActorCritic(policy, data, param):
         for Trials in range(np.max(np.shape(data))):
             J = J + np.sum(data[Trials].r) / np.max(np.shape(data[Trials].r))
 
-    '''
-    data_size = np.max(np.shape(data))
-    Mat = []
-    Vec = []
-    for i in range(M):
-        Mat.append(np.empty(shape=(data_size, N+1)))
-
-
-    # Obtain Gradients
-    for j in range(M):
-        i = 0
-        for Trials in range(data_size):
-    '''
-
     # Obtain Gradients
     data_size = np.max(np.shape(data))
     Mat = np.empty(shape=(data_size, (N*M)+1))
     Vec = np.empty(shape=(data_size, 1))
     i = 0
     for Trials in range(data_size):
-        #print "X: ", data[Trials].x[:, 0]
-        #print "U: ", data[Trials].u[:, 0]
         x = np.reshape(data[Trials].x[:, 0], (N, 1))
         u = np.reshape(data[Trials].u[:, 0], (M, 1))
-        #print np.shape(DlogPiDThetaNAC(policy, x, u, param))
-        #print np.zeros(np.shape(DlogPiDThetaNAC(policy, x, u, param)))
-        #print np.append(np.zeros(np.shape(DlogPiDThetaNAC(policy, x, u, param))).reshape(1, N*M), np.array([[1]]), axis=1)
-        #print Mat[i, :]
 
         Mat[i, :] = np.append(np.zeros(np.shape(DlogPiDThetaNAC(policy, x, u, param))).reshape(1, N*M), np.array([[1]]), axis=1)
         Vec[i, 0] = 0
@@ -63,7 +43,7 @@ def episodicNaturalActorCritic(policy, data, param):
         i = i + 1
 
     # cond(Mat)
-    Nrm = np.diag(np.append(1 / np.std(Mat[:, 0:N*M], ddof=1, axis=0), [1], axis=0))
+    Nrm = np.diag(np.append(np.std(Mat[:, 0:N*M], ddof=1, axis=0), [1], axis=0))
     mat = Mat
     mat_p = Mat.conj().T
     vec = Vec

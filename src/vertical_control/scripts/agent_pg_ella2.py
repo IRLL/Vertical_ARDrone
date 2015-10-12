@@ -118,7 +118,7 @@ class Agent():
             data[trials].policy = policy
 
             # Draw the first state
-            data[trials].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/3.0]])
+            data[trials].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/1.5]])
 
             # Perform a trial of length L
             for steps in range(L):
@@ -131,23 +131,24 @@ class Agent():
                 print "action: ", data[trials].u[:,steps]
 
 
-                if self._visible == 0:
+                if not self._visible:
                     data[trials].u[:,steps] *= 0.0
                 else:
                     for j in range(M):
-                        data[trials].u[:,steps][j] = round(data[trials].u[:,steps][j], 5) + param.param.disturbance[j]
+                        data[trials].u[:,steps][j] += param.param.disturbance[j]
+                        data[trials].u[:,steps][j] = round(data[trials].u[:,steps][j], 5)
 
                         if data[trials].u[:,steps][j] > 1.0: # saturate
                             data[trials].u[:,steps][j] = 1.0
                         elif data[trials].u[:,steps][j] < -1.0:
                             data[trials].u[:,steps][j] = -1.0
 
-                if self._state_z > 2.8:
+                if self._visible and self._state_z > 2.8:
                     data[trials].u[:,steps][2] = -0.1
                 '''
-                if xx[2] >= .9:
+                if self._visible and xx[2] >= .9:
                     data[trials].u[:,steps][2] = -0.1
-                elif xx[2] <= -.7:
+                elif self._visible and xx[2] <= -.7:
                     data[trials].u[:,steps][2] = 0.1
                 '''
 
@@ -163,7 +164,7 @@ class Agent():
 
                 # Draw next state from environment
                 #data[trials].x[:,steps+1] = drawNextState(data[trials].x[:,steps], data[trials].u[:,steps], param, i)
-                state = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/3.0]])
+                state = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/1.5]])
                 #state = np.array([[-_state_x/4.0, -_state_y/3.0]])
                 data[trials].x[:,steps+1] = state
 
@@ -259,7 +260,7 @@ if __name__ == "__main__":
     gamma = 0.9  # Discount factor gamma
 
     trajLength = 100 # Number of time steps to simulate in the cart-pole system
-    numRollouts = 50 # Number of trajectories for testing
+    numRollouts = 10 # Number of trajectories for testing
     numIterations = 200 # Number of learning episodes/iterations # 200
 
     agent = Agent()

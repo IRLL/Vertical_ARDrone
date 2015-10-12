@@ -37,7 +37,7 @@ Policies = constructPolicies(Tasks)
 
 # Calculating theta
 trajLength = 100 # Number of time steps to simulate in the cart-pole system
-numRollouts = 50 # Number of trajectories for testing
+numRollouts = 10 # Number of trajectories for testing
 numIterations = 500 # Number of learning episodes/iterations # 200
 Policies = calcThetaStar(Tasks, Policies, learningRate,
                          trajLength, numRollouts, numIterations)

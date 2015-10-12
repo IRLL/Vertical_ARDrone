@@ -38,21 +38,24 @@ def createSys(nSystems, poliType, baseLearner, gamma):
         # Calculation of random parameters
         param.disturbance = [0.0] * param.M #[x, y, z]
         seed = np.random.randint(3)
+        param.disturbance[0] = 0.02
+        param.disturbance[1] = 0.05
+        '''
         # x gets disturbance
         if seed == 0:
-            param.disturbance[0] = np.random.choice([np.random.rand()*0.01,
-                                                    -np.random.rand()*0.01])
+            param.disturbance[0] = np.random.choice([np.random.rand()/2*0.1,
+                                                    -np.random.rand()/2*0.1])
         # y gets disturbance
         elif seed == 1:
-            param.disturbance[1] = np.random.choice([np.random.rand()*0.01,
-                                                    -np.random.rand()*0.01])
+            param.disturbance[1] = np.random.choice([np.random.rand()/2*0.1,
+                                                    -np.random.rand()/2*0.1])
         # both x & y gets disturbance
         else:
-            param.disturbance[0] = np.random.choice([np.random.rand()*0.01,
-                                                    -np.random.rand()*0.01])
-            param.disturbance[1] = np.random.choice([np.random.rand()*0.01,
-                                                    -np.random.rand()*0.01])
-
+            param.disturbance[0] = np.random.choice([np.random.rand()/2*0.1,
+                                                    -np.random.rand()/2*0.1])
+            param.disturbance[1] = np.random.choice([np.random.rand()/2*0.1,
+                                                    -np.random.rand()/2*0.1])
+        '''
         # Initial and reference (final) states
         param.mu0 = 2 * np.random.rand(2, 1)
         param.Xref = np.zeros((2, 1))

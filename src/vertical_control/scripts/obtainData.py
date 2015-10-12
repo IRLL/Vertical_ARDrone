@@ -141,7 +141,7 @@ def obtainData(policy, L, H, param):
         data[trials].policy = policy
 
         # Draw the first state
-        data[trials].x[:,0] = np.array([[-_state_x/4.0, -_state_y/3.0, _state_z/3.0]])
+        data[trials].x[:,0] = np.array([[-_state_x/4.0, -_state_y/3.0, _state_z/1.5]])
 
         # Perform a trial of length L
         for steps in range(L):
@@ -154,18 +154,19 @@ def obtainData(policy, L, H, param):
             print "action: ", data[trials].u[:,steps]
 
 
-            if _visible == 0:
+            if not _visible:
                 data[trials].u[:,steps] *= 0.0
             else:
                 for j in range(M):
-                    data[trials].u[:,steps][j] = round(data[trials].u[:,steps][j], 5) + param.param.disturbance[j]
+                    data[trials].u[:,steps][j] += param.param.disturbance[j]
+                    data[trials].u[:,steps][j] = round(data[trials].u[:,steps][j], 5)
 
                     if data[trials].u[:,steps][j] > 1.0: # saturate
                         data[trials].u[:,steps][j] = 1.0
                     elif data[trials].u[:,steps][j] < -1.0:
                         data[trials].u[:,steps][j] = -1.0
 
-            if _state_z > 2.8:
+            if _visible and _state_z > 2.8:
                 data[trials].u[:,steps][2] = -0.1
             '''
             if xx[2] >= .9:
@@ -186,7 +187,7 @@ def obtainData(policy, L, H, param):
 
             # Draw next state from environment
             #data[trials].x[:,steps+1] = drawNextState(data[trials].x[:,steps], data[trials].u[:,steps], param, i)
-            state = np.array([[-_state_x/4.0, -_state_y/3.0, _state_z/3.0]])
+            state = np.array([[-_state_x/4.0, -_state_y/3.0, _state_z/1.5]])
             #state = np.array([[-_state_x/4.0, -_state_y/3.0]])
             data[trials].x[:,steps+1] = state
 
