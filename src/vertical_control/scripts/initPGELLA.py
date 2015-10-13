@@ -7,7 +7,7 @@ Created on Tue Aug 18 01:39:30 2015
 
 import numpy as np
 from structs import Model
-import sys
+
 
 def initPGELLA(Tasks, k, mu_one, mu_two, learningRate):
 
