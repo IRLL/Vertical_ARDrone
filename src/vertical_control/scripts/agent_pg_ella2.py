@@ -3,6 +3,7 @@
 import rospy
 import time
 import sys
+from datetime import datetime
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float32MultiArray
 from std_msgs.msg import Empty
@@ -45,20 +46,35 @@ class Agent():
         self._visible_sub = rospy.Subscriber('v_controller/visible', Bool, self.visible_callback)
         self._threshold = rospy.get_param("v_controller/threshold")
 
+    def startPg(self, nSystems, poliType='Gauss', baseLearner='NAC', gamma=0.9,
+                 trajLength=100, numRollouts=40, numIterations=150,
+                 task_file='task.p', policy_file='policy.p', isLoadPolicy=False):
+        if not isLoadPolicy:
+            # Creating Tasks
+            self.Tasks = createSys(nSystems, poliType, baseLearner, gamma)
 
-    def start_pg(self, nSystems, poliType, baseLearner, gamma,
-                 trajLength, numRollouts, numIterations):
-        # Creating Tasks
-        self.Tasks = createSys(nSystems, poliType, baseLearner, gamma)
+            # Constructing policies
+            self.Policies = constructPolicies(self.Tasks)
 
-        # Constructing policies
-        self.Policies = constructPolicies(self.Tasks)
+            # Calculating theta
+            self.Policies = self.calcThetaStar(self.Tasks, self.Policies,
+                                               learningRate, trajLength,
+                                               numRollouts, numIterations)
 
-        # Calculating theta
-        self.Policies = self.calcThetaStar(self.Tasks, self.Policies,
-                                           learningRate, trajLength,
-                                           numRollouts, numIterations)
+            self.savePolicies(task_file, policy_file)
+        else:
+            self.loadPolicies(task_file, policy_file)
 
+
+    def savePolicies(self, task_file, policy_file):
+        # Save PG policies and tasks to a file
+        pickle.dump(self.Tasks, open(task_file, 'wb'), pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.Policies, open(policy_file, 'wb'), pickle.HIGHEST_PROTOCOL)
+
+    def loadPolicies(self, task_file, policy_file):
+        # Load PG policies and tasks to a file
+        self.Tasks = pickle.load(open(task_file, 'rb'))
+        self.Policies = pickle.load(open(policy_file, 'rb'))
 
     def getState(self, data):
         self._state_x = data.data[0]
@@ -69,7 +85,7 @@ class Agent():
     def visible_callback(self, visible):
         self._visible = visible.data
 
-    def reset_sim(self, x, y, z=0, angle=0):
+    def resetSim(self, x, y, z=0, angle=0):
         self._enable_controller.publish(Bool(0))
         self._takeoff_pub.publish(Empty())
         rospy.sleep(.5)
@@ -92,7 +108,7 @@ class Agent():
         #y = random.uniform(-.23, .23)
         x = random.uniform(-.8, .8)
         y = random.uniform(-.23, .23)
-        self.reset_sim(x,y,0)
+        self.resetSim(x,y,0)
         rospy.sleep(1)
 
 
@@ -200,6 +216,8 @@ class Agent():
         nSystems = np.shape(Params)[0]
         r = np.empty(shape=(1, rollouts))
 
+        tasks_time = [0] * nSystems
+
         for i in range(nSystems):
             # TODO: Clear screen
             print "@ Task: ", i
@@ -208,6 +226,7 @@ class Agent():
             ax.grid()
 
             policy = Policies[i].policy # Resetting policy IMP
+            start_time = datetime.now()
 
             for k in range(numIterations):
                 print "@ Iteration: ", k
@@ -234,13 +253,17 @@ class Agent():
 
                 print "Mean: ", np.mean(r)
                 time.sleep(1)
-                ax.scatter(k, np.mean(r), marker=u'x', c=np.random.random((2,3)), cmap=cm.jet)
+                ax.scatter(k, np.mean(r), marker=u'x', c='blue', cmap=cm.jet)
                 ax.figure.canvas.draw()
                 fig.canvas.draw()
                 fig.canvas.flush_events()
                 time.sleep(0.05)
 
+            stop_time = datetime.now()
+            tasks_time[i] = stop_time - start_time
+
             Policies[i].policy = policy # Calculating theta
+        print "Task completion times: ", tasks_time
         plt.show(block=True)
 
         return Policies
@@ -248,7 +271,7 @@ class Agent():
 
 if __name__ == "__main__":
     nSystems = 2  # Integer number of tasks
-    learningRate = .01  # Learning rate for stochastic gradient descent
+    learningRate = .35  # Learning rate for stochastic gradient descent
 
 
     # Parameters for policy
@@ -259,13 +282,15 @@ if __name__ == "__main__":
                                # 'NAC' => Episodic Natural Actor Critic
     gamma = 0.9  # Discount factor gamma
 
-    trajLength = 100 # Number of time steps to simulate in the cart-pole system
-    numRollouts = 10 # Number of trajectories for testing
-    numIterations = 200 # Number of learning episodes/iterations # 200
+    trajLength = 150 # Number of time steps to simulate in the cart-pole system
+    numRollouts = 40 # Number of trajectories for testing
+    numIterations = 120 # Number of learning episodes/iterations # 200
 
     agent = Agent()
     time.sleep(.5)
 
-    agent.start_pg(nSystems, poliType, baseLearner, gamma,
-                   trajLength, numRollouts, numIterations)
+    agent.startPg(nSystems, poliType, baseLearner, gamma,
+                   trajLength, numRollouts, numIterations,
+                   task_file='task.p', policy_file='policy.p', isLoadPolicy=False)
+    #agent.startPg(task_file='task.p', policy_file='policy.p', isLoadPolicy=True)
     rospy.spin()
