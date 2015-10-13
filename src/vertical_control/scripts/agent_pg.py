@@ -65,10 +65,10 @@ class Agent():
         self._n = 3 # Number of states
         self._m = 3 # Number of inputs
 
-        self._rate = .01 # Learning rate for gradient descent Original+0.75
+        self._rate = .35 # Learning rate for gradient descent Original+0.75
 
-        self._traj_length = 200 # Number of time steps to simulate in the cart-pole system 100
-        self._rollouts = 10 # Number of trajectories for testing 50
+        self._traj_length = 150 # Number of time steps to simulate in the cart-pole system 100
+        self._rollouts = 40 # Number of trajectories for testing 50
         self._num_iterations = 130 # Number of learning episodes/iterations    30
 
         time.sleep(.1)
@@ -402,7 +402,7 @@ class Agent():
             # regulating controller are being learned
 
             print "Mean: ", np.mean(self._r)
-            plt.scatter(k, np.mean(self._r), marker=u'x', c=np.random.random((2,3)), cmap=cm.jet)
+            plt.scatter(k, np.mean(self._r), marker=u'x', c='blue', cmap=cm.jet)
             plt.grid()
             plt.draw()
             time.sleep(0.05)
