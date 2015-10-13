@@ -43,7 +43,7 @@ def episodicNaturalActorCritic(policy, data, param):
         i = i + 1
 
     # cond(Mat)
-    Nrm = np.diag(np.append(np.std(Mat[:, 0:N*M], ddof=1, axis=0), [1], axis=0))
+    Nrm = np.diag(np.append(1 / np.std(Mat[:, 0:N*M], ddof=1, axis=0), [1], axis=0))
     mat = Mat
     mat_p = Mat.conj().T
     vec = Vec
