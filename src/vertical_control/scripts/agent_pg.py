@@ -50,6 +50,7 @@ class Agent():
         self.enable_controller = rospy.Publisher('v_controller/move_enable', Bool)
         self.soft_reset_pub = rospy.Publisher('v_controller/soft_reset', Empty)
         self.takeoff_pub = rospy.Publisher('/ardrone/takeoff', Empty)
+        self.land_pub = rospy.Publisher('/ardrone/land', Empty)
         self.action_pub = rospy.Publisher('v_controller/agent_cmd', Twist)
         self.state_sub = rospy.Subscriber('v_controller/state', Float32MultiArray, self.getState)
         self.visible_sub = rospy.Subscriber('v_controller/visible', Bool, self.visible_callback)
@@ -142,6 +143,9 @@ class Agent():
         y = random.uniform(-.23, .23)
         self.reset_sim(x,y,0)
         rospy.sleep(.5)
+
+	def land(self):
+		self.land_pub.publish(Empty())
 
 
     def getState(self, data):
