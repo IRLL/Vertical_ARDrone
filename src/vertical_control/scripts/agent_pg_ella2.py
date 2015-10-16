@@ -87,8 +87,8 @@ class Agent():
     def getState(self, data):
         self._state_x = data.data[0]
         self._state_y = data.data[1]
-        self._state_z = data.data[2] - 1.5 #dc bias so that it floats at 1.5 meters
-        #print "x:%s y:%s z:%s" %(_state_x, _state_y, _state_z)
+        self._state_z = data.data[2] - 2.77 #dc bias so that it floats at .230 meters
+        # .235 ultrasonic read still works, using .230
 
     def visible_callback(self, visible):
         self._visible = visible.data
@@ -119,6 +119,8 @@ class Agent():
         self.resetSim(x,y,0)
         rospy.sleep(1)
 
+    def land(self):
+        self.land_pub.publish(Empty())
 
     def obtainData(self, policy, L, H, param):
         N = param.param.N
@@ -143,6 +145,8 @@ class Agent():
             # Draw the first state
             data[trials].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/3.0]])
 
+            hasLanded = False
+
             # Perform a trial of length L
             for steps in range(L):
                 if rospy.is_shutdown():
@@ -154,7 +158,7 @@ class Agent():
                 #print "action: ", data[trials].u[:,steps]
 
 
-                if not self._visible:
+                if not self._visible or hasLanded:
                     data[trials].u[:,steps] *= 0.0
                 else:
                     for j in range(M):
@@ -166,8 +170,9 @@ class Agent():
                         elif data[trials].u[:,steps][j] < -1.0:
                             data[trials].u[:,steps][j] = -1.0
 
-                if self._visible and self._state_z > 1.3: #2.8
+                if self._visible and self._state_z > 2.77: #2.8
                     data[trials].u[:,steps][2] = -0.1
+
                 '''
                 if self._visible and xx[2] >= .9:
                     data[trials].u[:,steps][2] = -0.1
@@ -175,20 +180,33 @@ class Agent():
                     data[trials].u[:,steps][2] = 0.1
                 '''
 
-
-                command = Twist()
-                command.linear.x = data[trials].u[:,steps][0]
-                command.linear.y = data[trials].u[:,steps][1]
-                command.linear.z = data[trials].u[:,steps][2]
-                self._action_pub.publish(command)
-                rospy.sleep(.2)
+                if not hasLanded:
+                    if self._state_z >= .235 and  self._state_z <= .245 and \
+                       -self._state_x >= -.2  and -self._state_x <= .2 and \
+                       -self._state_y >= -.15 and -self._state_y <= .15:
+                        data[trials].u[:,steps][0] = 0.0
+                        data[trials].u[:,steps][1] = 0.0
+                        data[trials].u[:,steps][2] = 0.0
+                        hasLanded = True
+                        self.land_pub.publish(Empty())
+                        rospy.sleep(1)
+                    else:
+                        command = Twist()
+                        command.linear.x = data[trials].u[:,steps][0]
+                        command.linear.y = data[trials].u[:,steps][1]
+                        command.linear.z = data[trials].u[:,steps][2]
+                        self._action_pub.publish(command)
+                        rospy.sleep(.2)
 
                 #print "action: ", data[trials].u[:,steps]
 
                 # Draw next state from environment
-                #data[trials].x[:,steps+1] = drawNextState(data[trials].x[:,steps], data[trials].u[:,steps], param, i)
-                state = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/3.0]])
-                #state = np.array([[-_state_x/4.0, -_state_y/3.0]])
+                if hasLanded:
+                    state = np.array([[0.0, 0.0, 0.0]])
+                else:
+                    #data[trials].x[:,steps+1] = drawNextState(data[trials].x[:,steps], data[trials].u[:,steps], param, i)
+                    state = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/3.0]])
+                    #state = np.array([[-_state_x/4.0, -_state_y/3.0]])
 
                 data[trials].x[:,steps+1] = state
 
@@ -435,7 +453,7 @@ if __name__ == "__main__":
 
     # Learning PG
     agent.startPg(poli_type, base_learner, traj_length, num_rollouts, num_iterations,
-                   task_file='task.p', policy_file='policy.p', is_load=False)
+                  task_file='task.p', policy_file='policy.p', is_load=False)
 
     # Loading PG policies from file
     #agent.startPg(task_file='task.p', policy_file='policy.p', isLoadPolicy=True)
