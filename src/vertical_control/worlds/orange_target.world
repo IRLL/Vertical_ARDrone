@@ -13,12 +13,12 @@
     <physics type='ode'>
       <max_step_size>0.01</max_step_size>
       <real_time_factor>1</real_time_factor>
-      <real_time_update_rate>1000</real_time_update_rate>
+      <real_time_update_rate>2000</real_time_update_rate>
       <gravity>0 0 -9.8</gravity>
     </physics>
 
 
-    <model name='unit_box_1'>
+    <model name='unit_sphere_4'>
       <pose>3 0 0.1 0 -0 0</pose>
       <link name='link'>
         <inertial>
@@ -63,7 +63,7 @@
           </material>
         </visual>
 
-		<visual name='visual_center'>
+        <visual name='visual_center'>
           <geometry>
             <box>
               <size>.010 .010 .011</size>
@@ -88,6 +88,6 @@
       <static>0</static>
     </model>
 
-	
+
   </world>
 </sdf>
