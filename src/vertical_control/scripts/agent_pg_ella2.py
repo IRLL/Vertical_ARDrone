@@ -49,6 +49,7 @@ class Agent():
         self._enable_controller = rospy.Publisher('v_controller/move_enable', Bool)
         self._soft_reset_pub = rospy.Publisher('v_controller/soft_reset', Empty)
         self._takeoff_pub = rospy.Publisher('/ardrone/takeoff', Empty)
+        self._land_pub = rospy.Publisher('/ardrone/land', Empty)
         self._action_pub = rospy.Publisher('v_controller/agent_cmd', Twist)
         self._state_sub = rospy.Subscriber('v_controller/state', Float32MultiArray, self.getState)
         self._visible_sub = rospy.Subscriber('v_controller/visible', Bool, self.visible_callback)
@@ -87,8 +88,8 @@ class Agent():
     def getState(self, data):
         self._state_x = data.data[0]
         self._state_y = data.data[1]
-        self._state_z = data.data[2] - 2.77 #dc bias so that it floats at .230 meters
-        # .235 ultrasonic read still works, using .230
+        self._state_z = data.data[2] - 0.240 #dc bias so that it floats at .240 meters
+        # .235 ultrasonic read still works, using .240
 
     def visible_callback(self, visible):
         self._visible = visible.data
@@ -170,26 +171,22 @@ class Agent():
                         elif data[trials].u[:,steps][j] < -1.0:
                             data[trials].u[:,steps][j] = -1.0
 
-                if self._visible and self._state_z > 2.77: #2.8
+                # ensures quadrotor doesn't go off
+                # the max altitude of 3.0
+                if self._visible and self._state_z > 2.7: #2.8
                     data[trials].u[:,steps][2] = -0.1
-
-                '''
-                if self._visible and xx[2] >= .9:
-                    data[trials].u[:,steps][2] = -0.1
-                elif self._visible and xx[2] <= -.7:
-                    data[trials].u[:,steps][2] = 0.1
-                '''
 
                 if not hasLanded:
-                    if self._state_z >= .235 and  self._state_z <= .245 and \
-                       -self._state_x >= -.2  and -self._state_x <= .2 and \
-                       -self._state_y >= -.15 and -self._state_y <= .15:
+                    if self._state_z <= .1 and self._visible and \
+                       self._state_x <= .5 and self._state_x >= -.5 and \
+                       self._state_y <= .5 and self._state_y >= -.5:
                         data[trials].u[:,steps][0] = 0.0
                         data[trials].u[:,steps][1] = 0.0
                         data[trials].u[:,steps][2] = 0.0
                         hasLanded = True
-                        self.land_pub.publish(Empty())
-                        rospy.sleep(1)
+                        self._land_pub.publish(Empty())
+                        print "Landing..."
+                        rospy.sleep(3)
                     else:
                         command = Twist()
                         command.linear.x = data[trials].u[:,steps][0]
@@ -445,7 +442,7 @@ if __name__ == "__main__":
                                # 'NAC' => Episodic Natural Actor Critic
 
     traj_length = 150 # Number of time steps to simulate in the cart-pole system
-    num_rollouts = 40 # Number of trajectories for testing
+    num_rollouts = 30 # Number of trajectories for testing
     num_iterations = 100 # Number of learning episodes/iterations # 120
 
     agent = Agent(n_systems, learning_rate, gamma)
@@ -461,7 +458,7 @@ if __name__ == "__main__":
 
     # Learning ELLA
     traj_length = 150
-    num_rollouts = 40 # 200
+    num_rollouts = 30 # 200
     mu1 = exp(-5)  # Sparsity coefficient
     mu2 = exp(-5)  # Regularization coefficient
     k = 1  # Number of inner layers
@@ -471,7 +468,7 @@ if __name__ == "__main__":
 
     # Testing Phase
     traj_length = 150
-    num_rollouts = 40 # 100
+    num_rollouts = 30 # 100
     num_iterations = 85 # 200
 
     agent.startTest(traj_length, num_rollouts, num_iterations)
