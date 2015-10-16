@@ -17,12 +17,12 @@ def createSys(nSystems, poliType, baseLearner, gamma):
     tasks[0].nSystems = nSystems # Number of tasks
 
     # Range of parameters for dynamical systems
-    tasks[0].MassMin = 3
-    tasks[0].MassMax = 5
-    tasks[0].Mink = 1
-    tasks[0].Maxk = 7
-    tasks[0].Maxd = 0.1
-    tasks[0].Mind = 0.01
+    #tasks[0].MassMin = 3
+    #tasks[0].MassMax = 5
+    #tasks[0].Mink = 1
+    #tasks[0].Maxk = 7
+    #tasks[0].Maxd = 0.1
+    #tasks[0].Mind = 0.01
 
     counter = 1
 
@@ -33,32 +33,29 @@ def createSys(nSystems, poliType, baseLearner, gamma):
         param.M = 3 # Number of inputs
 
         # Differential for integration of dynamical system
-        param.dt = .01
+        #param.dt = .01
 
         # Calculation of random parameters
         param.disturbance = [0.0] * param.M #[x, y, z]
-        seed = np.random.randint(3)
-        param.disturbance[0] = 0.02
-        param.disturbance[1] = 0.05
-        '''
-        # x gets disturbance
-        if seed == 0:
-            param.disturbance[0] = np.random.choice([np.random.rand()/2*0.1,
-                                                    -np.random.rand()/2*0.1])
-        # y gets disturbance
-        elif seed == 1:
-            param.disturbance[1] = np.random.choice([np.random.rand()/2*0.1,
-                                                    -np.random.rand()/2*0.1])
-        # both x & y gets disturbance
+        #param.disturbance[0] = 0.02
+        #param.disturbance[1] = 0.05
+        # [0.043, 0.05, 0.0] doesn't work
+
+        if i == 0:
+            param.disturbance = [0.043, 0.05, 0.0]
         else:
-            param.disturbance[0] = np.random.choice([np.random.rand()/2*0.1,
-                                                    -np.random.rand()/2*0.1])
-            param.disturbance[1] = np.random.choice([np.random.rand()/2*0.1,
-                                                    -np.random.rand()/2*0.1])
-        '''
+            # ensure at least one disturbance is non-zero
+            while param.disturbance[0] == 0.0 and param.disturbance[1] == 0.0:
+                # x gets disturbance
+                #param.disturbance[0] = round(np.random.rand()/2*0.2, 3) if np.random.randint(2) == 1 else 0.0
+                param.disturbance[0] = round(np.random.rand()/2*0.01, 3)
+                # y gets disturbance
+                #param.disturbance[1] = round(np.random.rand()/2*0.2, 3) if np.random.randint(2) == 1 else 0.0
+                param.disturbance[1] = round(np.random.rand()/2*0.01, 3)
+
         # Initial and reference (final) states
-        param.mu0 = 2 * np.random.rand(2, 1)
-        param.Xref = np.zeros((2, 1))
+        #param.mu0 = 2 * np.random.rand(2, 1)
+        #param.Xref = np.zeros((2, 1))
 
         # Parameters for policy
         param.poliType = poliType

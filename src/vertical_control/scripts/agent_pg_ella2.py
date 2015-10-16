@@ -17,6 +17,7 @@ import random
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from math import sqrt, exp, isinf
+from sys import stdout
 
 from createSys import createSys
 from constructPolicies import constructPolicies
@@ -131,14 +132,16 @@ class Agent():
         # Perform H
 
         for trials in range(H):
-            print "      Trial #", trials+1
+            stdout.write("\r    Trial %d of %d" % (trials+1, H))
+            stdout.flush()
+            #print "      Trial #", trials+1
             self.startEpisode()
 
             # Save associated policy
             data[trials].policy = policy
 
             # Draw the first state
-            data[trials].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/1.5]])
+            data[trials].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/3.0]])
 
             # Perform a trial of length L
             for steps in range(L):
@@ -163,7 +166,7 @@ class Agent():
                         elif data[trials].u[:,steps][j] < -1.0:
                             data[trials].u[:,steps][j] = -1.0
 
-                if self._visible and self._state_z > 2.8:
+                if self._visible and self._state_z > 1.3: #2.8
                     data[trials].u[:,steps][2] = -0.1
                 '''
                 if self._visible and xx[2] >= .9:
@@ -183,7 +186,10 @@ class Agent():
                 #print "action: ", data[trials].u[:,steps]
 
                 # Draw next state from environment
-                state = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/1.5]])
+                #data[trials].x[:,steps+1] = drawNextState(data[trials].x[:,steps], data[trials].u[:,steps], param, i)
+                state = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/3.0]])
+                #state = np.array([[-_state_x/4.0, -_state_y/3.0]])
+
                 data[trials].x[:,steps+1] = state
 
                 # Obtain the reward
@@ -204,7 +210,7 @@ class Agent():
                     sys.exit(1)
 
                 data[trials].r[0][steps] = reward
-
+        print
         return data
 
 
@@ -233,6 +239,7 @@ class Agent():
                 print "    Initial Theta: ", policy.theta
                 print "    Sigma: ", policy.sigma
                 print "    Learning Rate: ", rates
+                print "    Perturbation: ", Params[i].param.disturbance
                 data = self.obtainData(policy, trajlength, rollouts, Params[i])
                 dJdtheta = None
                 if Params[i].param.baseLearner == "REINFORCE":
@@ -251,7 +258,7 @@ class Agent():
                     import sys
                     sys.exit(1)
 
-                print "Mean: ", np.mean(r)
+                print "    Mean: ", np.mean(r)
                 time.sleep(1)
                 ax.scatter(k, np.mean(r), marker=u'x', c='blue', cmap=cm.jet)
                 ax.figure.canvas.draw()
@@ -264,7 +271,7 @@ class Agent():
 
             Policies[i].policy = policy # Calculating theta
         print "Task completion times: ", tasks_time
-        plt.show(block=True)
+        #plt.show(block=True)
 
         return Policies
 
@@ -354,7 +361,7 @@ class Agent():
         Avg_rPG = np.zeros((numIterations, tasks_size))
         for k in range(tasks_size): # Test over all tasks
             print "@ Task: ", k
-            fig = plt.figure(k)
+            fig = plt.figure(k+1000)
             ax = fig.add_subplot(111)
             ax.grid()
             for m in range(numIterations): # Loop over Iterations
@@ -406,9 +413,10 @@ class Agent():
         plt.show(block=True)
 
 
+
 if __name__ == "__main__":
     n_systems = 2  # Integer number of tasks
-    learning_rate = .35  # Learning rate for stochastic gradient descent
+    learning_rate = .1  # Learning rate for stochastic gradient descent
     gamma = 0.9  # Discount factor gamma
 
     # Parameters for policy
@@ -420,7 +428,7 @@ if __name__ == "__main__":
 
     traj_length = 150 # Number of time steps to simulate in the cart-pole system
     num_rollouts = 40 # Number of trajectories for testing
-    num_iterations = 120 # Number of learning episodes/iterations # 200
+    num_iterations = 100 # Number of learning episodes/iterations # 120
 
     agent = Agent(n_systems, learning_rate, gamma)
     time.sleep(.5)
@@ -444,9 +452,9 @@ if __name__ == "__main__":
 
 
     # Testing Phase
-    traj_length = 100
-    num_rollouts = 5 # 100
-    num_iterations = 500 # 200
+    traj_length = 150
+    num_rollouts = 40 # 100
+    num_iterations = 85 # 200
 
     agent.startTest(traj_length, num_rollouts, num_iterations)
 

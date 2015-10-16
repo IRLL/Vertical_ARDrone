@@ -24,12 +24,12 @@ class Param():
     def __init__(self):
         self.N = 0
         self.M = 0
-        self.dt = 0
-        self.Mass = 0
-        self.k = 0
-        self.d = 0
-        self.mu0 = None
-        self.Xref = None
+        #self.dt = 0
+        #self.Mass = 0
+        #self.k = 0
+        #self.d = 0
+        #self.mu0 = None
+        #self.Xref = None
         self.poliType = None
         self.baseLearner = None
         self.gamma = None
@@ -40,12 +40,12 @@ class Param():
 class Tasks():
 
     nSystems = 0
-    MassMin = 0
-    MassMax = 0
-    Mink = 0
-    Maxk = 0
-    Maxd = 0
-    Mind = 0
+    #MassMin = 0
+    #MassMax = 0
+    #Mink = 0
+    #Maxk = 0
+    #Maxd = 0
+    #Mind = 0
 
     def __init__(self):
         self.param = None

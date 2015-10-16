@@ -264,7 +264,7 @@ class Agent():
                 # Draw the initial state
                 #init_state = np.random.multivariate_normal(self._my0[:,0], self._s0, 1)
                 #self._data[trials].x[:,0] = init_state[0,:]
-                self._data[trials].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/1.5]])
+                self._data[trials].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/3.0]])
 
                 # Perform a trial of length L
                 for steps in range(self._traj_length):
@@ -306,7 +306,7 @@ class Agent():
 
 
                     # Get next state
-                    state = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/1.5]])
+                    state = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/3.0]])
                     self._data[trials].x[:,steps+1] = state
 
                     # Calculating the reward (Remember: First term is the reward for accuracy, second is for control cost)

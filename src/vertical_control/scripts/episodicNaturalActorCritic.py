@@ -11,7 +11,6 @@ from DlogPiDThetaNAC import DlogPiDThetaNAC
 
 def episodicNaturalActorCritic(policy, data, param):
 
-    print "Episodic NAC"
     N = param.param.N
     M = param.param.M
     gamma = param.param.gamma
