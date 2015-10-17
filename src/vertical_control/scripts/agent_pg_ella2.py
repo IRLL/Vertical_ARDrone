@@ -55,6 +55,8 @@ class Agent():
         self._visible_sub = rospy.Subscriber('v_controller/visible', Bool, self.visible_callback)
         self._threshold = rospy.get_param("v_controller/threshold")
 
+        self._hover_height = .4
+
     def startPg(self, poli_type='Gauss', base_learner='NAC',
                 traj_length=100, num_rollouts=40, num_iterations=150,
                 task_file='task.p', policy_file='policy.p',
@@ -88,8 +90,9 @@ class Agent():
     def getState(self, data):
         self._state_x = data.data[0]
         self._state_y = data.data[1]
-        self._state_z = data.data[2] - 0.240 #dc bias so that it floats at .240 meters
+        self._state_z = data.data[2] - self._hover_height #dc bias so that it floats at .240 meters
         # .235 ultrasonic read still works, using .240
+        # -.240 is too low
 
     def visible_callback(self, visible):
         self._visible = visible.data
@@ -173,11 +176,11 @@ class Agent():
 
                 # ensures quadrotor doesn't go off
                 # the max altitude of 3.0
-                if self._visible and self._state_z > 2.7: #2.8
+                if self._visible and self._state_z >= (2.8 - self._hover_height): #2.8
                     data[trials].u[:,steps][2] = -0.1
 
                 if not hasLanded:
-                    if self._state_z <= .1 and self._visible and \
+                    if self._state_z <= 0 and self._visible and \
                        self._state_x <= .5 and self._state_x >= -.5 and \
                        self._state_y <= .5 and self._state_y >= -.5:
                         data[trials].u[:,steps][0] = 0.0
@@ -185,7 +188,7 @@ class Agent():
                         data[trials].u[:,steps][2] = 0.0
                         hasLanded = True
                         self._land_pub.publish(Empty())
-                        print "Landing..."
+                        print " -> Drone Landed"
                         rospy.sleep(3)
                     else:
                         command = Twist()
@@ -245,6 +248,8 @@ class Agent():
             fig = plt.figure(i)
             ax = fig.add_subplot(111)
             ax.grid()
+            ax.set_xlabel('Iteration')
+            ax.set_ylabel('Reward')
 
             policy = Policies[i].policy # Resetting policy IMP
             start_time = datetime.now()
@@ -379,6 +384,9 @@ class Agent():
             fig = plt.figure(k+1000)
             ax = fig.add_subplot(111)
             ax.grid()
+            ax.set_xlabel('Iteration')
+            ax.set_ylabel('Reward')
+
             for m in range(numIterations): # Loop over Iterations
                 print "    @ Iteration: ", m
                 # PG
