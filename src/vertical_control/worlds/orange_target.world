@@ -35,7 +35,7 @@
         <collision name='collision'>
           <geometry>
             <box>
-              <size>.2 .2 .01</size>
+              <size>.25 .25 .01</size>
             </box>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -52,7 +52,7 @@
         <visual name='visual'>
           <geometry>
             <box>
-              <size>.2 .2 .01</size>
+              <size>.25 .25 .01</size>
             </box>
           </geometry>
           <material>
