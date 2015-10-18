@@ -181,8 +181,8 @@ class Agent():
 
                 if not hasLanded:
                     if self._state_z <= 0 and self._visible and \
-                       self._state_x <= .5 and self._state_x >= -.5 and \
-                       self._state_y <= .5 and self._state_y >= -.5:
+                       self._state_x < .7 and self._state_x > -.7 and \
+                       self._state_y < .6 and self._state_y > -.8:
                         data[trials].u[:,steps][0] = 0.0
                         data[trials].u[:,steps][1] = 0.0
                         data[trials].u[:,steps][2] = 0.0
@@ -438,7 +438,7 @@ class Agent():
 
 
 if __name__ == "__main__":
-    n_systems = 2  # Integer number of tasks
+    n_systems = 3  # Integer number of tasks
     learning_rate = .1  # Learning rate for stochastic gradient descent
     gamma = 0.9  # Discount factor gamma
 
@@ -450,8 +450,8 @@ if __name__ == "__main__":
                                # 'NAC' => Episodic Natural Actor Critic
 
     traj_length = 150 # Number of time steps to simulate in the cart-pole system
-    num_rollouts = 30 # Number of trajectories for testing
-    num_iterations = 100 # Number of learning episodes/iterations # 120
+    num_rollouts = 40 # Number of trajectories for testing
+    num_iterations = 400 # Number of learning episodes/iterations # 120
 
     agent = Agent(n_systems, learning_rate, gamma)
     time.sleep(.5)
@@ -466,7 +466,7 @@ if __name__ == "__main__":
 
     # Learning ELLA
     traj_length = 150
-    num_rollouts = 30 # 200
+    num_rollouts = 40 # 200
     mu1 = exp(-5)  # Sparsity coefficient
     mu2 = exp(-5)  # Regularization coefficient
     k = 1  # Number of inner layers
@@ -476,9 +476,10 @@ if __name__ == "__main__":
 
     # Testing Phase
     traj_length = 150
-    num_rollouts = 30 # 100
-    num_iterations = 85 # 200
+    num_rollouts = 40 # 100
+    num_iterations = 200 # 200
 
     agent.startTest(traj_length, num_rollouts, num_iterations)
+
 
     rospy.spin()
