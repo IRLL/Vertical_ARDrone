@@ -3,4 +3,4 @@
 	url = https://github.com/AutonomyLab/ardrone_autonomy.git
 [submodule "src/tum_simulator"]
 	path = src/tum_simulator
-	url = https://github.com/tum-vision/tum_simulator.git
+	url = https://github.com/dougvk/tum_simulator.git
