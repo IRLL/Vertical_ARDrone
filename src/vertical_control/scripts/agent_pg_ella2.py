@@ -286,7 +286,7 @@ class Agent():
             if avgRPG != None:
                 # plot the rewards from previous learning session
                 for k in range(start_it):
-                    ax.scatter(k, Avg_rPG[k, i], marker=u'x', c='cyan', cmap=cm.jet)
+                    ax.scatter(k, Avg_rPG[k, i], marker=u'x', c='green', cmap=cm.jet)
                     ax.figure.canvas.draw()
                     fig.canvas.draw()
                     fig.canvas.flush_events()
@@ -482,7 +482,7 @@ class Agent():
 
 
 if __name__ == "__main__":
-    n_systems = 4  # Integer number of tasks 4
+    n_systems = 2  # Integer number of tasks 4
     learning_rate = .1  # Learning rate for stochastic gradient descent
     gamma = 0.9  # Discount factor gamma
 
@@ -493,26 +493,26 @@ if __name__ == "__main__":
                                # 'REINFORCE' => Episodic REINFORCE
                                # 'NAC' => Episodic Natural Actor Critic
 
-    traj_length = 200 # Number of time steps to simulate in the cart-pole system
+    traj_length = 150 # Number of time steps to simulate in the cart-pole system
     num_rollouts = 40 # Number of trajectories for testing
-    num_iterations = 600 # Number of learning episodes/iterations # 120 600
+    num_iterations = 100 # Number of learning episodes/iterations # 120 600
 
     agent = Agent(n_systems, learning_rate, gamma)
     time.sleep(.5)
 
     # Learning PG
-    agent.startPg(poli_type, base_learner, traj_length,
-                  num_rollouts, num_iterations, task_file='task.p',
-                  policy_file='policy.p', avg_file='average.p',
-                  is_load=False)
+    #agent.startPg(poli_type, base_learner, traj_length,
+    #              num_rollouts, num_iterations, task_file='task_3tasks_ag.p',
+    #              policy_file='policy_3tasks_ag.p', avg_file='average_3tasks_ag.p',
+    #              is_load=False)
 
     # Continue Learning PG
     # NOTE: Make a Backup of the files before running to ensure
     #       you have a copy of the original policy
-    #agent.startPg(poli_type, base_learner, traj_length,
-    #          num_rollouts, num_iterations, task_file='task.p',
-    #          policy_file='policy.p', avg_file='average.p',
-    #          is_continue=True)
+    agent.startPg(poli_type, base_learner, traj_length,
+              num_rollouts, num_iterations, task_file='task_2tasks_ag.p',
+              policy_file='policy_2tasks_ag.p', avg_file='average_2tasks_ag.p',
+              is_continue=True)
 
     # Loading PG policies from file
     #agent.startPg(task_file='task.p', policy_file='policy.p', isLoadPolicy=True)
