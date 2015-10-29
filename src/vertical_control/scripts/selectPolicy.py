@@ -20,15 +20,15 @@ def loadPolicies(task_file, policy_file, avg_file):
 
 if __name__ == "__main__":
     #==================CONFIG VARIABLES====================
-    rm_idx = [] # identify indices to remove/prune out
+    rm_idx = [2] # identify indices to remove/prune out
 
-    t_file = PATH + 'task_new.p'
-    p_file = PATH + 'policy_new.p'
-    a_file = PATH + 'average_new.p'
+    t_file = PATH + 'task_3tasks_ag.p'
+    p_file = PATH + 'policy_3tasks_ag.p'
+    a_file = PATH + 'average_3tasks_ag.p'
 
-    t_new_file = PATH + 'task_new.p'
-    p_new_file = PATH + 'policy_new.p'
-    a_new_file = PATH + 'average_new.p'
+    t_new_file = PATH + 'task_2tasks_ag.p'
+    p_new_file = PATH + 'policy_2tasks_ag.p'
+    a_new_file = PATH + 'average_2tasks_ag.p'
     #======================================================
 
     tasks, policies, avg_r = loadPolicies(task_file = t_file,
@@ -36,7 +36,7 @@ if __name__ == "__main__":
                                           avg_file = a_file)
 
     print "# of Tasks: ", len(tasks)
-    print "avg_r: ", avg_r
+    #print "avg_r: ", avg_r
     n_sys = len(tasks)
     if len(rm_idx) > 0:
         prune_tasks = [ tasks[i] for i in range(n_sys) if i not in rm_idx ]
