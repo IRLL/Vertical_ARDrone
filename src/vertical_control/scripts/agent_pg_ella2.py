@@ -276,8 +276,8 @@ class Agent():
 
         for i in range(nSystems):
             # TODO: Clear screen
-            print "@ Task: ", i
-            fig = plt.figure(i)
+            print "@ Task: ", i + 1
+            fig = plt.figure("PG Task " + str(i+1))
             ax = fig.add_subplot(111)
             ax.grid()
             ax.set_xlabel('Iteration')
@@ -424,8 +424,8 @@ class Agent():
         Avg_rPGELLA = np.zeros((numIterations, tasks_size))
         Avg_rPG = np.zeros((numIterations, tasks_size))
         for k in range(tasks_size): # Test over all tasks
-            print "@ Task: ", k
-            fig = plt.figure(k+1000)
+            print "@ Task: ", k + 1
+            fig = plt.figure("PG-ELLA Task " + str(k+1))
             ax = fig.add_subplot(111)
             ax.grid()
             ax.set_xlabel('Iteration')
@@ -495,23 +495,37 @@ if __name__ == "__main__":
 
     traj_length = 150 # Number of time steps to simulate in the cart-pole system
     num_rollouts = 40 # Number of trajectories for testing
+<<<<<<< HEAD
     num_iterations = 100 # Number of learning episodes/iterations # 120 600
+=======
+    num_iterations = 0 # Number of learning episodes/iterations # 120 600
+>>>>>>> d833a09a13a0242b0826021c7b74d80c9925cf6e
 
     agent = Agent(n_systems, learning_rate, gamma)
     time.sleep(.5)
 
     # Learning PG
     #agent.startPg(poli_type, base_learner, traj_length,
+<<<<<<< HEAD
     #              num_rollouts, num_iterations, task_file='task_3tasks_ag.p',
     #              policy_file='policy_3tasks_ag.p', avg_file='average_3tasks_ag.p',
+=======
+    #              num_rollouts, num_iterations, task_file='task_2tasks_ag.p',
+    #              policy_file='policy_2tasks_ag.p', avg_file='average_2tasks_ag.p',
+>>>>>>> d833a09a13a0242b0826021c7b74d80c9925cf6e
     #              is_load=False)
 
     # Continue Learning PG
     # NOTE: Make a Backup of the files before running to ensure
     #       you have a copy of the original policy
     agent.startPg(poli_type, base_learner, traj_length,
+<<<<<<< HEAD
               num_rollouts, num_iterations, task_file='task_2tasks_ag.p',
               policy_file='policy_2tasks_ag.p', avg_file='average_2tasks_ag.p',
+=======
+              num_rollouts, num_iterations, task_file='final_converged/task_4tasks_700.p',
+              policy_file='final_converged/policy_4tasks_700.p', avg_file='final_converged/average_4tasks_700.p',
+>>>>>>> d833a09a13a0242b0826021c7b74d80c9925cf6e
               is_continue=True)
 
     # Loading PG policies from file
