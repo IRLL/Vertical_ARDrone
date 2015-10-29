@@ -21,10 +21,11 @@ def computeHessian(data, sigma):
         YPosSquare = np.sum(YPos ** 2)
         ZPos = data[i].x[2, :]
         ZPosSquare = np.sum(ZPos ** 2)
+
         XPosYPos = np.sum(XPos * YPos)
         XPosZPos = np.sum(XPos * ZPos)
         YPosZPos = np.sum(YPos * ZPos)
-        #PosVel = np.sum(Pos * Vel)
+
         RewardDum = np.sum(Reward)
         Array = np.array([[XPosSquare, XPosSquare, XPosSquare,   XPosYPos,   XPosYPos,   XPosYPos,   XPosZPos,   XPosZPos,   XPosZPos],
                           [XPosSquare, XPosSquare, XPosSquare,   XPosYPos,   XPosYPos,   XPosYPos,   XPosZPos,   XPosZPos,   XPosZPos],
@@ -35,10 +36,10 @@ def computeHessian(data, sigma):
                           [  XPosZPos,   XPosZPos,   XPosZPos,   YPosZPos,   YPosZPos,   YPosZPos, ZPosSquare, ZPosSquare, ZPosSquare],
                           [  XPosZPos,   XPosZPos,   XPosZPos,   YPosZPos,   YPosZPos,   YPosZPos, ZPosSquare, ZPosSquare, ZPosSquare],
                           [  XPosZPos,   XPosZPos,   XPosZPos,   YPosZPos,   YPosZPos,   YPosZPos, ZPosSquare, ZPosSquare, ZPosSquare]])
-        Matrix = 1.0 / 1.0 * Array * RewardDum
+        Matrix = 1 / 1 *(Array * RewardDum)
         #Matrix = 1.0 / 1.0 * np.array([[PosSquare, PosVel], [PosVel, VelSquare]]) * RewardDum
         Hes = Hes + Matrix
 
-    Hessian = -Hes * 1.0 / nRollouts
+    Hessian = -Hes * 1 / nRollouts
 
     return Hessian

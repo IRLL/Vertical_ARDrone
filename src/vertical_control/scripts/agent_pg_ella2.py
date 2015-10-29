@@ -2,6 +2,7 @@
 import rospy
 import time
 import sys
+import types
 from datetime import datetime
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float32MultiArray
@@ -69,7 +70,7 @@ class Agent():
             self.loadPolicies(task_file, policy_file, avg_file)
 
             # Ensure number of systems are equal
-            if (np.shape(self.Avg_rPG)[1] != self._n_systems):
+            if (self.Tasks[0].nSystems != self._n_systems):
                 import sys
                 print "Error: File has different number of systems"
                 sys.exit(1)
@@ -261,40 +262,54 @@ class Agent():
         plt.ion()
 
         nSystems = np.shape(Params)[0]
+        print "Number of Systems", nSystems
         r = np.zeros(shape=(1, rollouts))
 
         tasks_time = [0] * nSystems
-        start_it = 0
-        if avgRPG == None:
-            Avg_rPG = np.zeros((numIterations, nSystems))
-        else:
-            start_it = np.shape(avgRPG)[0]
-            print "Start: ", start_it
-            Avg_rPG = np.zeros((numIterations, nSystems))
-            Avg_rPG = np.append(avgRPG, Avg_rPG, axis=0)
-            numIterations += start_it
+        start_it = [0] * nSystems
+
+        if type(avgRPG) == types.NoneType:
+            Avg_rPG = [np.zeros((numIterations, 1)) for i in range(nSystems)]
+            #Avg_rPG = np.zeros((numIterations, nSystems))
+        elif type(avgRPG) == np.ndarray:
+            #Convert numpy array to list
+            tmp_avg_r = []
+            n_iterations = np.shape(avgRPG)[0]
+            for j in range(nSystems):
+                start_it[j] = n_iterations
+                tmp = np.append(avgRPG[:,j].reshape(n_iterations, 1),
+                                np.zeros((numIterations, 1)), axis=0)
+                tmp_avg_r.append(tmp)
+            Avg_rPG = tmp_avg_r
+        elif type(avgRPG) == types.ListType:
+            for j in range(nSystems):
+                start_it[j] = np.shape(avgRPG[j])[0]
+                avgRPG[j] = np.append(avgRPG[j],
+                                      np.zeros((numIterations, 1)), axis=0)
+            Avg_rPG = avgRPG
 
         for i in range(nSystems):
             # TODO: Clear screen
             print "@ Task: ", i + 1
+            print "    Perturbation: ", Params[i].param.disturbance
             fig = plt.figure("PG Task " + str(i+1))
             ax = fig.add_subplot(111)
             ax.grid()
             ax.set_xlabel('Iteration')
             ax.set_ylabel('Reward')
 
-            if avgRPG != None:
+            if type(avgRPG) != types.NoneType:
                 # plot the rewards from previous learning session
-                for k in range(start_it):
-                    ax.scatter(k, Avg_rPG[k, i], marker=u'x', c='green', cmap=cm.jet)
-                    ax.figure.canvas.draw()
-                    fig.canvas.draw()
-                    fig.canvas.flush_events()
+                for k in range(start_it[i]):
+                    ax.scatter(k, Avg_rPG[i][k], marker=u'x', c='green', cmap=cm.jet)
+                ax.figure.canvas.draw()
+                fig.canvas.draw()
+                fig.canvas.flush_events()
 
             policy = Policies[i].policy # Resetting policy IMP
             start_time = datetime.now()
 
-            for k in range(start_it, numIterations):
+            for k in range(start_it[i], numIterations+start_it[i]):
                 print "@ Iteration: ", k
                 print "    Initial Theta: ", policy.theta
                 print "    Sigma: ", policy.sigma
@@ -320,7 +335,7 @@ class Agent():
 
                 avg_r = np.mean(r)
                 print "    Mean: ", avg_r
-                Avg_rPG[k, i] = np.mean(avg_r)
+                Avg_rPG[i][k] = np.mean(avg_r)
 
                 time.sleep(1)
                 ax.scatter(k, avg_r, marker=u'x', c='blue', cmap=cm.jet)
@@ -334,12 +349,15 @@ class Agent():
 
             Policies[i].policy = policy # Calculating theta
             print "    Learned Theta: ", Policies[i].policy.theta
+            plt.savefig("PG Task " + str(i+1) + ".png", bbox_inches='tight')
+            plt.close(fig)
         print "Task completion times: ", tasks_time
         #plt.show(block=True)
 
         return Policies, Avg_rPG
 
-    def startElla(self, traj_length, num_rollouts, mu1, mu2, k=1):
+    def startElla(self, traj_length, num_rollouts, learning_rate, mu1, mu2, k=1):
+        self._learning_rate = learning_rate
         self.modelPGELLA = initPGELLA(self.Tasks, 1, mu1, mu2, self._learning_rate)
 
         print "Learn PGELLA"
@@ -359,6 +377,7 @@ class Agent():
         HessianArray = [Hessianarray() for i in range(tasks_size)]
         ParameterArray = [Parameterarray() for i in range(tasks_size)]
 
+        #taskId = 0 # FIXME to get rid of random choice of task
         while not np.all(ObservedTasks):  # Repeat until all tasks are observed
 
             taskId = np.random.randint(limitOne, limitTwo, 1)  # Pick a random task
@@ -392,11 +411,14 @@ class Agent():
             print 'Iterating @: ', counter
             counter = counter + 1
 
+            #taskId += 1 # FIXME to get rid of random choice of task
+
         print 'All Tasks observed @: ', counter-1
 
         return modelPGELLA
 
-    def startTest(self, traj_length, num_rollouts, num_iterations):
+    def startTest(self, traj_length, num_rollouts, num_iterations, learning_rate):
+        self._learning_rate = learning_rate
         # Creating new PG policies
         PGPol = constructPolicies(self.Tasks)
 
@@ -421,8 +443,10 @@ class Agent():
             policyPGELLA.sigma = PGPol[i].policy.sigma
             PolicyPGELLAGroup[i].policy = policyPGELLA
 
-        Avg_rPGELLA = np.zeros((numIterations, tasks_size))
-        Avg_rPG = np.zeros((numIterations, tasks_size))
+        Avg_rPGELLA = [np.zeros((numIterations, 1)) for i in range(tasks_size)]
+        Avg_rPG = [np.zeros((numIterations, 1)) for i in range(tasks_size)]
+        #Avg_rPGELLA = np.zeros((numIterations, tasks_size))
+        #Avg_rPG = np.zeros((numIterations, tasks_size))
         for k in range(tasks_size): # Test over all tasks
             print "@ Task: ", k + 1
             fig = plt.figure("PG-ELLA Task " + str(k+1))
@@ -468,21 +492,21 @@ class Agent():
                 for z in range(dataPG_size):
                     Sum_rPGELLA[z,:] = np.sum(dataPGELLA[z].r)
 
-                Avg_rPGELLA[m, k] = np.mean(Sum_rPGELLA)
-                Avg_rPG[m, k] = np.mean(Sum_rPG)
+                Avg_rPGELLA[k][m] = np.mean(Sum_rPGELLA)
+                Avg_rPG[k][m] = np.mean(Sum_rPG)
 
                 # TODO: Plot graph
-                ax.scatter(m, Avg_rPGELLA[m, k], marker=u'*', color='r', cmap=cm.jet)
-                ax.scatter(m, Avg_rPG[m, k], marker=u'*', color='b', cmap=cm.jet)
+                ax.scatter(m, Avg_rPGELLA[k][m], marker=u'*', color='r', cmap=cm.jet)
+                ax.scatter(m, Avg_rPG[k][m], marker=u'*', color='b', cmap=cm.jet)
                 ax.figure.canvas.draw()
                 fig.canvas.draw()
                 fig.canvas.flush_events()
-        plt.show(block=True)
-
+            plt.savefig("PG-ELLA Task " + str(k+1) + ".png", bbox_inches='tight')
+            plt.close(fig)
 
 
 if __name__ == "__main__":
-    n_systems = 4  # Integer number of tasks 4
+    n_systems = 10  # Integer number of tasks 4
     learning_rate = .1  # Learning rate for stochastic gradient descent
     gamma = 0.9  # Discount factor gamma
 
@@ -509,31 +533,31 @@ if __name__ == "__main__":
     # Continue Learning PG
     # NOTE: Make a Backup of the files before running to ensure
     #       you have a copy of the original policy
-    agent.startPg(poli_type, base_learner, traj_length,
-              num_rollouts, num_iterations, task_file='final_converged/task_4tasks_700.p',
-              policy_file='final_converged/policy_4tasks_700.p', avg_file='final_converged/average_4tasks_700.p',
-              is_continue=True)
+    #agent.startPg(poli_type, base_learner, traj_length,
+    #          num_rollouts, num_iterations, task_file='task_new_10.p',
+    #          policy_file='policy_new_10.p', avg_file='average_new_10.p',
+    #          is_continue=True)
 
     # Loading PG policies from file
-    #agent.startPg(task_file='task.p', policy_file='policy.p', isLoadPolicy=True)
+    agent.startPg(task_file='task_new_10.p', policy_file='policy_new_10.p',
+                  avg_file='average_new_10.p', is_load=True)
 
-    '''
     # Learning ELLA
     traj_length = 150
     num_rollouts = 40 # 200
+    learning_rate = .00003
     mu1 = exp(-5)  # Sparsity coefficient
     mu2 = exp(-5)  # Regularization coefficient
     k = 1  # Number of inner layers
 
-    agent.startElla(traj_length, num_rollouts, mu1, mu2, k)
-
+    agent.startElla(traj_length, num_rollouts, learning_rate, mu1, mu2, k)
 
     # Testing Phase
     traj_length = 150
     num_rollouts = 40 # 100
-    num_iterations = 200 # 200
+    num_iterations = 30 # 200
+    learning_rate = .1
 
-    agent.startTest(traj_length, num_rollouts, num_iterations)
-    '''
+    agent.startTest(traj_length, num_rollouts, num_iterations, learning_rate)
 
     rospy.spin()
