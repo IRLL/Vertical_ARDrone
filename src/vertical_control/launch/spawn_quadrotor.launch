@@ -4,7 +4,7 @@
  <launch>
    <arg name="model" default="$(find cvg_sim_gazebo)/urdf/quadrotor.urdf.xacro"/>
    <arg name="x" default="0"/>
-   <arg name="y" default="0"/>
+   <arg name="y" default="2"/>
    <arg name="z" default="3"/>
    <arg name="R" default="0"/>
    <arg name="P" default="0"/>
@@ -36,6 +36,7 @@
      <param name="frame_id" value="nav" />
    </node>
    <!-- node name="hector_pose_estimation" pkg="hector_pose_estimation" type="hector_pose_estimation_node" output="screen"/-->
+
 
  </launch>
    
