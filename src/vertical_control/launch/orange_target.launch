@@ -12,11 +12,11 @@
   </group>
 
   <!-- Spawn simulated quadrotor uav -->
-  <group ns="quadcopter">
+  <!-- <group ns="quadcopter"> -->
   <include file="$(find vertical_control)/launch/spawn_quadrotor.launch" >
     <arg name="model" value="$(find cvg_sim_gazebo)/urdf/quadrotor_sensors.urdf.xacro"/>
   </include>
-  </group>
+  <!-- </group> -->
 
 
 
