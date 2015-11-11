@@ -19,10 +19,12 @@ def updatePGELLA(ELLAmodel, taskId, ObservedTasks, HessianArray, ParameterArray)
     allowedTask = np.nonzero(ObservedTasks == 1)[0]
     Tg = np.sum(ObservedTasks)
 
+    k = np.shape(ELLAmodel.S)[0]
     for i in range(int(Tg)):
-        S = ELLAmodel.S[:,allowedTask[i]].reshape(1,1)
+        S = ELLAmodel.S[:,allowedTask[i]].reshape(k,1)
         S_p = S.conj().T
         D = HessianArray[allowedTask[i]].D
+
         #print "shape 1: ", np.shape((2 * HessianArray[allowedTask[i]].D))
         #print "shape 2: ", np.shape(np.dot(ParameterArray[allowedTask[i]].alpha, S_p))
         #print "2nd term:", np.dot((2 * HessianArray[allowedTask[i]].D), np.dot(ParameterArray[allowedTask[i]].alpha, S_p)).reshape(np.shape(ELLAmodel.L))
@@ -48,11 +50,11 @@ def updatePGELLA(ELLAmodel, taskId, ObservedTasks, HessianArray, ParameterArray)
         #            + np.dot((2 * HessianArray[allowedTask[i]].D), np.dot(ELLAmodel.L, np.dot(ELLAmodel.S[:,allowedTask[i]], ELLAmodel.S[:,allowedTask[i]].conj().T))) \
         #            + 2 * ELLAmodel.mu_two * ELLAmodel.L
 
-    print "L: ", ELLAmodel.L
+    #print "L: ", ELLAmodel.L
     print "rate: ", ELLAmodel.learningRate
-    print "Tg: ", Tg
+    #print "Tg: ", Tg
     print "Summ: ", summ
-    print "left part: ", ELLAmodel.learningRate * 1 / Tg * summ
+    #print "left part: ", ELLAmodel.learningRate * 1 / Tg * summ
     ELLAmodel.L = (ELLAmodel.L - ELLAmodel.learningRate * ((1 / Tg) * summ))
 
     print "ELLA Model L: ", ELLAmodel.L
@@ -76,5 +78,6 @@ def updatePGELLA(ELLAmodel, taskId, ObservedTasks, HessianArray, ParameterArray)
     ELLAmodel.S[:, taskId] = np.asarray(s.todense())
 
     print "ELLA Model S: ", ELLAmodel.S
-    print "Theta (S * L): ", ELLAmodel.S[:, taskId] * ELLAmodel.L
+    print "Theta (L * S): ", np.dot(ELLAmodel.L, ELLAmodel.S[:, taskId])
+
     return ELLAmodel
