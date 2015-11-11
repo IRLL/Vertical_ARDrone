@@ -358,7 +358,7 @@ class Agent():
 
     def startElla(self, traj_length, num_rollouts, learning_rate, mu1, mu2, k=1):
         self._learning_rate = learning_rate
-        self.modelPGELLA = initPGELLA(self.Tasks, 1, mu1, mu2, self._learning_rate)
+        self.modelPGELLA = initPGELLA(self.Tasks, k, mu1, mu2, self._learning_rate)
 
         print "Learn PGELLA"
         self.modelPGELLA = self.learnPGELLA(self.Tasks, self.Policies, self._learning_rate,
