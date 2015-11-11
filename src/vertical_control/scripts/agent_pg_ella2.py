@@ -358,7 +358,7 @@ class Agent():
 
     def startElla(self, traj_length, num_rollouts, learning_rate, mu1, mu2, k=1):
         self._learning_rate = learning_rate
-        self.modelPGELLA = initPGELLA(self.Tasks, k, mu1, mu2, self._learning_rate)
+        self.modelPGELLA = initPGELLA(self.Tasks, 1, mu1, mu2, self._learning_rate)
 
         print "Learn PGELLA"
         self.modelPGELLA = self.learnPGELLA(self.Tasks, self.Policies, self._learning_rate,
@@ -437,7 +437,7 @@ class Agent():
         PolicyPGELLAGroup = [PGPolicy() for i in range(tasks_size)]
 
         for i in range(tasks_size):  # loop over all tasks
-            theta_PG_ELLA = np.dot(modelPGELLA.L, modelPGELLA.S[:,i]) # TODO: double check
+            theta_PG_ELLA = modelPGELLA.L * modelPGELLA.S[:,i] # TODO: double check
             policyPGELLA = Policy()
             policyPGELLA.theta = theta_PG_ELLA
             policyPGELLA.sigma = PGPol[i].policy.sigma
@@ -447,7 +447,7 @@ class Agent():
         Avg_rPG = [np.zeros((numIterations, 1)) for i in range(tasks_size)]
         #Avg_rPGELLA = np.zeros((numIterations, tasks_size))
         #Avg_rPG = np.zeros((numIterations, tasks_size))
-        for k in range(tasks_size-1, -1, -1): # Test over all tasks
+        for k in range(tasks_size): # Test over all tasks
             print "@ Task: ", k + 1
             fig = plt.figure("PG-ELLA Task " + str(k+1))
             ax = fig.add_subplot(111)
@@ -545,8 +545,8 @@ if __name__ == "__main__":
 
     # Learning ELLA
     traj_length = 150
-    num_rollouts = 60 # 200
-    learning_rate = .0003
+    num_rollouts = 80 # 200
+    learning_rate = .001
     mu1 = exp(-4)  # Sparsity coefficient
     mu2 = exp(-4)  # Regularization coefficient
     k = 2  # Number of inner layers
@@ -556,7 +556,7 @@ if __name__ == "__main__":
     # Testing Phase
     traj_length = 150
     num_rollouts = 40 # 100
-    num_iterations = 100 # 200
+    num_iterations = 150 # 200
     learning_rate = .1
 
     agent.startTest(traj_length, num_rollouts, num_iterations, learning_rate)
