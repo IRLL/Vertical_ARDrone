@@ -377,10 +377,10 @@ class Agent():
         HessianArray = [Hessianarray() for i in range(tasks_size)]
         ParameterArray = [Parameterarray() for i in range(tasks_size)]
 
-        #taskId = 0 # FIXME to get rid of random choice of task
+        taskId = 0 # FIXME to get rid of random choice of task
         while not np.all(ObservedTasks):  # Repeat until all tasks are observed
 
-            taskId = np.random.randint(limitOne, limitTwo, 1)  # Pick a random task
+            #taskId = np.random.randint(limitOne, limitTwo, 1)  # Pick a random task
             print "Task ID: ", taskId
 
             if ObservedTasks[taskId] == 0:  # Entry is set to 1 when corresponding task is observed
@@ -411,7 +411,7 @@ class Agent():
             print 'Iterating @: ', counter
             counter = counter + 1
 
-            #taskId += 1 # FIXME to get rid of random choice of task
+            taskId += 1 # FIXME to get rid of random choice of task
 
         print 'All Tasks observed @: ', counter-1
 
@@ -436,8 +436,9 @@ class Agent():
 
         PolicyPGELLAGroup = [PGPolicy() for i in range(tasks_size)]
 
+        k_layers = np.shape(modelPGELLA.S[:,i])[0]
         for i in range(tasks_size):  # loop over all tasks
-            theta_PG_ELLA = modelPGELLA.L * modelPGELLA.S[:,i] # TODO: double check
+            theta_PG_ELLA = np.dot(modelPGELLA.L, modelPGELLA.S[:,i].reshape(k_layers, 1)) # TODO: double check
             policyPGELLA = Policy()
             policyPGELLA.theta = theta_PG_ELLA
             policyPGELLA.sigma = PGPol[i].policy.sigma

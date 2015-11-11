@@ -75,9 +75,10 @@ def updatePGELLA(ELLAmodel, taskId, ObservedTasks, HessianArray, ParameterArray)
     s = spams.lasso(np.asfortranarray(target, dtype=np.float64), D = np.asfortranarray(dictTransformed, dtype=np.float64),
                             Q = None, q = None, return_reg_path = False, L = -1, lambda1 = ELLAmodel.mu_one / 2.0, lambda2 = 0., verbose = False, mode = 2)
 
-    ELLAmodel.S[:, taskId] = np.asarray(s.todense())
+    print np.asarray(s.todense())
+    ELLAmodel.S[:, taskId] = np.asarray(s.todense()).conj().T
 
     print "ELLA Model S: ", ELLAmodel.S
-    print "Theta (L * S): ", np.dot(ELLAmodel.L, ELLAmodel.S[:, taskId])
+    print "Theta (L * S): ", np.dot(ELLAmodel.L, ELLAmodel.S[:, taskId].reshape(k, 1))
 
     return ELLAmodel
