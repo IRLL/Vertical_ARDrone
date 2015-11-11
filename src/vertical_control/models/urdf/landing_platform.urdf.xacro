@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!--
+  Landing Platform
+ -->
+<robot name="landing_platform" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find vertical_control)/models/urdf/common_properties.urdf.xacro"/>
+
+  <!-- Xacro properties -->
+  <xacro:property name="M_SCALE" value="0.001"/>
+
+  <link name="landing_platform_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box>
+          <size>.25 .25 .01</size>
+        </box>
+      </geometry>
+      <material>
+        <script>
+          <uri>file://media/materials/scripts/gazebo.material</uri>
+          <name>Gazebo/Orange</name>
+        </script>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.01364 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box>
+          <size>.25 .25 .01</size>
+        </box>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0"
+               iyy="0.01" iyz="0.0"
+               izz="0.01" />
+    </inertial>
+  </link>
+
+</robot>
