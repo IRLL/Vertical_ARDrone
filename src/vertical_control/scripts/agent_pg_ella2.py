@@ -261,7 +261,7 @@ class Agent():
 
         plt.ion()
 
-        nSystems = np.shape(Params)[0]
+        nSystems = self._n_systems
         print "Number of Systems", nSystems
         r = np.zeros(shape=(1, rollouts))
 
@@ -356,17 +356,44 @@ class Agent():
 
         return Policies, Avg_rPG
 
-    def startElla(self, traj_length, num_rollouts, learning_rate, mu1, mu2, k=1):
-        self._learning_rate = learning_rate
-        self.modelPGELLA = initPGELLA(self.Tasks, k, mu1, mu2, self._learning_rate)
+    def startElla(self, traj_length=100, num_rollouts=40,
+                  learning_rate=0.1, mu1=0.1, mu2=0.1, k=1,
+                  model_file='model.p', is_load=False):
+        if not is_load:
+            self._learning_rate = learning_rate
+            self.modelPGELLA = initPGELLA(self.Tasks, k, mu1, mu2, self._learning_rate)
 
-        print "Learn PGELLA"
-        self.modelPGELLA = self.learnPGELLA(self.Tasks, self.Policies, self._learning_rate,
-                                            traj_length, num_rollouts, self.modelPGELLA)
+            print "Learn PGELLA"
+            self.modelPGELLA = self.learnPGELLA(self.Tasks, self.Policies, self._learning_rate,
+                                                traj_length, num_rollouts, self.modelPGELLA)
+
+            self.saveModelPGELLA(model_file)
+        else:
+            self.loadModelPGELLA(model_file)
+
+    def saveModelPGELLA(self, model_file):
+        # Save PG policies and tasks to a file
+        pickle.dump(self.modelPGELLA, open(model_file, 'wb'), pickle.HIGHEST_PROTOCOL)
+
+    def loadModelPGELLA(self, model_file):
+        # Load PG policies and tasks to a file
+        self.modelPGELLA = pickle.load(open(model_file, 'rb'))
+
+    def getSeedRandom(self, size, n_sets):
+        self.randNumbers = []
+        for i in range(n_sets):
+            temp = range(size)
+            random.shuffle(temp)
+            self.randNumbers += temp
+
+    def getNextRandom(self):
+        if len(self.randNumbers) > 0:
+            return self.randNumbers.pop(0)
+        return None
 
     def learnPGELLA(self, Tasks, Policies, learningRate,
                     trajLength, numRollouts, modelPGELLA):
-
+        random.seed(42)
         counter = 1
         tasks_size = np.shape(Tasks)[0]
         ObservedTasks = np.zeros((tasks_size, 1))
@@ -377,10 +404,13 @@ class Agent():
         HessianArray = [Hessianarray() for i in range(tasks_size)]
         ParameterArray = [Parameterarray() for i in range(tasks_size)]
 
+        self.getSeedRandom(tasks_size, 3) # each task will be observed two times
         #taskId = 0 # FIXME to get rid of random choice of task
-        while not np.all(ObservedTasks):  # Repeat until all tasks are observed
+        #while not np.all(ObservedTasks):  # Repeat until all tasks are observed
+        while len(self.randNumbers) > 0:
 
-            taskId = np.random.randint(limitOne, limitTwo, 1)  # Pick a random task
+            #taskId = np.random.randint(limitOne, limitTwo, 1)  # Pick a random task
+            taskId = self.getNextRandom()
             print "Task ID: ", taskId
 
             if ObservedTasks[taskId] == 0:  # Entry is set to 1 when corresponding task is observed
@@ -417,23 +447,86 @@ class Agent():
 
         return modelPGELLA
 
-    def startTest(self, traj_length, num_rollouts, num_iterations, learning_rate):
-        self._learning_rate = learning_rate
-        # Creating new PG policies
-        PGPol = constructPolicies(self.Tasks)
+    def startTest(self, traj_length=100, num_rollouts=40,
+                  num_iterations=150, learning_rate=0.1,
+                  test_file='test.p', is_load=False, is_continue=False):
+        if is_continue:
+            # Continue learning from a loaded policy
+            # num_iterations treated as additional iterations
+
+            # Load policy from file
+            self.loadModelTest(test_file)
+            avg_RPGELLA = self.Test_Avg_rPG
+            avg_RPG = self.Test_Avg_rPGELLA
+
+            # Ensure number of systems are equal
+            if (self.Tasks[0].nSystems != self._n_systems):
+                import sys
+                print "Error: File has different number of systems"
+                sys.exit(1)
+
+        elif not is_load:
+            self._learning_rate = learning_rate
+            # Creating new PG policies
+            self.PGPol = constructPolicies(self.Tasks)
+
+            self.PolicyPGELLAGroup = [PGPolicy() for i in range(self._n_systems)]
+
+            for i in range(self._n_systems):  # loop over all tasks
+                theta_PG_ELLA = np.dot(self.modelPGELLA.L, self.modelPGELLA.S[:,i].reshape(self.modelPGELLA.k, 1))
+                policyPGELLA = Policy()
+                policyPGELLA.theta = theta_PG_ELLA
+                policyPGELLA.sigma = self.PGPol[i].policy.sigma
+                self.PolicyPGELLAGroup[i].policy = policyPGELLA
+
+            avg_RPGELLA = self.Test_Avg_rPGELLA = None
+            avg_RPG = self.Test_Avg_rPG = None
+            self.saveModelTest(test_file)
+
+        else:
+            self.loadModelTest(test_file)
+            avg_RPGELLA = self.Test_Avg_rPG
+            avg_RPG = self.Test_Avg_rPGELLA
 
         print "Test Phase"
         # Testing and comparing PG and PG-ELLA
-        self.testPGELLA(self.Tasks, PGPol, self._learning_rate, traj_length,
-                        num_rollouts, num_iterations, self.modelPGELLA)
+        self.PGPol,
+        self.Test_Avg_rPG,
+        self.PolicyPGELLAGroup,
+        self.Test_Avg_rPGELLA = self.testPGELLA(self.Tasks, self.PGPol,
+                        self._learning_rate, traj_length, num_rollouts,
+                        num_iterations, self.PolicyPGELLAGroup,
+                        avgRPGELLA=avg_RPGELLA, avgRPG=avg_RPG)
+        self.saveModelTest(test_file)
+
+    def saveModelTest(self, test_file):
+        test = {}
+        test['alpha'] = self._learning_rate
+        test['pg_pol'] = self.PGPol
+        test['pgella_pol'] = self.PolicyPGELLAGroup
+        test['avg_RPG'] = self.Test_Avg_rPG
+        test['avg_RPGELLA'] = self.Test_Avg_rPGELLA
+        # Save PG policies and tasks to a file
+        pickle.dump(test, open(test_file, 'wb'), pickle.HIGHEST_PROTOCOL)
+
+    def loadModelTest(self, test_file):
+        # Load PG policies and tasks to a file
+        test = pickle.load(open(test_file, 'rb'))
+        self._learning_rate = test['alpha']
+        self.PGPol = test['pg_pol']
+        self.PolicyPGELLAGroup = test['pgella_pol']
+        self.Test_Avg_rPG = test['avg_RPG']
+        self.Test_Avg_rPGELLA = test['avg_RPGELLA']
 
     def testPGELLA(self, Tasks, PGPol, learningRate, trajLength,
-                   numRollouts, numIterations, modelPGELLA):
+                   numRollouts, numIterations, PolicyPGELLAGroup,
+                   avgRPGELLA=None, avgRPG=None):
 
         plt.ion()
 
-        tasks_size = np.shape(Tasks)[0]
+        tasks_size = self._n_systems
 
+        '''
         PolicyPGELLAGroup = [PGPolicy() for i in range(tasks_size)]
 
         k_layers = np.shape(modelPGELLA.S)[0]
@@ -443,9 +536,23 @@ class Agent():
             policyPGELLA.theta = theta_PG_ELLA
             policyPGELLA.sigma = PGPol[i].policy.sigma
             PolicyPGELLAGroup[i].policy = policyPGELLA
+        '''
 
-        Avg_rPGELLA = [np.zeros((numIterations, 1)) for i in range(tasks_size)]
-        Avg_rPG = [np.zeros((numIterations, 1)) for i in range(tasks_size)]
+        tasks_time = [0] * tasks_size
+        start_it = [0] * tasks_size
+
+        if type(avgRPGELLA) == types.NoneType or type(avgRPG) == types.NoneType:
+            Test_Avg_rPGELLA = [np.zeros((numIterations, 1)) for i in range(tasks_size)]
+            Test_Avg_rPG = [np.zeros((numIterations, 1)) for i in range(tasks_size)]
+        elif type(avgRPGELLA) == types.ListType or type(avgRPG) == types.ListType:
+            for j in range(tasks_size):
+                start_it[j] = np.shape(avgRPG[j])[0]
+                avgRPG[j] = np.append(avgRPG[j],
+                                      np.zeros((numIterations, 1)), axis=0)
+                avgRPGELLA[j] = np.append(avgRPGELLA[j],
+                                      np.zeros((numIterations, 1)), axis=0)
+            Test_Avg_rPG = avgRPG
+            Test_Avg_rPGELLA = avgRPGELLA
         #Avg_rPGELLA = np.zeros((numIterations, tasks_size))
         #Avg_rPG = np.zeros((numIterations, tasks_size))
         for k in range(tasks_size): # Test over all tasks
@@ -456,7 +563,18 @@ class Agent():
             ax.set_xlabel('Iteration')
             ax.set_ylabel('Reward')
 
-            for m in range(numIterations): # Loop over Iterations
+            if type(avgRPG) != types.NoneType:
+                # plot the rewards from previous learning session
+                for m in range(start_it[k]):
+                    ax.scatter(m, Test_Avg_rPGELLA[k][m], marker=u'*', color='r', cmap=cm.jet)
+                    ax.scatter(m, Test_Avg_rPG[k][m], marker=u'*', color='b', cmap=cm.jet)
+                ax.figure.canvas.draw()
+                fig.canvas.draw()
+                fig.canvas.flush_events()
+
+            start_time = datetime.now()
+
+            for m in range(start_it[k], numIterations+start_it[k]): # Loop over Iterations
                 print "    @ Iteration: ", m
                 # PG
                 data = self.obtainData(PGPol[k].policy, trajLength, numRollouts, Tasks[k])
@@ -493,18 +611,25 @@ class Agent():
                 for z in range(dataPG_size):
                     Sum_rPGELLA[z,:] = np.sum(dataPGELLA[z].r)
 
-                Avg_rPGELLA[k][m] = np.mean(Sum_rPGELLA)
-                Avg_rPG[k][m] = np.mean(Sum_rPG)
+                Test_Avg_rPGELLA[k][m] = np.mean(Sum_rPGELLA)
+                Test_Avg_rPG[k][m] = np.mean(Sum_rPG)
 
                 # TODO: Plot graph
-                ax.scatter(m, Avg_rPGELLA[k][m], marker=u'*', color='r', cmap=cm.jet)
-                ax.scatter(m, Avg_rPG[k][m], marker=u'*', color='b', cmap=cm.jet)
+                ax.scatter(m, Test_Avg_rPGELLA[k][m], marker=u'*', color='r', cmap=cm.jet)
+                ax.scatter(m, Test_Avg_rPG[k][m], marker=u'*', color='b', cmap=cm.jet)
                 ax.figure.canvas.draw()
                 fig.canvas.draw()
                 fig.canvas.flush_events()
+
+            stop_time = datetime.now()
+            tasks_time[i] = str(stop_time - start_time)
+
             plt.savefig("PG-ELLA Task " + str(k+1) + ".png", bbox_inches='tight')
             plt.close(fig)
 
+        print "Task completion times: ", tasks_time
+
+        return PGPol, Test_Avg_rPG, PolicyPGELLAGroup, Test_Avg_rPGELLA
 
 if __name__ == "__main__":
     np.random.seed(42)
@@ -546,20 +671,28 @@ if __name__ == "__main__":
 
     # Learning ELLA
     traj_length = 150
-    num_rollouts = 2 # 200
-    learning_rate = .001
+    num_rollouts = 60 # 200
+    learning_rate = .0003
     mu1 = exp(-4)  # Sparsity coefficient
     mu2 = exp(-4)  # Regularization coefficient
-    k = 2  # Number of inner layers
+    k = 1  # Number of inner layers
 
-    agent.startElla(traj_length, num_rollouts, learning_rate, mu1, mu2, k)
+    # Learning PGELLA
+    agent.startElla(traj_length, num_rollouts, learning_rate, mu1, mu2, k,
+                    model_file='model_10.p', is_load=False)
+    # Load PGELLA Model from file
+    #agent.startElla(model_file='model_10.p', is_load=True)
 
     # Testing Phase
     traj_length = 150
     num_rollouts = 40 # 100
-    num_iterations = 30 # 200
+    num_iterations = 20 # 200
     learning_rate = .1
 
-    agent.startTest(traj_length, num_rollouts, num_iterations, learning_rate)
+    agent.startTest(traj_length, num_rollouts, num_iterations, learning_rate,
+                    test_file='test_10.p', is_load=False)
+
+    #agent.startTest(traj_length, num_rollouts, num_iterations, learning_rate,
+    #                test_file='test_10.p', is_continue=True)
 
     rospy.spin()
