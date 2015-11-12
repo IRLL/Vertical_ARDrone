@@ -393,7 +393,6 @@ class Agent():
 
     def learnPGELLA(self, Tasks, Policies, learningRate,
                     trajLength, numRollouts, modelPGELLA):
-        random.seed(42)
         counter = 1
         tasks_size = np.shape(Tasks)[0]
         ObservedTasks = np.zeros((tasks_size, 1))
@@ -633,6 +632,7 @@ class Agent():
 
 if __name__ == "__main__":
     np.random.seed(42)
+    random.seed(42)
     n_systems = 10  # Integer number of tasks 4
     learning_rate = .1  # Learning rate for stochastic gradient descent
     gamma = 0.9  # Discount factor gamma
