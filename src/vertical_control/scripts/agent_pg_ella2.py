@@ -159,10 +159,11 @@ class Agent():
 
         # Based on Jan Peters; codes.
         # Perform H
+        landed = 0
 
+        stdout.write("\r    Trial %2d of %2d | Drone Landed %2d of %2d" % (0, H, 0, H))
+        stdout.flush()
         for trials in range(H):
-            stdout.write("\r    Trial %d of %d" % (trials+1, H))
-            stdout.flush()
             #print "      Trial #", trials+1
             self.startEpisode()
 
@@ -211,7 +212,7 @@ class Agent():
                         data[trials].u[:,steps][2] = 0.0
                         hasLanded = True
                         self._land_pub.publish(Empty())
-                        print " -> Drone Landed"
+                        landed += 1
                         rospy.sleep(3)
                     else:
                         command = Twist()
@@ -244,13 +245,14 @@ class Agent():
                 #          sqrt(np.dot(np.dot(u, imp_eye_act), u_p))
                 reward = -sqrt(np.dot(np.dot(state, np.eye(N) * 10), state.conj().T)) - \
                           sqrt(np.dot(np.dot(u, np.eye(M) * 5), u_p))
-                #print "reward: ", reward
 
                 if isinf(reward):
                     print "Error: INFINITY"
                     sys.exit(1)
 
                 data[trials].r[0][steps] = reward
+            stdout.write("\r    Trial %2d of %2d | Drone Landed %2d of %2d" % (trials+1, H, landed, H))
+            stdout.flush()
         print
         return data
 
@@ -403,19 +405,22 @@ class Agent():
         HessianArray = [Hessianarray() for i in range(tasks_size)]
         ParameterArray = [Parameterarray() for i in range(tasks_size)]
 
-        self.getSeedRandom(tasks_size, 3) # each task will be observed two times
+        self.getSeedRandom(tasks_size, 1) # each task will be observed two times
         #taskId = 0 # FIXME to get rid of random choice of task
         #while not np.all(ObservedTasks):  # Repeat until all tasks are observed
         while len(self.randNumbers) > 0:
 
             #taskId = np.random.randint(limitOne, limitTwo, 1)  # Pick a random task
             taskId = self.getNextRandom()
+            if counter == 1:
+                self.randNumbers.append(taskId)
             print "Task ID: ", taskId
 
             if ObservedTasks[taskId] == 0:  # Entry is set to 1 when corresponding task is observed
                 ObservedTasks[taskId] = 1
 
             # Policy Gradientts on taskId
+            print "    Learn Theta"
             data = self.obtainData(Policies[taskId].policy, trajLength, numRollouts, Tasks[taskId])
 
             if Tasks[taskId].param.baseLearner == 'REINFORCE':
@@ -427,6 +432,7 @@ class Agent():
             Policies[taskId].policy.theta = Policies[taskId].policy.theta + learningRate * dJdTheta.reshape(9, 1)
 
             # Computing Hessian
+            print "    Data for Hessian"
             data = self.obtainData(Policies[taskId].policy, trajLength, numRollouts, Tasks[taskId])
 
             D = computeHessian(data, Policies[taskId].policy.sigma)
@@ -621,7 +627,7 @@ class Agent():
                 fig.canvas.flush_events()
 
             stop_time = datetime.now()
-            tasks_time[i] = str(stop_time - start_time)
+            tasks_time[k] = str(stop_time - start_time)
 
             plt.savefig("PG-ELLA Task " + str(k+1) + ".png", bbox_inches='tight')
             plt.close(fig)
@@ -673,9 +679,9 @@ if __name__ == "__main__":
     traj_length = 150
     num_rollouts = 60 # 200
     learning_rate = .0003
-    mu1 = exp(-4)  # Sparsity coefficient
-    mu2 = exp(-4)  # Regularization coefficient
-    k = 1  # Number of inner layers
+    mu1 = exp(-6)  # Sparsity coefficient
+    mu2 = exp(-6)  # Regularization coefficient
+    k = 2  # Number of inner layers
 
     # Learning PGELLA
     agent.startElla(traj_length, num_rollouts, learning_rate, mu1, mu2, k,
@@ -686,7 +692,7 @@ if __name__ == "__main__":
     # Testing Phase
     traj_length = 150
     num_rollouts = 40 # 100
-    num_iterations = 20 # 200
+    num_iterations = 10 # 200
     learning_rate = .1
 
     agent.startTest(traj_length, num_rollouts, num_iterations, learning_rate,
