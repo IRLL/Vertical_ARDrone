@@ -51,9 +51,9 @@ def updatePGELLA(ELLAmodel, taskId, ObservedTasks, HessianArray, ParameterArray)
         #            + 2 * ELLAmodel.mu_two * ELLAmodel.L
 
     #print "L: ", ELLAmodel.L
-    print "rate: ", ELLAmodel.learningRate
+    #print "rate: ", ELLAmodel.learningRate
     #print "Tg: ", Tg
-    print "Summ: ", summ
+    #print "Summ: ", summ
     #print "left part: ", ELLAmodel.learningRate * 1 / Tg * summ
     ELLAmodel.L = (ELLAmodel.L - ELLAmodel.learningRate * ((1 / Tg) * summ))
 
