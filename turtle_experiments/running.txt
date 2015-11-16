@@ -1,0 +1,9 @@
+roslaunch turtlebot_gazebo turtlebot_empty_world.launch
+cd '/home/jmarcio/catkin_ws/src/turtle_experiments/src' 
+python agent_pg_ella_turtlebot.py
+
+cd '/opt/ros/hydro/share/turtlebot_gazebo/worlds' 
+sudo gedit '/opt/ros/hydro/share/turtlebot_gazebo/worlds/empty.world' 
+
+
+

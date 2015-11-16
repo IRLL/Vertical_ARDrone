@@ -1,0 +1,15 @@
+@ Iteration:  30
+    Initial Theta:  [[ 1699.40144357]
+ [-1603.8629133 ]
+ [  414.74783794]
+ [-2543.84422753]
+ [   69.34573961]
+ [  -66.33872   ]
+ [   16.08979168]
+ [ -105.96448313]]
+ 
+ Couldn't find an AF_INET address for [alienbot-N56JN]
+
+opt/ros/indigo/share/turtlebot_gazebo/worlds
+export TURTLEBOT_GAZEBO_WORLD_FILE=/opt/ros/indigo/share/turtlebot_gazebo/worlds/sandbox.world
+
