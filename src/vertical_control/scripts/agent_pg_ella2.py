@@ -47,11 +47,11 @@ class Agent():
         self._gamma = gamma
 
         self._reset_pos = rospy.ServiceProxy('/gazebo/set_model_state', SetModelState)
-        self._enable_controller = rospy.Publisher('v_controller/move_enable', Bool)
-        self._soft_reset_pub = rospy.Publisher('v_controller/soft_reset', Empty)
-        self._takeoff_pub = rospy.Publisher('/ardrone/takeoff', Empty)
-        self._land_pub = rospy.Publisher('/ardrone/land', Empty)
-        self._action_pub = rospy.Publisher('v_controller/agent_cmd', Twist)
+        self._enable_controller = rospy.Publisher('v_controller/move_enable', Bool, queue_size=1)
+        self._soft_reset_pub = rospy.Publisher('v_controller/soft_reset', Empty, queue_size=10)
+        self._takeoff_pub = rospy.Publisher('/ardrone/takeoff', Empty, queue_size=10)
+        self._land_pub = rospy.Publisher('/ardrone/land', Empty, queue_size=10)
+        self._action_pub = rospy.Publisher('v_controller/agent_cmd', Twist, queue_size=1)
         self._state_sub = rospy.Subscriber('v_controller/state', Float32MultiArray, self.getState)
         self._visible_sub = rospy.Subscriber('v_controller/visible', Bool, self.visible_callback)
         self._threshold = rospy.get_param("v_controller/threshold")
@@ -405,15 +405,15 @@ class Agent():
         HessianArray = [Hessianarray() for i in range(tasks_size)]
         ParameterArray = [Parameterarray() for i in range(tasks_size)]
 
-        self.getSeedRandom(tasks_size, 1) # each task will be observed two times
+        #self.getSeedRandom(tasks_size, 1) # each task will be observed two times
         #taskId = 0 # FIXME to get rid of random choice of task
-        #while not np.all(ObservedTasks):  # Repeat until all tasks are observed
-        while len(self.randNumbers) > 0:
+        while not np.all(ObservedTasks):  # Repeat until all tasks are observed
+        #while len(self.randNumbers) > 0:
 
-            #taskId = np.random.randint(limitOne, limitTwo, 1)  # Pick a random task
-            taskId = self.getNextRandom()
-            if counter == 1:
-                self.randNumbers.append(taskId)
+            taskId = np.random.randint(limitOne, limitTwo, 1)  # Pick a random task
+            #taskId = self.getNextRandom()
+            #if counter == 1:
+            #    self.randNumbers.append(taskId)
             print "Task ID: ", taskId
 
             if ObservedTasks[taskId] == 0:  # Entry is set to 1 when corresponding task is observed
@@ -461,8 +461,8 @@ class Agent():
 
             # Load policy from file
             self.loadModelTest(test_file)
-            avg_RPGELLA = self.Test_Avg_rPG
-            avg_RPG = self.Test_Avg_rPGELLA
+            avg_RPGELLA = self.Test_Avg_rPGELLA
+            avg_RPG = self.Test_Avg_rPG
 
             # Ensure number of systems are equal
             if (self.Tasks[0].nSystems != self._n_systems):
@@ -490,18 +490,19 @@ class Agent():
 
         else:
             self.loadModelTest(test_file)
-            avg_RPGELLA = self.Test_Avg_rPG
-            avg_RPG = self.Test_Avg_rPGELLA
+            avg_RPGELLA = self.Test_Avg_rPGELLA
+            avg_RPG = self.Test_Avg_rPG
 
         print "Test Phase"
         # Testing and comparing PG and PG-ELLA
-        self.PGPol,
-        self.Test_Avg_rPG,
-        self.PolicyPGELLAGroup,
-        self.Test_Avg_rPGELLA = self.testPGELLA(self.Tasks, self.PGPol,
+        self.testPGELLA(self.Tasks, self.PGPol,
                         self._learning_rate, traj_length, num_rollouts,
                         num_iterations, self.PolicyPGELLAGroup,
                         avgRPGELLA=avg_RPGELLA, avgRPG=avg_RPG)
+        #print self.PGPol
+        #print self.Test_Avg_rPG
+        #print self.PolicyPGELLAGroup
+        #print self.Test_Avg_rPGELLA
         self.saveModelTest(test_file)
 
     def saveModelTest(self, test_file):
@@ -522,6 +523,7 @@ class Agent():
         self.PolicyPGELLAGroup = test['pgella_pol']
         self.Test_Avg_rPG = test['avg_RPG']
         self.Test_Avg_rPGELLA = test['avg_RPGELLA']
+
 
     def testPGELLA(self, Tasks, PGPol, learningRate, trajLength,
                    numRollouts, numIterations, PolicyPGELLAGroup,
@@ -550,6 +552,7 @@ class Agent():
             Test_Avg_rPGELLA = [np.zeros((numIterations, 1)) for i in range(tasks_size)]
             Test_Avg_rPG = [np.zeros((numIterations, 1)) for i in range(tasks_size)]
         elif type(avgRPGELLA) == types.ListType or type(avgRPG) == types.ListType:
+            print "Test 1"
             for j in range(tasks_size):
                 start_it[j] = np.shape(avgRPG[j])[0]
                 avgRPG[j] = np.append(avgRPG[j],
@@ -569,6 +572,7 @@ class Agent():
             ax.set_ylabel('Reward')
 
             if type(avgRPG) != types.NoneType:
+                print "Test 2"
                 # plot the rewards from previous learning session
                 for m in range(start_it[k]):
                     ax.scatter(m, Test_Avg_rPGELLA[k][m], marker=u'*', color='r', cmap=cm.jet)
@@ -580,7 +584,7 @@ class Agent():
             start_time = datetime.now()
 
             for m in range(start_it[k], numIterations+start_it[k]): # Loop over Iterations
-                print "    @ Iteration: ", m
+                print "    @ Iteration: ", m+1
                 # PG
                 data = self.obtainData(PGPol[k].policy, trajLength, numRollouts, Tasks[k])
 
@@ -633,12 +637,14 @@ class Agent():
             plt.close(fig)
 
         print "Task completion times: ", tasks_time
-
-        return PGPol, Test_Avg_rPG, PolicyPGELLAGroup, Test_Avg_rPGELLA
+        self.PGPol = PGPol
+        self.Test_Avg_rPG = Test_Avg_rPG
+        self.PolicyPGELLAGroup = PolicyPGELLAGroup
+        self.Test_Avg_rPGELLA = Test_Avg_rPGELLA
 
 if __name__ == "__main__":
-    np.random.seed(42)
-    random.seed(42)
+    np.random.seed(10)
+    random.seed(10)
     n_systems = 10  # Integer number of tasks 4
     learning_rate = .1  # Learning rate for stochastic gradient descent
     gamma = 0.9  # Discount factor gamma
@@ -677,28 +683,28 @@ if __name__ == "__main__":
 
     # Learning ELLA
     traj_length = 150
-    num_rollouts = 60 # 200
-    learning_rate = .0003
-    mu1 = exp(-6)  # Sparsity coefficient
-    mu2 = exp(-6)  # Regularization coefficient
+    num_rollouts = 40 # 200
+    learning_rate = .00003
+    mu1 = exp(-5)  # Sparsity coefficient
+    mu2 = exp(-5)  # Regularization coefficient
     k = 2  # Number of inner layers
 
     # Learning PGELLA
-    agent.startElla(traj_length, num_rollouts, learning_rate, mu1, mu2, k,
-                    model_file='model_10.p', is_load=False)
+    #agent.startElla(traj_length, num_rollouts, learning_rate, mu1, mu2, k,
+    #                model_file='model_10.p', is_load=False)
     # Load PGELLA Model from file
-    #agent.startElla(model_file='model_10.p', is_load=True)
+    agent.startElla(model_file='model_10.p', is_load=True)
 
     # Testing Phase
     traj_length = 150
     num_rollouts = 40 # 100
-    num_iterations = 10 # 200
+    num_iterations = 40 # 200
     learning_rate = .1
 
-    agent.startTest(traj_length, num_rollouts, num_iterations, learning_rate,
-                    test_file='test_10.p', is_load=False)
-
     #agent.startTest(traj_length, num_rollouts, num_iterations, learning_rate,
-    #                test_file='test_10.p', is_continue=True)
+    #                test_file='test_10.p', is_load=False)
+
+    agent.startTest(traj_length, num_rollouts, num_iterations, learning_rate,
+                    test_file='test_10.p', is_continue=True)
 
     rospy.spin()
