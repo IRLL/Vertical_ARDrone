@@ -71,6 +71,7 @@ class Model:
         self.mu_one = None
         self.mu_two = None
         self.learningRate = 0.0
+        self.k = 0.0
         self.L = None
 
 

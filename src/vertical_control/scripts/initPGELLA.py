@@ -20,7 +20,15 @@ def initPGELLA(Tasks, k, mu_one, mu_two, learningRate):
     model.mu_one = mu_one
     model.mu_two = mu_two
     model.learningRate = learningRate
+    model.k = k
 
     model.L = np.random.rand(Tasks[0].param.N * Tasks[0].param.M, k)
+    #print model.S
+    #print np.shape(model.S)
+    #print model.L
+    #print np.shape(model.L)
+    #print np.dot(model.L, model.S)
+    #import sys
+    #sys.exit(1)
 
     return model
