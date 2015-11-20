@@ -287,7 +287,7 @@ class Agent():
                                 np.zeros((numIterations, 1)), axis=0)
                 tmp_avg_r.append(tmp)
             Avg_rPG = tmp_avg_r
-        elif type(avgRPG) == types.ListType:
+        elif type(avgRPG) == list:
             for j in range(nSystems):
                 start_it[j] = np.shape(avgRPG[j])[0]
                 avgRPG[j] = np.append(avgRPG[j],
@@ -543,7 +543,7 @@ class Agent():
         if type(avgRPGELLA) == types.NoneType or type(avgRPG) == types.NoneType:
             Test_Avg_rPGELLA = [np.zeros((numIterations, 1)) for i in range(tasks_size)]
             Test_Avg_rPG = [np.zeros((numIterations, 1)) for i in range(tasks_size)]
-        elif type(avgRPGELLA) == types.ListType or type(avgRPG) == types.ListType:
+        elif type(avgRPGELLA) == list or type(avgRPG) == list:
             for j in range(tasks_size):
                 start_it[j] = np.shape(avgRPG[j])[0]
                 avgRPG[j] = np.append(avgRPG[j],
