@@ -31,7 +31,10 @@ from computeHessian import computeHessian
 from updatePGELLA import updatePGELLA
 from structs import Data, Hessianarray, Parameterarray, PGPolicy, Policy
 
-import cPickle as pickle
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 
 
 class Agent():
