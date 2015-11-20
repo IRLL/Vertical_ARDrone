@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from __future__ import print_function
 import cv2
 import rospy
 import numpy as np
@@ -33,9 +34,9 @@ class Sim_sensor():
 
 
 		rospy.init_node('simulated_sensors', anonymous=False)
-		self.learner_pub = rospy.Publisher('v_controller/state', Float32MultiArray)
-		self.not_visible_pub = rospy.Publisher('v_controller/visible', Bool)
-		self.controller_pub = rospy.Publisher('v_controller/control_state', Float32MultiArray)
+		self.learner_pub = rospy.Publisher('v_controller/state', Float32MultiArray, queue_size=1)
+		self.not_visible_pub = rospy.Publisher('v_controller/visible', Bool, queue_size=1)
+		self.controller_pub = rospy.Publisher('v_controller/control_state', Float32MultiArray, queue_size=1)
 		self.video_sub = rospy.Subscriber('/ardrone/image_raw', Image, self.receive_image_callback)
 		self.height_sub = rospy.Subscriber('/sonar_height', Range, self.receive_height_callback)
 		self.rate = rospy.Rate(self.UPDATE_SPEED)
@@ -63,10 +64,10 @@ class Sim_sensor():
 
 
 	def processing_function(self):
-		print "waiting for images to come in..."
+		print("waiting for images to come in...")
 		while (not rospy.is_shutdown()) and self.latest_image is None:
 			rospy.sleep(.5)
-		print "done!"
+		print("done!")
 
 		self.get_image_size()
 
@@ -148,8 +149,8 @@ class Sim_sensor():
 				xpos, ypos = self.rescale(xpos, ypos)
 				self.lasty = 3 * self.sign(ypos)
 				self.lastx = 4 * self.sign(xpos)
-				#print "a", area
-				#print "d", distance
+				#print("a", area)
+				#print("d", distance)
 			else:
 				xpos = self.lastx
 				ypos = self.lasty

@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from __future__ import print_function
 import rospy
 from sensor_msgs.msg import Image
 from threading import Lock
@@ -15,31 +16,31 @@ class Tag_sensor():
 		self.nav_lock = Lock()
 		self.latest_data = None
 		self.hover_distance = rospy.get_param("v_controller/hover_distance")
- 
+
 		rospy.init_node('tag_sensors', anonymous=False)
-		
+
 		self.learner_pub = rospy.Publisher('v_controller/state', Float32)
 		self.not_visible_pub = rospy.Publisher('v_controller/visible', Bool)
 		self.controller_pub = rospy.Publisher('v_controller/control_state', Float32MultiArray)
 		self.nav_sub = rospy.Subscriber('/ardrone/navdata', Navdata, self.receive_nav_callback)
-		
+
 		self.rate = rospy.Rate(self.UPDATE_SPEED)
 
-		
+
 
 	def receive_nav_callback(self, data):
 		self.nav_lock.acquire()
 		try:
-			self.latest_data = data 
+			self.latest_data = data
 		finally:
 			self.nav_lock.release()
 
 
 	def processing_function(self):
-		print "waiting for nav data to come in..."
+		print("waiting for nav data to come in...")
 		while (not rospy.is_shutdown()) and self.latest_data is None:
-			rospy.sleep(.5)		
-		print "done!"
+			rospy.sleep(.5)
+		print("done!")
 
 
 		while not rospy.is_shutdown(): #do image processing here
@@ -48,20 +49,20 @@ class Tag_sensor():
 			try:
 				data = self.latest_data
 			finally:
-				self.nav_lock.release()	
+				self.nav_lock.release()
 
 			if data.tags_count > 0: #if tags are visible
 				x, y, distance = self.read_tag(data)
 				x, y = self.rescale(x, y)
-				print x, y, distance
+				print(x, y, distance)
 				self.not_visible_pub.publish(1)
 			else:
-				print "can't see any tags"
+				print("can't see any tags")
 				x, y, distance = 0.0, 0.0, self.hover_distance #default_values
 				self.not_visible_pub.publish(0)
-				
 
-			self.learner_pub.publish(y)		
+
+			self.learner_pub.publish(y)
 			self.controller_pub.publish(None, [x, distance])
 			self.rate.sleep()
 
@@ -71,11 +72,11 @@ class Tag_sensor():
 	def rescale(self, x, y):
 		width_div = 1000/2
 		height_div = 1000/2
-		newx = float(x - width_div)/width_div			
-		newy = float(y - height_div)/height_div			
+		newx = float(x - width_div)/width_div
+		newy = float(y - height_div)/height_div
 		return newx,newy
 
-	
+
 if __name__ == '__main__':
-	tag_sensor = Tag_sensor()	
+	tag_sensor = Tag_sensor()
 	tag_sensor.processing_function()
