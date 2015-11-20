@@ -1,3 +1,4 @@
+from __future__ import print_function
 import readchar
 import os
 import signal
@@ -34,4 +35,4 @@ if __name__ == '__main__':
 		tmp = []
 		for ch in key:
 			tmp.append(ord(ch))
-		print "got key: ", tmp
+		print("got key: ", tmp)

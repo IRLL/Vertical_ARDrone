@@ -1,3 +1,4 @@
+from __future__ import print_function
 import numpy as np
 import cPickle as pickle
 
@@ -35,8 +36,8 @@ if __name__ == "__main__":
                                           policy_file = p_file,
                                           avg_file = a_file)
 
-    print "# of Tasks: ", len(tasks)
-    #print "avg_r: ", avg_r
+    print("# of Tasks: ", len(tasks))
+    #print("avg_r: ", avg_r)
     n_sys = len(tasks)
     if len(rm_idx) > 0:
         prune_tasks = [ tasks[i] for i in range(n_sys) if i not in rm_idx ]

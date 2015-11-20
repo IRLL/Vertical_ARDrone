@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from __future__ import print_function
 import cv2
 import rospy
 import numpy as np
@@ -66,10 +67,10 @@ class Vision_sensor():
 
 
 	def processing_function(self):
-		print "waiting for images to come in..."
+		print("waiting for images to come in...")
 		while (not rospy.is_shutdown()) and self.latest_image is None:
 			rospy.sleep(.5)
-		print "done!"
+		print("done!")
 
 		self.get_image_size()
 
@@ -145,7 +146,7 @@ class Vision_sensor():
 			contour = self.find_max_contour(contours)
 			moment = cv2.moments(contour)
 			area = moment["m00"] #cv2.contourArea(contours[0])
-			print area
+			print(area)
 			if area > 800:
 				xpos = moment["m10"] / area
 				ypos = moment["m01"] / area
@@ -155,8 +156,8 @@ class Vision_sensor():
 				xpos, ypos = self.rescale(xpos, ypos)
 				self.lasty = 3 * self.sign(ypos)
 				self.lastx = 4 * self.sign(xpos)
-				#print "a", area
-				#print "d", distance
+				#print("a", area)
+				#print("d", distance)
 			else:
 				xpos = self.lastx
 				ypos = self.lasty

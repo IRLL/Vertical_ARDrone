@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+from __future__ import print_function
 import rospy
 import time
 import std_srvs.srv as services
@@ -11,7 +11,7 @@ class Main():
 	def __init__(self):
 		rospy.init_node('v_control_main')
 		s = rospy.Service('/v_control/reset_world', services.Empty, self.reset_world)
-		
+
 		self.gazebo_reset = rospy.ServiceProxy('/gazebo/reset_world', services.Empty)
 
 		self.takeoff_pub = rospy.Publisher('ardrone/takeoff', Empty)
@@ -36,14 +36,14 @@ class Main():
 		self.land_pub.publish(Empty())
 
 	def reset_world(self, req):
-		print "got reset request"
+		print("got reset request")
 		#do all resetting here
-		
+
 		#disable the drone controller, publish an empty message
 		self.enable_pub.publish(Bool(0)) #disable the drone controller
 		rospy.sleep(.1)
 		self.drone_pub.publish(Twist()) #publish command to stop drone
-		
+
 		#reset the world
 		self.gazebo_reset()
 
@@ -53,7 +53,7 @@ class Main():
 		#wait for the drone to stabilize
 		rospy.sleep(5)
 		self.soft_reset_pub.publish(Empty()) #reset all modules requiring a soft reset
-		print "done!"
+		print("done!")
 		return services.EmptyResponse()
 
 

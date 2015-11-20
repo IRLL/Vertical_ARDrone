@@ -26,8 +26,6 @@ def createSys(nSystems, poliType, baseLearner, gamma):
 
         # Calculation of random parameters
         param.disturbance = [0.0] * param.M #[x, y, z]
-        # [0.02, 0.05, 0.0] works with alpha 0.35
-        # [0.043, 0.05, 0.0] works with alpha 0.1
 
         # ensure at least one disturbance is non-zero
         while param.disturbance[0] == 0.0 and param.disturbance[1] == 0.0:

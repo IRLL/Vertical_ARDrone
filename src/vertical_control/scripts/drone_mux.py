@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+from __future__ import print_function
 import rospy
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Empty
@@ -44,11 +44,11 @@ class Controller():
 	def run(self):
 		cmd = Twist()
 		if not self.twistIsEmpty(self.human_twist):
-			print "got here"
+			print("got here")
 			cmd = self.human_twist
 			self.enabled = False
 		elif self.enabled:
-			print "and here"
+			print("and here")
 			cmd = self.agent_twist
 			#disable the stabilizer
 			#cmd.linear.z = self.stabilizer_twist.linear.z
