@@ -409,7 +409,7 @@ class Agent():
         HessianArray = [Hessianarray() for i in range(tasks_size)]
         ParameterArray = [Parameterarray() for i in range(tasks_size)]
 
-        #self.getSeedRandom(tasks_size, 1) # each task will be observed two times
+        #self.getSeedRandom(tasks_size, 4) # each task will be observed two times
         #taskId = 0 # FIXME to get rid of random choice of task
         while not np.all(ObservedTasks):  # Repeat until all tasks are observed
         #while len(self.randNumbers) > 0:
@@ -680,21 +680,21 @@ if __name__ == "__main__":
     k = 2  # Number of inner layers
 
     # Learning PGELLA
-    agent.startElla(traj_length, num_rollouts, learning_rate, mu1, mu2, k,
-                    model_file='model_10.p', is_load=False)
+    #agent.startElla(traj_length, num_rollouts, learning_rate, mu1, mu2, k,
+    #                model_file='model_10.p', is_load=False)
     # Load PGELLA Model from file
-    #agent.startElla(model_file='model_10.p', is_load=True)
+    agent.startElla(model_file='model_10.p', is_load=True)
 
     # Testing Phase
     traj_length = 150
     num_rollouts = 40 # 100
-    num_iterations = 10 # 200
+    num_iterations = 90 # 200
     learning_rate = .1
 
-    agent.startTest(traj_length, num_rollouts, num_iterations, learning_rate,
-                    test_file='test_10.p', is_load=False)
-
     #agent.startTest(traj_length, num_rollouts, num_iterations, learning_rate,
-    #                test_file='test_10.p', is_continue=True)
+    #                test_file='test_10.p', is_load=False)
+
+    agent.startTest(traj_length, num_rollouts, num_iterations, learning_rate,
+                    test_file='test_10.p', is_continue=True)
 
     rospy.spin()
