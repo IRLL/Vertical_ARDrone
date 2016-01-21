@@ -29,7 +29,7 @@ def updatePGELLA(ELLAmodel, taskId, ObservedTasks, HessianArray, ParameterArray)
                     + np.dot(np.dot(np.dot((2 * D), ELLAmodel.L), S), S_p) \
                     + 2 * ELLAmodel.mu_two * ELLAmodel.L
 
-    ELLAmodel.L = (ELLAmodel.L - ELLAmodel.learningRate * ((1 / Tg) * summ))
+    ELLAmodel.L = (ELLAmodel.L - ELLAmodel.learningRate * ((1. / Tg) * summ))
 
     print("ELLA Model L: ", ELLAmodel.L)
 

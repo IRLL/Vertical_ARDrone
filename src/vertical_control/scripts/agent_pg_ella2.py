@@ -51,11 +51,11 @@ class Agent():
         self._gamma = gamma
 
         self._reset_pos = rospy.ServiceProxy('/gazebo/set_model_state', SetModelState)
-        self._enable_controller = rospy.Publisher('v_controller/move_enable', Bool, queue_size=1)
+        self._enable_controller = rospy.Publisher('v_controller/move_enable', Bool, queue_size=10)
         self._soft_reset_pub = rospy.Publisher('v_controller/soft_reset', Empty, queue_size=10)
         self._takeoff_pub = rospy.Publisher('/ardrone/takeoff', Empty, queue_size=10)
         self._land_pub = rospy.Publisher('/ardrone/land', Empty, queue_size=10)
-        self._action_pub = rospy.Publisher('v_controller/agent_cmd', Twist, queue_size=1)
+        self._action_pub = rospy.Publisher('v_controller/agent_cmd', Twist, queue_size=10)
         self._state_sub = rospy.Subscriber('v_controller/state', Float32MultiArray, self.getState)
         self._visible_sub = rospy.Subscriber('v_controller/visible', Bool, self.visible_callback)
         self._threshold = rospy.get_param("v_controller/threshold")
@@ -145,10 +145,18 @@ class Agent():
     def startEpisode(self):
         #x = random.uniform(-.23, .23)
         #y = random.uniform(-.23, .23)
-        x = random.uniform(-.8, .8)
-        y = random.uniform(-.23, .23)
+        x = 0
+        y = 0
         self.resetSim(x,y,0)
-        rospy.sleep(1)
+        '''
+        while True:
+            x = random.uniform(-.8, .8)
+            y = random.uniform(-.23, .23)
+            self.resetSim(x,y,0)
+            rospy.sleep(1)
+            if self._visible:
+                return
+        '''
 
     def land(self):
         self.land_pub.publish(Empty())
@@ -370,6 +378,7 @@ class Agent():
             self.modelPGELLA = initPGELLA(self.Tasks, k, mu1, mu2, self._learning_rate)
 
             print("Learn PGELLA")
+            #self.Policies = constructPolicies(self.Tasks) # NEW -> learn from random policies
             self.modelPGELLA = self.learnPGELLA(self.Tasks, self.Policies, self._learning_rate,
                                                 traj_length, num_rollouts, self.modelPGELLA)
 
@@ -477,7 +486,8 @@ class Agent():
         elif not is_load:
             self._learning_rate = learning_rate
             # Creating new PG policies
-            self.PGPol = constructPolicies(self.Tasks)
+            #self.PGPol = constructPolicies(self.Tasks)
+            self.PGPol = self.Policies # NEW
 
             self.PolicyPGELLAGroup = [PGPolicy() for i in range(self._n_systems)]
 
@@ -635,9 +645,9 @@ class Agent():
 if __name__ == "__main__":
     np.random.seed(10)
     random.seed(10)
-    n_systems = 10  # Integer number of tasks 4
-    learning_rate = .1  # Learning rate for stochastic gradient descent
-    gamma = 0.9  # Discount factor gamma
+    n_systems = 20  # Integer number of tasks 4
+    learning_rate = 0.1 #.05  # Learning rate for stochastic gradient descent
+    gamma = 0.98 #.9 # Discount factor gamma
 
     # Parameters for policy
     poli_type = 'Gauss'  # Policy Type (Only supports Gaussian Policies)
@@ -647,54 +657,55 @@ if __name__ == "__main__":
                                # 'NAC' => Episodic Natural Actor Critic
 
     traj_length = 150 # Number of time steps to simulate in the cart-pole system
-    num_rollouts = 40 # Number of trajectories for testing
-    num_iterations = 0 # Number of learning episodes/iterations # 120 600
+    num_rollouts = 15 #40 # Number of trajectories for testing
+    num_iterations = 50 # Number of learning episodes/iterations # 120 600
 
     agent = Agent(n_systems, learning_rate, gamma)
     time.sleep(.5)
 
     # Learning PG
-    #agent.startPg(poli_type, base_learner, traj_length,
-    #              num_rollouts, num_iterations, task_file='task_2tasks_ag.p',
-    #              policy_file='policy_2tasks_ag.p', avg_file='average_2tasks_ag.p',
-    #              is_load=False)
+    agent.startPg(poli_type, base_learner, traj_length,
+                  num_rollouts, num_iterations, task_file='task_new_50.p',
+                  policy_file='policy_new_50.p', avg_file='average_new_50.p',
+                  is_load=False)
 
     # Continue Learning PG
     # NOTE: Make a Backup of the files before running to ensure
     #       you have a copy of the original policy
     #agent.startPg(poli_type, base_learner, traj_length,
-    #          num_rollouts, num_iterations, task_file='task_new_10.p',
-    #          policy_file='policy_new_10.p', avg_file='average_new_10.p',
+    #          num_rollouts, num_iterations, task_file='task_new_50.p',
+    #          policy_file='policy_new_50.p', avg_file='average_new_50.p',
     #          is_continue=True)
 
     # Loading PG policies from file
-    agent.startPg(task_file='task_new_10.p', policy_file='policy_new_10.p',
-                  avg_file='average_new_10.p', is_load=True)
+    #agent.startPg(task_file='task_new_50.p', policy_file='policy_new_50.p',
+    #              avg_file='average_new_50.p', is_load=True)
 
+    '''
     # Learning ELLA
     traj_length = 150
     num_rollouts = 40 # 200
-    learning_rate = .00003
-    mu1 = exp(-5)  # Sparsity coefficient
-    mu2 = exp(-5)  # Regularization coefficient
-    k = 2  # Number of inner layers
+    learning_rate = 0.000001 #.00003
+    mu1 = 0.0001 #exp(-3)  # Sparsity coefficient
+    mu2 = 0.00000001 #exp(-3)  # Regularization coefficient
+    k = 4 #2 # Number of inner layers
 
     # Learning PGELLA
-    #agent.startElla(traj_length, num_rollouts, learning_rate, mu1, mu2, k,
-    #                model_file='model_10.p', is_load=False)
+    agent.startElla(traj_length, num_rollouts, learning_rate, mu1, mu2, k,
+                    model_file='model_new_50.p', is_load=False)
     # Load PGELLA Model from file
-    agent.startElla(model_file='model_10.p', is_load=True)
+    #agent.startElla(model_file='model_10_rand_pol.p', is_load=True)
 
     # Testing Phase
     traj_length = 150
-    num_rollouts = 40 # 100
-    num_iterations = 90 # 200
-    learning_rate = .1
-
-    #agent.startTest(traj_length, num_rollouts, num_iterations, learning_rate,
-    #                test_file='test_10.p', is_load=False)
+    num_rollouts = 45 #40 # 100
+    num_iterations = 10 # 200
+    learning_rate = 0.03 #.05
 
     agent.startTest(traj_length, num_rollouts, num_iterations, learning_rate,
-                    test_file='test_10.p', is_continue=True)
+                    test_file='test_new_50.p', is_load=False)
 
+    #agent.startTest(traj_length, num_rollouts, num_iterations, learning_rate,
+    #                test_file='test_10_rand_pol.p', is_continue=True)
+    '''
     rospy.spin()

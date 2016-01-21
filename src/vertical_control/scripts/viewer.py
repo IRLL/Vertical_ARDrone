@@ -19,6 +19,7 @@ class Viewer ():
     AREA_DIST_CONST = 1
 
     def __init__(self):
+        rospy.init_node('viewer', anonymous=False)
         self.vloc = 0
         self.hloc = 0
         self.height, self.width = (-1, -1)
@@ -27,11 +28,10 @@ class Viewer ():
         self.state_x = 0.0
         self.state_y = 0.0
 
-        self.threshold = rospy.get_param("v_controller/threshold")
+        self.threshold = rospy.get_param("/v_controller/threshold")
         self.video_sub = rospy.Subscriber('/ardrone/image_raw', Image, self.receive_image_callback)
         self.nav_sub = rospy.Subscriber('/ardrone/navdata', Navdata, self.receive_nav_callback)
         self.state_sub = rospy.Subscriber('v_controller/state', Float32MultiArray, self.rx_state_callback)
-        rospy.init_node('viewer', anonymous=False)
 
     def rx_state_callback(self, data):
         self.state_x = data.data[0]

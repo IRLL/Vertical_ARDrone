@@ -4,7 +4,7 @@ from std_msgs.msg import Empty
 
 class dronedrv():
 	def __init__(self):
-		self.cmd_pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
+		self.cmd_pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
 		self.takeoff_pub = rospy.Publisher('ardrone/takeoff', Empty, queue_size=10)
 		self.land_pub = rospy.Publisher('ardrone/land', Empty, queue_size=10)
 	#	rospy.init_node('dronedrv', anonymous=True)

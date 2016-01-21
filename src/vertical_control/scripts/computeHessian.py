@@ -36,10 +36,10 @@ def computeHessian(data, sigma):
                           [  XPosZPos,   XPosZPos,   XPosZPos,   YPosZPos,   YPosZPos,   YPosZPos, ZPosSquare, ZPosSquare, ZPosSquare],
                           [  XPosZPos,   XPosZPos,   XPosZPos,   YPosZPos,   YPosZPos,   YPosZPos, ZPosSquare, ZPosSquare, ZPosSquare],
                           [  XPosZPos,   XPosZPos,   XPosZPos,   YPosZPos,   YPosZPos,   YPosZPos, ZPosSquare, ZPosSquare, ZPosSquare]])
-        Matrix = 1 / 1 *(Array * RewardDum)
+        Matrix = 1. / 1 *(Array * RewardDum)
         #Matrix = 1.0 / 1.0 * np.array([[PosSquare, PosVel], [PosVel, VelSquare]]) * RewardDum
         Hes = Hes + Matrix
 
-    Hessian = -Hes * 1 / nRollouts
+    Hessian = -Hes * 1. / nRollouts
 
     return Hessian

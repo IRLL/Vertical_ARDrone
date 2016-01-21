@@ -20,7 +20,7 @@ class Sim_sensor():
 	AREA_DIST_CONST = 35.623
 
 	def __init__(self):
-
+		rospy.init_node('simulated_sensors', anonymous=False)
 		self.latest_image = None
 
 		self.image_lock = Lock()
@@ -30,10 +30,8 @@ class Sim_sensor():
 		self.images = dict()
 		self.height, self.width = (-1, -1)
 		self.elevation = 0.0
-		self.hover_distance = rospy.get_param("v_controller/hover_distance")
+		self.hover_distance = rospy.get_param("/v_controller/hover_distance")
 
-
-		rospy.init_node('simulated_sensors', anonymous=False)
 		self.learner_pub = rospy.Publisher('v_controller/state', Float32MultiArray, queue_size=1)
 		self.not_visible_pub = rospy.Publisher('v_controller/visible', Bool, queue_size=1)
 		self.controller_pub = rospy.Publisher('v_controller/control_state', Float32MultiArray, queue_size=1)

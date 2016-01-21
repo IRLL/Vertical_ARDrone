@@ -14,9 +14,9 @@ class Main():
 
 		self.gazebo_reset = rospy.ServiceProxy('/gazebo/reset_world', services.Empty)
 
-		self.takeoff_pub = rospy.Publisher('ardrone/takeoff', Empty, queue_size=10)
-		self.land_pub = rospy.Publisher('ardrone/land', Empty, queue_size=10)
-		self.soft_reset_pub = rospy.Publisher('v_controller/soft_reset', Empty, queue_size=10)
+		self.takeoff_pub = rospy.Publisher('ardrone/takeoff', Empty, queue_size=3)
+		self.land_pub = rospy.Publisher('ardrone/land', Empty, queue_size=3)
+		self.soft_reset_pub = rospy.Publisher('v_controller/soft_reset', Empty, queue_size=3)
 		self.enable_pub = rospy.Publisher('v_controller/move_enable', Bool, queue_size=1)
 		self.drone_pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
 

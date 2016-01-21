@@ -12,8 +12,8 @@ import signal
 
 class humancontroller():
 	def __init__(self):
-		self.human_pub = rospy.Publisher('v_controller/human_cmd', Twist, queue_size=3)
-		self.enable_pub = rospy.Publisher('v_controller/move_enable', Bool, queue_size=3)
+		self.human_pub = rospy.Publisher('v_controller/human_cmd', Twist, queue_size=10)
+		self.enable_pub = rospy.Publisher('v_controller/move_enable', Bool, queue_size=10)
 
 	def hysteresis(self, value, threshold = .05):
 		if value < 0:

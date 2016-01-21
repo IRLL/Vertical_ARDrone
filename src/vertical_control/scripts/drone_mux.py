@@ -17,7 +17,7 @@ class Controller():
 		self.gazebo_reset = rospy.ServiceProxy('/gazebo/reset_world', services.Empty)
 
 		rospy.init_node('drone_mux', anonymous=False)
-		self.drone_pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
+		self.drone_pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
 		self.reset_sub = rospy.Subscriber('v_controller/soft_reset', Empty, self.reset)
 		self.enable_sub = rospy.Subscriber('v_controller/move_enable', Bool, self.move_en_callback)
 		self.agent_sub = rospy.Subscriber('v_controller/agent_cmd', Twist, self.rx_agent_callback)
