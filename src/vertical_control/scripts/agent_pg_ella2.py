@@ -147,10 +147,9 @@ class Agent():
     def startEpisode(self):
         #x = random.uniform(-.23, .23)
         #y = random.uniform(-.23, .23)
-        x = 0
-        y = 0
-        self.resetSim(x,y,0)
-        '''
+        #x = 0
+        #y = 0
+        #self.resetSim(x,y,0)
         while True:
             x = random.uniform(-.8, .8)
             y = random.uniform(-.23, .23)
@@ -158,8 +157,6 @@ class Agent():
             rospy.sleep(1)
             if self._visible:
                 return
-        '''
-        rospy.sleep(1)
 
     def land(self):
         self.land_pub.publish(Empty())
@@ -174,6 +171,7 @@ class Agent():
 
         # Based on Jan Peters; codes.
         # Perform H
+        noiseval = []
         landed = 0
 
         stdout.write("\r    Trial %2d of %2d | Drone Landed %2d of %2d" % (0, H, 0, H))
@@ -184,6 +182,15 @@ class Agent():
 
             # Save associated policy
             data[trials].policy = copy.deepcopy(policy)
+
+            # Finite Differences
+            if trials != 0:
+                if np.mod(trials, 2) == 1:
+                    noiseval = np.random.uniform(-0.0001, 0.0001, np.shape(data[trials].policy.theta)) + 0.0
+                else:
+                    noiseval = -noiseval + 0.0
+                data[trials].policy.theta = copy.deepcopy(data[0].policy.theta) + noiseval
+
 
             # Draw the first state
             data[trials].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/3.0]])
@@ -323,7 +330,7 @@ class Agent():
                 fig.canvas.draw()
                 fig.canvas.flush_events()
 
-            policy = coppy.deepcopy(Policies[i].policy) # Resetting policy IMP
+            policy = copy.deepcopy(Policies[i].policy) # Resetting policy IMP
             start_time = datetime.now()
 
             for k in range(start_it[i], numIterations+start_it[i]):
@@ -336,8 +343,10 @@ class Agent():
                 dJdtheta = None
                 if Params[i].param.baseLearner == "REINFORCE":
                     dJdtheta = episodicREINFORCE(policy, data, Params[i])
-                else:
+                elif Params[i].param.baseLearner == "NAC":
                     dJdtheta = episodicNaturalActorCritic(policy, data, Params[i])
+                elif Params[i].param.baseLearner == "FD":
+                    dJdtheta = finiteDifferences(data, rollouts)
 
                 policy.theta = policy.theta + rates*dJdtheta.reshape(9, 1)
 
@@ -449,13 +458,14 @@ class Agent():
             # Updating theta*
             Policies[taskId].policy.theta = Policies[taskId].policy.theta + learningRate * dJdTheta.reshape(9, 1)
 
-            if True:
+            if False:
                 # Computing Hessian
                 print("    Data for Hessian")
                 data = self.obtainData(Policies[taskId].policy, trajLength, numRollouts, Tasks[taskId])
 
                 D = computeHessian(data, Policies[taskId].policy.sigma)
             else:
+                # Use the identity matrix
                 D = np.identity(np.shape(dJdtheta)[0])
 
             HessianArray[taskId].D =  D
@@ -657,15 +667,14 @@ class Agent():
 
 if __name__ == "__main__":
     np.random.seed(10)
-    random.seed(10)
-    n_systems = 20  # Integer number of tasks 4
-    learning_rate = 0.1 #.05  # Learning rate for stochastic gradient descent
-    gamma = 0.98 #.9 # Discount factor gamma
+    n_systems = 5  # Integer number of tasks 4
+    learning_rate = 0.000001 #.05  # Learning rate for stochastic gradient descent
+    gamma = 0.998 #.9 # Discount factor gamma
 
     # Parameters for policy
     poli_type = 'Gauss'  # Policy Type (Only supports Gaussian Policies)
                         # 'Gauss' => Gaussian Policy
-    base_learner = 'NAC'  # Base Learner
+    base_learner = 'FD'  # Base Learner
                           # 'REINFORCE' => Episodic REINFORCE
                           # 'NAC' => Episodic Natural Actor Critic
                           # 'FD' => Finite Differences

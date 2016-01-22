@@ -24,11 +24,11 @@ def constructPolicies(Tasks):
 
         policy = Policy()
         if poliType == 'Gauss':
-            #policy.theta = np.random.rand(N * M,1) * 0.0001
-            policy.theta = np.zeros((N * M, 1))
-            #for j in range(N*M):
-            #    val = policy.theta[j]
-            #    policy.theta[j] = val if np.random.randint(2) == 1 else -val
+            policy.theta = np.random.rand(N * M,1) * 0.1
+            #policy.theta = np.zeros((N * M, 1))
+            for j in range(N*M):
+                val = policy.theta[j]
+                policy.theta[j] = val if np.random.randint(2) == 1 else -val
             #policy.sigma = np.random.rand(1, M)
             policy.sigma = np.array([[0.01, 0.01, 0.01]]) #np.array([[0.1, 0.1, 0.1]])
         else:
