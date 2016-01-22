@@ -17,6 +17,7 @@ from xbox_controller import xboxcontroller
 import numpy as np
 import random
 import matplotlib.pyplot as plt
+import copy
 from matplotlib import cm
 from math import sqrt, exp, isinf
 from sys import stdout
@@ -25,6 +26,7 @@ from createSys import createSys
 from constructPolicies import constructPolicies
 from episodicREINFORCE import episodicREINFORCE
 from episodicNaturalActorCritic import episodicNaturalActorCritic
+from finiteDifferences import finiteDifferences
 from drawAction import drawAction
 from initPGELLA import initPGELLA
 from computeHessian import computeHessian
@@ -157,6 +159,7 @@ class Agent():
             if self._visible:
                 return
         '''
+        rospy.sleep(1)
 
     def land(self):
         self.land_pub.publish(Empty())
@@ -180,7 +183,7 @@ class Agent():
             self.startEpisode()
 
             # Save associated policy
-            data[trials].policy = policy
+            data[trials].policy = copy.deepcopy(policy)
 
             # Draw the first state
             data[trials].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/3.0]])
@@ -192,7 +195,7 @@ class Agent():
                 if rospy.is_shutdown():
                     sys.exit()
                 # Draw an action from the policy
-                xx = data[trials].x[:,steps]
+                xx = copy.deepcopy(data[trials].x[:,steps])
                 #print("current state: ", xx)
                 data[trials].u[:,steps] = drawAction(policy, xx, param)
                 #print("action: ", data[trials].u[:,steps])
@@ -320,7 +323,7 @@ class Agent():
                 fig.canvas.draw()
                 fig.canvas.flush_events()
 
-            policy = Policies[i].policy # Resetting policy IMP
+            policy = coppy.deepcopy(Policies[i].policy) # Resetting policy IMP
             start_time = datetime.now()
 
             for k in range(start_it[i], numIterations+start_it[i]):
@@ -438,20 +441,26 @@ class Agent():
 
             if Tasks[taskId].param.baseLearner == 'REINFORCE':
                 dJdTheta = episodicREINFORCE(Policies[taskId].policy, data, Tasks[taskId])
-            else:
+            elif Tasks[taskId].param.baseLearner == 'NAC':
                 dJdTheta = episodicNaturalActorCritic(Policies[taskId].policy, data, Tasks[taskId])
+            elif Tasks[taskId].param.baseLearner == 'FD':
+                dJdTheta = finiteDifferences(data, numRollouts)
 
             # Updating theta*
             Policies[taskId].policy.theta = Policies[taskId].policy.theta + learningRate * dJdTheta.reshape(9, 1)
 
-            # Computing Hessian
-            print("    Data for Hessian")
-            data = self.obtainData(Policies[taskId].policy, trajLength, numRollouts, Tasks[taskId])
+            if True:
+                # Computing Hessian
+                print("    Data for Hessian")
+                data = self.obtainData(Policies[taskId].policy, trajLength, numRollouts, Tasks[taskId])
 
-            D = computeHessian(data, Policies[taskId].policy.sigma)
+                D = computeHessian(data, Policies[taskId].policy.sigma)
+            else:
+                D = np.identity(np.shape(dJdtheta)[0])
+
             HessianArray[taskId].D =  D
 
-            ParameterArray[taskId].alpha = Policies[taskId].policy.theta
+            ParameterArray[taskId].alpha = copy.deepcopy(Policies[taskId].policy.theta)
 
             # Perform Updating L and S
             modelPGELLA = updatePGELLA(modelPGELLA, taskId, ObservedTasks, HessianArray, ParameterArray)  # Perform PGELLA for that Group
@@ -590,8 +599,10 @@ class Agent():
 
                 if Tasks[k].param.baseLearner == 'REINFORCE':
                     dJdTheta = episodicREINFORCE(PGPol[k].policy, data, Tasks[k])
-                else:
+                elif Tasks[k].param.baseLearner == 'NAC':
                     dJdTheta = episodicNaturalActorCritic(PGPol[k].policy, data, Tasks[k])
+                elif Tasks[k].param.baseLearner == 'FD':
+                    dJdTheta = finiteDifferences(data, numRollouts)
 
                 # Update Policy Parameters
                 PGPol[k].policy.theta = PGPol[k].policy.theta + learningRate * dJdTheta.reshape(9, 1)
@@ -602,8 +613,10 @@ class Agent():
 
                 if Tasks[k].param.baseLearner == 'REINFORCE':
                     dJdThetaPGELLA = episodicREINFORCE(PolicyPGELLAGroup[k].policy, dataPGELLA, Tasks[k])
-                else:
+                elif Tasks[k].param.baseLearner == 'NAC':
                     dJdThetaPGELLA = episodicNaturalActorCritic(PolicyPGELLAGroup[k].policy, dataPGELLA, Tasks[k])
+                elif Tasks[k].param.baseLearner == 'FD':
+                    dJdThetaPGELLA = finiteDifferences(dataPGELLA, numRollouts)
 
                 # Update Policy Parameters
                 PolicyPGELLAGroup[k].policy.theta = PolicyPGELLAGroup[k].policy.theta + learningRate * dJdThetaPGELLA.reshape(9, 1)
@@ -653,8 +666,9 @@ if __name__ == "__main__":
     poli_type = 'Gauss'  # Policy Type (Only supports Gaussian Policies)
                         # 'Gauss' => Gaussian Policy
     base_learner = 'NAC'  # Base Learner
-                               # 'REINFORCE' => Episodic REINFORCE
-                               # 'NAC' => Episodic Natural Actor Critic
+                          # 'REINFORCE' => Episodic REINFORCE
+                          # 'NAC' => Episodic Natural Actor Critic
+                          # 'FD' => Finite Differences
 
     traj_length = 150 # Number of time steps to simulate in the cart-pole system
     num_rollouts = 15 #40 # Number of trajectories for testing

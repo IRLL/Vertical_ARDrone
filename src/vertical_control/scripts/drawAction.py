@@ -10,7 +10,7 @@ import numpy as np
 def drawAction(policy, x, param):
 
     _theta = policy.theta.reshape(param.param.N, param.param.M)
-    _x = x.reshape(param.param.M, 1)
+    _x = x.reshape(param.param.N, 1)
 
     _u = np.zeros((1, param.param.M))
     for i in range(param.param.M):
