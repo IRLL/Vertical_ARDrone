@@ -405,15 +405,15 @@ class Agent():
         HessianArray = [Hessianarray() for i in range(tasks_size)]
         ParameterArray = [Parameterarray() for i in range(tasks_size)]
 
-        self.getSeedRandom(tasks_size, 1) # each task will be observed two times
+        #self.getSeedRandom(tasks_size, 3) # each task will be observed two times
         #taskId = 0 # FIXME to get rid of random choice of task
-        #while not np.all(ObservedTasks):  # Repeat until all tasks are observed
-        while len(self.randNumbers) > 0:
+        while not np.all(ObservedTasks):  # Repeat until all tasks are observed
+        #while len(self.randNumbers) > 0:
 
-            #taskId = np.random.randint(limitOne, limitTwo, 1)  # Pick a random task
-            taskId = self.getNextRandom()
-            if counter == 1:
-                self.randNumbers.append(taskId)
+            taskId = np.random.randint(limitOne, limitTwo, 1)  # Pick a random task
+            #taskId = self.getNextRandom()
+            #if counter == 1:
+            #    self.randNumbers.append(taskId)
             print "Task ID: ", taskId
 
             if ObservedTasks[taskId] == 0:  # Entry is set to 1 when corresponding task is observed
@@ -461,8 +461,8 @@ class Agent():
 
             # Load policy from file
             self.loadModelTest(test_file)
-            avg_RPGELLA = self.Test_Avg_rPG
-            avg_RPG = self.Test_Avg_rPGELLA
+            avg_RPGELLA = self.Test_Avg_rPGELLA
+            avg_RPG = self.Test_Avg_rPG
 
             # Ensure number of systems are equal
             if (self.Tasks[0].nSystems != self._n_systems):
@@ -473,7 +473,8 @@ class Agent():
         elif not is_load:
             self._learning_rate = learning_rate
             # Creating new PG policies
-            self.PGPol = constructPolicies(self.Tasks)
+            #self.PGPol = constructPolicies(self.Tasks)
+            self.PGPol = self.Policies # NEW
 
             self.PolicyPGELLAGroup = [PGPolicy() for i in range(self._n_systems)]
 
@@ -483,6 +484,8 @@ class Agent():
                 policyPGELLA.theta = theta_PG_ELLA
                 policyPGELLA.sigma = self.PGPol[i].policy.sigma
                 self.PolicyPGELLAGroup[i].policy = policyPGELLA
+                print "Task Id ", i+1,
+                print theta_PG_ELLA
 
             avg_RPGELLA = self.Test_Avg_rPGELLA = None
             avg_RPG = self.Test_Avg_rPG = None
@@ -490,15 +493,12 @@ class Agent():
 
         else:
             self.loadModelTest(test_file)
-            avg_RPGELLA = self.Test_Avg_rPG
-            avg_RPG = self.Test_Avg_rPGELLA
+            avg_RPGELLA = self.Test_Avg_rPGELLA
+            avg_RPG = self.Test_Avg_rPG
 
         print "Test Phase"
         # Testing and comparing PG and PG-ELLA
-        self.PGPol,
-        self.Test_Avg_rPG,
-        self.PolicyPGELLAGroup,
-        self.Test_Avg_rPGELLA = self.testPGELLA(self.Tasks, self.PGPol,
+        self.testPGELLA(self.Tasks, self.PGPol,
                         self._learning_rate, traj_length, num_rollouts,
                         num_iterations, self.PolicyPGELLAGroup,
                         avgRPGELLA=avg_RPGELLA, avgRPG=avg_RPG)
@@ -634,14 +634,17 @@ class Agent():
 
         print "Task completion times: ", tasks_time
 
-        return PGPol, Test_Avg_rPG, PolicyPGELLAGroup, Test_Avg_rPGELLA
+        self.PGPol = PGPol
+        self.Test_Avg_rPG = Test_Avg_rPG
+        self.PolicyPGELLAGroup = PolicyPGELLAGroup
+        self.Test_Avg_rPGELLA = Test_Avg_rPGELLA
 
 if __name__ == "__main__":
-    np.random.seed(42)
-    random.seed(42)
+    np.random.seed(10)
+    random.seed(10)
     n_systems = 10  # Integer number of tasks 4
-    learning_rate = .1  # Learning rate for stochastic gradient descent
-    gamma = 0.9  # Discount factor gamma
+    learning_rate = .05  # Learning rate for stochastic gradient descent
+    gamma = 0.9 #0.9  # Discount factor gamma
 
     # Parameters for policy
     poli_type = 'Gauss'  # Policy Type (Only supports Gaussian Policies)
@@ -651,37 +654,37 @@ if __name__ == "__main__":
                                # 'NAC' => Episodic Natural Actor Critic
 
     traj_length = 150 # Number of time steps to simulate in the cart-pole system
-    num_rollouts = 40 # Number of trajectories for testing
-    num_iterations = 0 # Number of learning episodes/iterations # 120 600
+    num_rollouts = 15 # Number of trajectories for testing
+    num_iterations = 50 # Number of learning episodes/iterations # 120 600
 
     agent = Agent(n_systems, learning_rate, gamma)
     time.sleep(.5)
 
     # Learning PG
     #agent.startPg(poli_type, base_learner, traj_length,
-    #              num_rollouts, num_iterations, task_file='task_2tasks_ag.p',
-    #              policy_file='policy_2tasks_ag.p', avg_file='average_2tasks_ag.p',
+    #              num_rollouts, num_iterations, task_file='task_10.p',
+    #              policy_file='policy_10.p', avg_file='average_10.p',
     #              is_load=False)
 
     # Continue Learning PG
     # NOTE: Make a Backup of the files before running to ensure
     #       you have a copy of the original policy
-    #agent.startPg(poli_type, base_learner, traj_length,
-    #          num_rollouts, num_iterations, task_file='task_new_10.p',
-    #          policy_file='policy_new_10.p', avg_file='average_new_10.p',
-    #          is_continue=True)
+    agent.startPg(poli_type, base_learner, traj_length,
+              num_rollouts, num_iterations, task_file='task_10.p',
+              policy_file='policy_10.p', avg_file='average_10.p',
+              is_continue=True)
 
     # Loading PG policies from file
-    agent.startPg(task_file='task_new_10.p', policy_file='policy_new_10.p',
-                  avg_file='average_new_10.p', is_load=True)
+    #agent.startPg(task_file='task_10.p', policy_file='policy_10.p',
+    #              avg_file='average_10.p', is_load=True)
 
     # Learning ELLA
     traj_length = 150
-    num_rollouts = 60 # 200
-    learning_rate = .0003
-    mu1 = exp(-6)  # Sparsity coefficient
-    mu2 = exp(-6)  # Regularization coefficient
-    k = 2  # Number of inner layers
+    num_rollouts = 15 #40 # 200
+    learning_rate = 0.0001 #0.0001#0.000001 #.00004 #0.00004 #0.0004 GOT BETTER
+    mu1 = 0.001 #exp(-25)  # Sparsity coefficient -5
+    mu2 = 0.000001 #0.00000001 #exp(-25)  # Regularization coefficient -5
+    k = 3  # Number of inner layers
 
     # Learning PGELLA
     agent.startElla(traj_length, num_rollouts, learning_rate, mu1, mu2, k,
@@ -691,9 +694,9 @@ if __name__ == "__main__":
 
     # Testing Phase
     traj_length = 150
-    num_rollouts = 40 # 100
+    num_rollouts = 15 #40 # 100
     num_iterations = 10 # 200
-    learning_rate = .1
+    learning_rate = .05
 
     agent.startTest(traj_length, num_rollouts, num_iterations, learning_rate,
                     test_file='test_10.p', is_load=False)

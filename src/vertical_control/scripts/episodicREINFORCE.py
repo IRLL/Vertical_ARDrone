@@ -29,6 +29,6 @@ def episodicREINFORCE(policy, data, param):
 
         dJdtheta = dJdtheta + dSumPi * sumR
 
-    dJdtheta = (1-gamma) * dJdtheta / np.max(np.shape(data))
+    dJdtheta = (1-gamma) * dJdtheta / float(np.max(np.shape(data)))
 
     return dJdtheta

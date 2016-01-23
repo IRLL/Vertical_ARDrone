@@ -19,11 +19,12 @@ def updatePGELLA(ELLAmodel, taskId, ObservedTasks, HessianArray, ParameterArray)
     allowedTask = np.nonzero(ObservedTasks == 1)[0]
     Tg = np.sum(ObservedTasks)
 
-    k = np.shape(ELLAmodel.S)[0]
+    k = ELLAmodel.k
     for i in range(int(Tg)):
         S = ELLAmodel.S[:,allowedTask[i]].reshape(k,1)
         S_p = S.conj().T
         D = HessianArray[allowedTask[i]].D
+        #print "Task ", i, " D: ", D
 
         #print "shape 1: ", np.shape((2 * HessianArray[allowedTask[i]].D))
         #print "shape 2: ", np.shape(np.dot(ParameterArray[allowedTask[i]].alpha, S_p))
@@ -55,7 +56,7 @@ def updatePGELLA(ELLAmodel, taskId, ObservedTasks, HessianArray, ParameterArray)
     #print "Tg: ", Tg
     #print "Summ: ", summ
     #print "left part: ", ELLAmodel.learningRate * 1 / Tg * summ
-    ELLAmodel.L = (ELLAmodel.L - ELLAmodel.learningRate * ((1 / Tg) * summ))
+    ELLAmodel.L = (ELLAmodel.L - ELLAmodel.learningRate * ((1. / Tg) * summ))
 
     print "ELLA Model L: ", ELLAmodel.L
     #------------------------------------------------------------------------
