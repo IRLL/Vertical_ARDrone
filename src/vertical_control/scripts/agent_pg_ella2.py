@@ -685,7 +685,7 @@ class Agent():
 if __name__ == "__main__":
     np.random.seed(10)
     n_systems = 2  # Integer number of tasks 4
-    learning_rate = 0.001 #0.01 #0.000001 #0.00000001 #.05  # Learning rate for stochastic gradient descent
+    learning_rate = 0.0001 #0.01 #0.000001 #0.00000001 #.05  # Learning rate for stochastic gradient descent
     gamma = 0.98 #.9 # Discount factor gamma
 
     # Parameters for policy
