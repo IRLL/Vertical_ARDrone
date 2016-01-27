@@ -43,6 +43,7 @@ class Agent():
 
     def __init__(self, n_systems, learning_rate, gamma):
         rospy.init_node('agent_pg_ella', anonymous=False)
+        rospy.loginfo("To stop TurtleBot CTRL + C")
 
         print("waiting for service")
         rospy.wait_for_service('/v_control/reset_world')
@@ -63,6 +64,7 @@ class Agent():
         self._threshold = rospy.get_param("v_controller/threshold")
 
         self._hover_height = .4
+        self._trials_rand_start = []
 
     def startPg(self, poli_type='Gauss', base_learner='NAC',
                 traj_length=100, num_rollouts=40, num_iterations=150,
@@ -144,19 +146,30 @@ class Agent():
         rospy.sleep(.5)
         self._soft_reset_pub.publish(Empty())
 
-    def startEpisode(self):
+    def startEpisode(self, trials):
         #x = random.uniform(-.23, .23)
         #y = random.uniform(-.23, .23)
         #x = 0
         #y = 0
         #self.resetSim(x,y,0)
+        #rospy.sleep(1)
         while True:
-            x = random.uniform(-.8, .8)
-            y = random.uniform(-.23, .23)
+            if (len(self._trials_rand_start) == 15):
+                x = self._trials_rand_start[trials][0]
+                y = self._trials_rand_start[trials][1]
+            else:
+                #x = random.uniform(-.75, .75)
+                x = random.uniform(-.2, .2)
+                y = random.uniform(-.2, .2)
             self.resetSim(x,y,0)
             rospy.sleep(1)
-            if self._visible:
+            if self._state_x <= .2 and self._state_x >= -.2 and \
+               self._state_y <= .2 and self._state_x >= -.2:
+                #if (len(self._trials_rand_start) < 15):
+                #    self._trials_rand_start.append((x,y))
                 return
+            #else:
+            #    rospy.loginfo("Quadrotor started outside start position. Reset.")
 
     def land(self):
         self.land_pub.publish(Empty())
@@ -178,7 +191,7 @@ class Agent():
         stdout.flush()
         for trials in range(H):
             #print("      Trial #", trials+1)
-            self.startEpisode()
+            self.startEpisode(trials)
 
             # Save associated policy
             data[trials].policy = copy.deepcopy(policy)
@@ -186,9 +199,11 @@ class Agent():
             # Finite Differences
             if trials != 0:
                 if np.mod(trials, 2) == 1:
-                    noiseval = np.random.uniform(-0.0001, 0.0001, np.shape(data[trials].policy.theta)) + 0.0
+                    noiseval = np.random.uniform(-0.1, 0.1, np.shape(data[trials].policy.theta)) + 0.0
                 else:
                     noiseval = -noiseval + 0.0
+                #noiseval[6:] = 0.0
+                #print("noiseval: ", noiseval)
                 data[trials].policy.theta = copy.deepcopy(data[0].policy.theta) + noiseval
 
 
@@ -258,15 +273,17 @@ class Agent():
 
                 # Obtain the reward
                 u = data[trials].u[:,steps]
-                u_p = u.conj().T
                 #imp_eye_state = np.zeros((3,3))
                 #imp_eye_act = np.zeros((3,3))
                 #np.fill_diagonal(imp_eye_state, [10, 10, 5])
                 #np.fill_diagonal(imp_eye_act, [5, 5, 2.5])
                 #reward = -sqrt(np.dot(np.dot(state, imp_eye_state), state.conj().T)) - \
                 #          sqrt(np.dot(np.dot(u, imp_eye_act), u_p))
-                reward = -sqrt(np.dot(np.dot(state, np.eye(N) * 10), state.conj().T)) - \
-                          sqrt(np.dot(np.dot(u, np.eye(M) * 5), u_p))
+                r_x = sqrt(np.dot(state, state.T))
+                r_u = sqrt(np.dot(u, u.T))
+                reward = -10*r_x - 5*r_u
+                #reward = -sqrt(np.dot(np.dot(state, np.eye(N) * 100), state.T)) - \
+                #          sqrt(np.dot(np.dot(u, np.eye(M) * 50), u.T))
 
                 if isinf(reward):
                     print("Error: INFINITY")
@@ -667,9 +684,9 @@ class Agent():
 
 if __name__ == "__main__":
     np.random.seed(10)
-    n_systems = 5  # Integer number of tasks 4
-    learning_rate = 0.000001 #.05  # Learning rate for stochastic gradient descent
-    gamma = 0.998 #.9 # Discount factor gamma
+    n_systems = 2  # Integer number of tasks 4
+    learning_rate = 0.001 #0.01 #0.000001 #0.00000001 #.05  # Learning rate for stochastic gradient descent
+    gamma = 0.98 #.9 # Discount factor gamma
 
     # Parameters for policy
     poli_type = 'Gauss'  # Policy Type (Only supports Gaussian Policies)
@@ -679,9 +696,9 @@ if __name__ == "__main__":
                           # 'NAC' => Episodic Natural Actor Critic
                           # 'FD' => Finite Differences
 
-    traj_length = 150 # Number of time steps to simulate in the cart-pole system
+    traj_length = 200 # Number of time steps to simulate in the cart-pole system
     num_rollouts = 15 #40 # Number of trajectories for testing
-    num_iterations = 50 # Number of learning episodes/iterations # 120 600
+    num_iterations = 500 # Number of learning episodes/iterations # 120 600
 
     agent = Agent(n_systems, learning_rate, gamma)
     time.sleep(.5)

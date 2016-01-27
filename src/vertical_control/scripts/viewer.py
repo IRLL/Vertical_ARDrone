@@ -27,6 +27,7 @@ class Viewer ():
 
         self.state_x = 0.0
         self.state_y = 0.0
+        self.state_z = 0.0
 
         self.threshold = rospy.get_param("/v_controller/threshold")
         self.video_sub = rospy.Subscriber('/ardrone/image_raw', Image, self.receive_image_callback)
@@ -36,6 +37,7 @@ class Viewer ():
     def rx_state_callback(self, data):
         self.state_x = data.data[0]
         self.state_y = data.data[1]
+        self.state_z = data.data[2]
         self.hloc = data.data[0]/2
         self.vloc = data.data[1]/1.5
 
@@ -62,14 +64,17 @@ class Viewer ():
         cv2.putText(image, "{:.2f}%".format(self.battery), (int(self.width*.01
 ),int(self.height*0.95)), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0))
 
-        cv2.putText(image, "x={:.2f}".format(self.state_x), (int(self.width*.4
-),int(self.height*0.95)), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0))
+        cv2.putText(image, "x={:.2f}".format(self.state_x), (int(self.width*.01
+),int(self.height*0.65)), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0))
 
-        cv2.putText(image, "y={:.2f}".format(self.state_y), (int(self.width*.7
-),int(self.height*0.95)), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0))
+        cv2.putText(image, "y={:.2f}".format(self.state_y), (int(self.width*.01
+),int(self.height*0.75)), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0))
+
+        cv2.putText(image, "z={:.2f}".format(self.state_z), (int(self.width*.01
+),int(self.height*0.85)), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0))
 
         #show the image
-        #cv2.imshow('image', image)
+        cv2.imshow('image', image)
         cv2.waitKey(1)
 
     def receive_nav_callback(self, data):
