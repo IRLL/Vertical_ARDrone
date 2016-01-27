@@ -148,11 +148,12 @@ class Agent():
         #x = random.uniform(-.23, .23)
         #y = random.uniform(-.23, .23)
         while True:
-            x = random.uniform(-.8, .8)
-            y = random.uniform(-.23, .23)
+            x = random.uniform(-.3, .3)
+            y = random.uniform(-.2, .2)
             self.resetSim(x,y,0)
             rospy.sleep(1)
-            if self._visible:
+            if self._state_x <= .3 and self._state_x >= -.3 and \
+               self._state_y <= .2 and self._state_x >= -.2:
                 return
 
     def land(self):
@@ -183,7 +184,7 @@ class Agent():
             # Finite Differences
             if trials != 0:
                 if np.mod(trials, 2) == 1:
-                    noiseval = np.random.uniform(-0.0001, 0.0001, np.shape(data[trials].policy.theta)) + 0.0
+                    noiseval = np.random.uniform(-0.1, 0.1, np.shape(data[trials].policy.theta)) + 0.0
                 else:
                     noiseval = -noiseval + 0.0
                 data[trials].policy.theta = copy.deepcopy(data[0].policy.theta) + noiseval
@@ -666,8 +667,8 @@ if __name__ == "__main__":
     np.random.seed(10)
     random.seed(10)
     n_systems = 10  # Integer number of tasks 4
-    learning_rate = .05  # Learning rate for stochastic gradient descent
-    gamma = 0.9 #0.9  # Discount factor gamma
+    learning_rate = 0.0001  # Learning rate for stochastic gradient descent
+    gamma = 0.98 #0.9  # Discount factor gamma
 
     # Parameters for policy
     poli_type = 'Gauss'  # Policy Type (Only supports Gaussian Policies)
@@ -677,7 +678,7 @@ if __name__ == "__main__":
                           # 'NAC' => Episodic Natural Actor Critic
                           # 'FD' => Finite Differences
 
-    traj_length = 150 # Number of time steps to simulate in the cart-pole system
+    traj_length = 200 # Number of time steps to simulate in the cart-pole system
     num_rollouts = 15 # Number of trajectories for testing
     num_iterations = 50 # Number of learning episodes/iterations # 120 600
 
