@@ -471,7 +471,7 @@ class Agent():
             # Perform Updating L and S
             modelPGELLA = updatePGELLA(modelPGELLA, taskId, ObservedTasks, HessianArray, ParameterArray)  # Perform PGELLA for that Group
 
-            print("Iterating @: , counter)
+            print("Iterating @: ", counter)
             counter = counter + 1
 
             #taskId += 1 # FIXME to get rid of random choice of task
@@ -512,8 +512,8 @@ class Agent():
                 policyPGELLA.theta = theta_PG_ELLA
                 policyPGELLA.sigma = self.PGPol[i].policy.sigma
                 self.PolicyPGELLAGroup[i].policy = policyPGELLA
-                print "Task Id ", i+1,
-                print theta_PG_ELLA
+                print("Task Id ", i+1,)
+                print(theta_PG_ELLA)
 
             avg_RPGELLA = self.Test_Avg_rPGELLA = None
             avg_RPG = self.Test_Avg_rPG = None
@@ -686,23 +686,24 @@ if __name__ == "__main__":
     time.sleep(.5)
 
     # Learning PG
-    #agent.startPg(poli_type, base_learner, traj_length,
-    #              num_rollouts, num_iterations, task_file='task_10.p',
-    #              policy_file='policy_10.p', avg_file='average_10.p',
-    #              is_load=False)
+    agent.startPg(poli_type, base_learner, traj_length,
+                  num_rollouts, num_iterations, task_file='task_10.p',
+                  policy_file='policy_10.p', avg_file='average_10.p',
+                  is_load=False)
 
     # Continue Learning PG
     # NOTE: Make a Backup of the files before running to ensure
     #       you have a copy of the original policy
-    agent.startPg(poli_type, base_learner, traj_length,
-              num_rollouts, num_iterations, task_file='task_10.p',
-              policy_file='policy_10.p', avg_file='average_10.p',
-              is_continue=True)
+    #agent.startPg(poli_type, base_learner, traj_length,
+    #          num_rollouts, num_iterations, task_file='task_10.p',
+    #          policy_file='policy_10.p', avg_file='average_10.p',
+    #          is_continue=True)
 
     # Loading PG policies from file
     #agent.startPg(task_file='task_10.p', policy_file='policy_10.p',
     #              avg_file='average_10.p', is_load=True)
 
+    '''
     # Learning ELLA
     traj_length = 150
     num_rollouts = 40 # 200
@@ -730,3 +731,4 @@ if __name__ == "__main__":
                     test_file='test_10.p', is_continue=True)
 
     rospy.spin()
+    '''
