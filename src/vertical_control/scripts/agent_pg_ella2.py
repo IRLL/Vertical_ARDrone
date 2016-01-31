@@ -127,6 +127,7 @@ class Agent():
         self._visible = visible.data
 
     def resetSim(self, x, y, z=0, angle=0):
+        #print("x: %s y: %s z: %s" % (x,y,z))
         self._enable_controller.publish(Bool(0))
         self._takeoff_pub.publish(Empty())
         rospy.sleep(.5)
@@ -135,6 +136,7 @@ class Agent():
         a.model_state.pose.position.z = 2 + z
         a.model_state.pose.position.x = 3 + x
         a.model_state.pose.position.y = 0 + y
+        a.model_state.pose.orientation.z = angle # Angle has to be converted to radians then to quaternion
         self._reset_pos(a)
         a.model_state.model_name = 'unit_sphere_4'
         a.model_state.pose.position.z = 0.052
@@ -150,10 +152,14 @@ class Agent():
         while True:
             x = random.uniform(-.3, .3)
             y = random.uniform(-.2, .2)
-            self.resetSim(x,y,0)
+            z = random.uniform(-1.0, 1.0)
+            self.resetSim(x,y,z)
             rospy.sleep(1)
             if self._state_x <= .3 and self._state_x >= -.3 and \
                self._state_y <= .2 and self._state_x >= -.2:
+                self.last_start_x = x
+                self.last_start_y = y
+                self.last_start_z = z
                 return
 
     def land(self):
@@ -176,7 +182,11 @@ class Agent():
         stdout.flush()
         for trials in range(H):
             #print("      Trial #", trials+1)
-            self.startEpisode()
+            if trials != 0:
+                self.resetSim(self.last_start_x, self.last_start_y, self.last_start_z)
+            else:
+                self.startEpisode()
+
 
             # Save associated policy
             data[trials].policy = copy.deepcopy(policy)
@@ -184,10 +194,12 @@ class Agent():
             # Finite Differences
             if trials != 0:
                 if np.mod(trials, 2) == 1:
-                    noiseval = np.random.uniform(-0.1, 0.1, np.shape(data[trials].policy.theta)) + 0.0
+                    noiseval = np.random.uniform(-0.01, 0.01, np.shape(data[trials].policy.theta)) + 0.0
                 else:
                     noiseval = -noiseval + 0.0
                 data[trials].policy.theta = copy.deepcopy(data[0].policy.theta) + noiseval
+            if trials == (H-1):
+                self.noiseval = noiseval
 
             # Draw the first state
             data[trials].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/3.0]])
@@ -332,7 +344,7 @@ class Agent():
 
             for k in range(start_it[i], numIterations+start_it[i]):
                 print("@ Iteration: ", k)
-                print("    Initial Theta: ", policy.theta)
+                print("    Initial Theta: ", policy.theta.T)
                 print("    Sigma: ", policy.sigma)
                 print("    Learning Rate: ", rates)
                 print("    Perturbation: ", Params[i].param.disturbance)
@@ -344,6 +356,10 @@ class Agent():
                     dJdtheta = episodicNaturalActorCritic(policy, data, Params[i])
                 elif Params[i].param.baseLearner == "FD":
                     dJdtheta = finiteDifferences(data, rollouts)
+                _check = rates * dJdtheta
+                print("Noiseval   : ", self.noiseval.T)
+                print("alpha*deriv: ", _check.T)
+                print("Eval: ", (_check < self.noiseval).all())
 
                 policy.theta = policy.theta + rates*dJdtheta.reshape(9, 1)
 
@@ -666,9 +682,9 @@ class Agent():
 if __name__ == "__main__":
     np.random.seed(10)
     random.seed(10)
-    n_systems = 10  # Integer number of tasks 4
-    learning_rate = 0.0001  # Learning rate for stochastic gradient descent
-    gamma = 0.98 #0.9  # Discount factor gamma
+    n_systems = 1  # Integer number of tasks 4
+    learning_rate = 0.0000001  # Learning rate for stochastic gradient descent
+    gamma = 0.9999 #0.9  # Discount factor gamma
 
     # Parameters for policy
     poli_type = 'Gauss'  # Policy Type (Only supports Gaussian Policies)
@@ -680,23 +696,23 @@ if __name__ == "__main__":
 
     traj_length = 200 # Number of time steps to simulate in the cart-pole system
     num_rollouts = 15 # Number of trajectories for testing
-    num_iterations = 50 # Number of learning episodes/iterations # 120 600
+    num_iterations = 500 # Number of learning episodes/iterations # 120 600
 
     agent = Agent(n_systems, learning_rate, gamma)
     time.sleep(.5)
 
     # Learning PG
     agent.startPg(poli_type, base_learner, traj_length,
-                  num_rollouts, num_iterations, task_file='task_10.p',
-                  policy_file='policy_10.p', avg_file='average_10.p',
+                  num_rollouts, num_iterations, task_file='task_5.p',
+                  policy_file='policy_5.p', avg_file='average_5.p',
                   is_load=False)
 
     # Continue Learning PG
     # NOTE: Make a Backup of the files before running to ensure
     #       you have a copy of the original policy
     #agent.startPg(poli_type, base_learner, traj_length,
-    #          num_rollouts, num_iterations, task_file='task_10.p',
-    #          policy_file='policy_10.p', avg_file='average_10.p',
+    #          num_rollouts, num_iterations, task_file='task_5.p',
+    #          policy_file='policy_5.p', avg_file='average_5.p',
     #          is_continue=True)
 
     # Loading PG policies from file
