@@ -30,7 +30,7 @@ def constructPolicies(Tasks):
             #    val = policy.theta[j]
             #    policy.theta[j] = val if np.random.randint(2) == 1 else -val
             #policy.sigma = np.random.rand(1, M)
-            policy.sigma = np.array([[0.006, 0.006, 0.006]])
+            policy.sigma = np.array([[0.1, 0.1, 0.1]]) #np.array([[0.006, 0.006, 0.006]])
         else:
             sys.stderr.write("Undefined Policy Type")
             break

@@ -126,7 +126,7 @@ class Agent():
     def visible_callback(self, visible):
         self._visible = visible.data
 
-    def resetSim(self, x, y, z=0, angle=0):
+    def resetSim(self, x=0, y=0, z=0, angle=0):
         #print("x: %s y: %s z: %s" % (x,y,z))
         self._enable_controller.publish(Bool(0))
         self._takeoff_pub.publish(Empty())
@@ -136,30 +136,43 @@ class Agent():
         a.model_state.pose.position.z = 2 + z
         a.model_state.pose.position.x = 3 + x
         a.model_state.pose.position.y = 0 + y
-        a.model_state.pose.orientation.z = angle # Angle has to be converted to radians then to quaternion
-        self._reset_pos(a)
-        a.model_state.model_name = 'unit_sphere_4'
-        a.model_state.pose.position.z = 0.052
-        a.model_state.pose.position.x = 3
-        a.model_state.pose.position.y = 0
-        self._reset_pos(a)
-        rospy.sleep(.5)
-        self._soft_reset_pub.publish(Empty())
+
+        a.model_state.pose.orientation.x = 0
+        a.model_state.pose.orientation.y = 0
+        a.model_state.pose.orientation.z = .7
+        #a.model_state.pose.orientation.z = angle # Angle has to be converted to radians then to quaternion
+        a.model_state.pose.orientation.w = .7
+
+        b = SetModelStateRequest()
+        b.model_state.model_name = 'unit_sphere_4'
+        b.model_state.pose.position.z = 0.052
+        b.model_state.pose.position.x = 3
+        b.model_state.pose.position.y = 0
+        ctr = 0
+        while True:
+            self._reset_pos(a)
+            self._reset_pos(b)
+            rospy.sleep(.5)
+            ctr += 1
+            if ctr == 3:
+                break
+        #self._soft_reset_pub.publish(Empty()) # WHAT IS THIS?
 
     def startEpisode(self):
         #x = random.uniform(-.23, .23)
         #y = random.uniform(-.23, .23)
         while True:
-            x = random.uniform(-.3, .3)
-            y = random.uniform(-.2, .2)
-            z = random.uniform(-1.0, 1.0)
-            self.resetSim(x,y,z)
+            _x = _y = _angle = 0.0
+            #_x = random.uniform(-.3, .3)
+            #_y = random.uniform(-.2, .2)
+            #_angle = random.uniform(-1.0, 1.0)
+            self.resetSim(x=_x,y=_y,angle=_angle)
             rospy.sleep(1)
             if self._state_x <= .3 and self._state_x >= -.3 and \
                self._state_y <= .2 and self._state_x >= -.2:
-                self.last_start_x = x
-                self.last_start_y = y
-                self.last_start_z = z
+                self.last_start_x = _x
+                self.last_start_y = _y
+                self.last_start_angle = _angle
                 return
 
     def land(self):
@@ -183,7 +196,9 @@ class Agent():
         for trials in range(H):
             #print("      Trial #", trials+1)
             if trials != 0:
-                self.resetSim(self.last_start_x, self.last_start_y, self.last_start_z)
+                self.resetSim(x=self.last_start_x,
+                              y=self.last_start_y,
+                              angle=self.last_start_angle)
             else:
                 self.startEpisode()
 
@@ -194,12 +209,25 @@ class Agent():
             # Finite Differences
             if trials != 0:
                 if np.mod(trials, 2) == 1:
-                    noiseval = np.random.uniform(-0.01, 0.01, np.shape(data[trials].policy.theta)) + 0.0
+                    noiseval = np.random.uniform(-0.000001, 0.000001, np.shape(data[trials].policy.theta)) + 0.0
                 else:
                     noiseval = -noiseval + 0.0
                 data[trials].policy.theta = copy.deepcopy(data[0].policy.theta) + noiseval
             if trials == (H-1):
                 self.noiseval = noiseval
+
+            command = Twist()
+            command.linear.x = 0
+            command.linear.y = 0
+            command.linear.z = 0
+            command.angular.x = 0
+            command.angular.y = 0
+            command.angular.z = 0
+            self._action_pub.publish(command)
+            rospy.sleep(.1)
+
+            self.resetSim(0,0,0)
+            rospy.sleep(.1)
 
             # Draw the first state
             data[trials].x[:,0] = np.array([[-self._state_x/4.0, -self._state_y/3.0, self._state_z/3.0]])
@@ -357,9 +385,9 @@ class Agent():
                 elif Params[i].param.baseLearner == "FD":
                     dJdtheta = finiteDifferences(data, rollouts)
                 _check = rates * dJdtheta
-                print("Noiseval   : ", self.noiseval.T)
+                print("Noiseval   : ", np.absolute(self.noiseval.T))
                 print("alpha*deriv: ", _check.T)
-                print("Eval: ", (_check < self.noiseval).all())
+                print("Eval: ", (_check < np.absolute(self.noiseval)).all())
 
                 policy.theta = policy.theta + rates*dJdtheta.reshape(9, 1)
 
@@ -681,9 +709,11 @@ class Agent():
 
 if __name__ == "__main__":
     np.random.seed(10)
+    np.set_printoptions(precision=3)
+    np.set_printoptions(suppress=True)
     random.seed(10)
     n_systems = 1  # Integer number of tasks 4
-    learning_rate = 0.0000001  # Learning rate for stochastic gradient descent
+    learning_rate = 0.00000000100000000001 #0.0000001  # Learning rate for stochastic gradient descent
     gamma = 0.9999 #0.9  # Discount factor gamma
 
     # Parameters for policy
@@ -694,7 +724,7 @@ if __name__ == "__main__":
                           # 'NAC' => Episodic Natural Actor Critic
                           # 'FD' => Finite Differences
 
-    traj_length = 200 # Number of time steps to simulate in the cart-pole system
+    traj_length = 400 # Number of time steps to simulate in the cart-pole system
     num_rollouts = 15 # Number of trajectories for testing
     num_iterations = 500 # Number of learning episodes/iterations # 120 600
 

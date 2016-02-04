@@ -69,8 +69,8 @@ class Viewer ():
 ),int(self.height*0.95)), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0))
 
         #show the image
-        #cv2.imshow('image', image)
-        cv2.waitKey(1)
+        cv2.imshow('image', image)
+        cv2.waitKey(3)
 
     def receive_nav_callback(self, data):
         self.battery = data.batteryPercent
