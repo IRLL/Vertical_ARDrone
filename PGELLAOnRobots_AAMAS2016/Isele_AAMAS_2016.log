@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/TeX Live for SUSE Linux) (format=pdflatex 2015.9.2)  6 FEB 2016 20:07
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/TeX Live for SUSE Linux) (format=pdflatex 2015.9.2)  6 FEB 2016 20:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -283,18 +283,18 @@ Package: xspace 2009/10/20 v1.13 Space after command names (DPC,MH)
 ) (./Isele_AAMAS_2016.aux)
 \openout1 = `Isele_AAMAS_2016.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
 
 (/usr/share/texmf/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -357,49 +357,49 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Font Info:    Try loading font information for U+msa on input line 369.
+LaTeX Font Info:    Try loading font information for U+msa on input line 368.
 
 (/usr/share/texmf/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 369.
+LaTeX Font Info:    Try loading font information for U+msb on input line 368.
 
 (/usr/share/texmf/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+lasy on input line 369.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 368.
 
 (/usr/share/texmf/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
 LaTeX Font Info:    Font shape `U/lasy/b/n' in size <9> not available
-(Font)              Font shape `U/lasy/m/n' tried instead on input line 369.
+(Font)              Font shape `U/lasy/m/n' tried instead on input line 368.
 LaTeX Font Info:    Font shape `U/lasy/b/n' in size <6> not available
-(Font)              Font shape `U/lasy/m/n' tried instead on input line 369.
+(Font)              Font shape `U/lasy/m/n' tried instead on input line 368.
 LaTeX Font Info:    Font shape `U/lasy/b/n' in size <5> not available
-(Font)              Font shape `U/lasy/m/n' tried instead on input line 369.
+(Font)              Font shape `U/lasy/m/n' tried instead on input line 368.
 
-Overfull \hbox (34.25478pt too wide) in paragraph at lines 369--369
+Overfull \hbox (34.25478pt too wide) in paragraph at lines 368--368
  [][][][][] 
  []
 
-LaTeX Font Info:    Try loading font information for OMS+aer on input line 369.
+LaTeX Font Info:    Try loading font information for OMS+aer on input line 368.
 
 (/usr/share/texmf/tex/latex/ae/omsaer.fd
 File: omsaer.fd 1999/12/27
 )
 LaTeX Font Info:    Font shape `OMS/aer/m/n' in size <9> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 369.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 368.
  [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
 ]
-Overfull \hbox (27.90482pt too wide) in paragraph at lines 522--527
+Overfull \hbox (27.90482pt too wide) in paragraph at lines 521--526
 []\T1/aer/m/n/9 Most PG meth-ods (e.g. episodic RE-IN-FORCE [23], PoWER [13],
  []
 
 
-Overfull \hbox (5.03487pt too wide) in paragraph at lines 547--551
+Overfull \hbox (5.03487pt too wide) in paragraph at lines 546--550
 \T1/aer/m/n/9 where $\OT1/cmr/bx/n/9 ^^A\OML/cmm/b/it/9 ^^R[]$ \T1/aer/m/n/9 ar
 e the in-di-vid-ual per-tur-ba-tions for $\OT1/cmr/bx/n/9 p \OT1/cmr/m/n/9 = [1
 \OML/cmm/m/it/9 ; [] ; n\OT1/cmr/m/n/9 ]$\T1/aer/m/n/9 ,
@@ -407,19 +407,19 @@ e the in-di-vid-ual per-tur-ba-tions for $\OT1/cmr/bx/n/9 p \OT1/cmr/m/n/9 = [1
 
 [2]
 
-LaTeX Warning: Command \l invalid in math mode on input line 579.
+LaTeX Warning: Command \l invalid in math mode on input line 578.
 
 Missing character: There is no ª in font cmr6!
 <images/turtlebotsim_crop.png, id=33, 602.25pt x 602.25pt>
 File: images/turtlebotsim_crop.png Graphic file (type png)
 
 <use images/turtlebotsim_crop.png>
-Package pdftex.def Info: images/turtlebotsim_crop.png used on input line 684.
+Package pdftex.def Info: images/turtlebotsim_crop.png used on input line 683.
 (pdftex.def)             Requested size: 226.79846pt x 226.7989pt.
 LaTeX Font Info:    Font shape `U/lasy/b/n' in size <8> not available
-(Font)              Font shape `U/lasy/m/n' tried instead on input line 712.
+(Font)              Font shape `U/lasy/m/n' tried instead on input line 711.
 
-Overfull \hbox (4.2651pt too wide) in paragraph at lines 703--713
+Overfull \hbox (4.2651pt too wide) in paragraph at lines 702--712
 []\T1/aer/m/n/9 We as-sume we have lit-tle knowl-edge of the Turtle-bot model,
  []
 
@@ -427,10 +427,10 @@ Overfull \hbox (4.2651pt too wide) in paragraph at lines 703--713
 <images/unicycle.png, id=38, 505.89pt x 505.89pt>
 File: images/unicycle.png Graphic file (type png)
  <use images/unicycle.png>
-Package pdftex.def Info: images/unicycle.png used on input line 723.
+Package pdftex.def Info: images/unicycle.png used on input line 722.
 (pdftex.def)             Requested size: 226.79846pt x 226.79927pt.
 
-Overfull \hbox (1.93758pt too wide) in paragraph at lines 744--748
+Overfull \hbox (1.93758pt too wide) in paragraph at lines 743--747
 []\T1/aer/m/n/9 We learn our PG-ELLA knowl-edge repos-i-tory $\OML/cmm/b/it/9 L
 $ \T1/aer/m/n/9 and sparse
  []
@@ -439,20 +439,22 @@ $ \T1/aer/m/n/9 and sparse
 File: images/2016_2_3_reward.png Graphic file (type png)
 
 <use images/2016_2_3_reward.png>
-Package pdftex.def Info: images/2016_2_3_reward.png used on input line 754.
+Package pdftex.def Info: images/2016_2_3_reward.png used on input line 753.
 (pdftex.def)             Requested size: 211.67908pt x 156.71498pt.
 
 <images/2016_2_3_gain.png, id=40, 429.10312pt x 317.68687pt>
 File: images/2016_2_3_gain.png Graphic file (type png)
 
 <use images/2016_2_3_gain.png>
-Package pdftex.def Info: images/2016_2_3_gain.png used on input line 760.
+Package pdftex.def Info: images/2016_2_3_gain.png used on input line 759.
 (pdftex.def)             Requested size: 211.67908pt x 156.71498pt.
- [4 <./images/unicycle.png> <./images/2016_2_3_reward.png (PNG copy)>] (./Isele
-_AAMAS_2016.bbl
-LaTeX Font Info:    Try loading font information for T1+aett on input line 5.
 
-(/usr/share/texmf/tex/latex/ae/t1aett.fd
+Underfull \vbox (badness 1019) has occurred while \output is active []
+
+ [4 <./images/unicycle.png> <./images/2016_2_3_reward.png (PNG copy)>]
+(./Isele_AAMAS_2016.bbl
+LaTeX Font Info:    Try loading font information for T1+aett on input line 5.
+ (/usr/share/texmf/tex/latex/ae/t1aett.fd
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 )) [5 <./images/2016_2_3_gain.png (PNG copy)>] (./Isele_AAMAS_2016.aux) ) 
 Here is how much of TeX's memory you used:
@@ -485,7 +487,7 @@ nts/symbols/msbm7.pfb></usr/share/texmf/fonts/type1/urw/helvetic/uhvb8a.pfb></u
 sr/share/texmf/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texmf/fonts/type
 1/urw/times/utmb8a.pfb></usr/share/texmf/fonts/type1/urw/times/utmr8a.pfb></usr
 /share/texmf/fonts/type1/urw/zapfding/uzdr.pfb>
-Output written on Isele_AAMAS_2016.pdf (5 pages, 490129 bytes).
+Output written on Isele_AAMAS_2016.pdf (5 pages, 490548 bytes).
 PDF statistics:
  133 PDF objects out of 1000 (max. 8388607)
  94 compressed objects within 1 object stream

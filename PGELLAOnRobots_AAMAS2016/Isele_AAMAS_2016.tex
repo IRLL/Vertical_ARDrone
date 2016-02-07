@@ -44,7 +44,6 @@
 \usepackage{epsfig} % for postscript graphics files
 \usepackage{amsfonts}
 \usepackage{url}
-\usepackage{comment}
 \usepackage{color}
 \usepackage{threeparttable}
 %\usepackage{algorithmic}
@@ -739,14 +738,14 @@ We were not able to learn a policy on this non-linear state transformation using
 {\color{red} Marcio's comments: This is just a suggestion. I usually divide the experimental section in two subsections, namely,
 'experimental design' and 'Results'. In the first one, I provide the details of the experiment such as parameters, programing language, hardware
 specs, etc. In the second one I present the result and the analysis of the results. I believe this section still lacks more analysis.}
-We start by generating 20 robots, each with a different constant disturbance and a unique goal, both selected uniformly. The robots are run for 20 learning steps of FD, each learning step consists of 15 roll-outs of 50 time steps each. Note that 20 learning steps is fewer iterations than is required for any system to converge to a good controller. The policy that is learned after 20 iterations of FD is used as $\theta^*$ for PG-ELLA. We use a learning rate of $1\times 10^{-6}$.
+We start by generating 20 robots, each with a different constant disturbance and a unique goal, both selected uniformly. We use 20 robots because it provdes a large diversity in tasks but is a number that is still practical to run in simulation. The robots are run for 20 learning steps of FD, each learning step consists of 15 roll-outs of 50 time steps each. Note that 20 learning steps is fewer iterations than is required for any system to converge to a good controller. The number of roll-outs and time steps were selected to allow for successful learning while minimizing the runtime. The policy that is learned after 20 iterations of FD is used as $\theta^*$ for PG-ELLA. We use a learning rate of $1\times 10^{-6}$. 
 
 We learn our PG-ELLA knowledge repository $\bm{L}$ and sparse representation $\bm{s}^{(t)}$ using the update equations given 
 by (\ref{onlineupdate}). Tasks are encountered randomly with repetition and learning stops once every task has been seen 
-once. We select $k=8$ to be the number of columns, and use sparsity coefficient $\mu = 1\times 10^{-3}$ and regularization coefficient $\lambda = 1\times 10^{-8}$.
+once. We select $k=8$ to be the number of columns, and use sparsity coefficient $\mu = 1\times 10^{-3}$ and regularization coefficient $\lambda = 1\times 10^{-8}$.These coefficients were selected by trial and error.
 % use identity as Hessian 
 
-We then compare the policy reconstructed from PG-ELLA against the policy that was learned after 20 iterations of FD by comparing the learning curves that result from running FD for an additional 80 learning iterations. Performance is averaged over 6 trials for all 20 robots. In Fig. \ref{fig:reward} we see that PG-ELLA is successfully able to reconstruct the policies and provide an additional benefit of positive transfer. Note that these are preliminary results and we suspect further refinements will enable us to achieve larger amounts of transfer.
+We then compare the policy reconstructed from PG-ELLA against the policy that was learned after 20 iterations of FD by comparing the learning curves that result from running FD for an additional 80 learning iterations. Performance is averaged over 6 trials for all 20 robots to increase our confidence in the results as seen in Figure \ref{fig:gain}. In Figure \ref{fig:reward} we see that PG-ELLA is successfully able to reconstruct the policies and provide an additional benefit of positive transfer. Note that these are preliminary results and we suspect further refinements will enable us to achieve larger amounts of transfer.
 
 
 \begin{figure}[!htbp]
