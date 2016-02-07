@@ -410,7 +410,7 @@ Learning controllers for multiple systems is often an expensive process when con
 %This can be problematic in complicated systems where the dynamics are difficult to model or require information that is not available to 
 %the designer \cite{Khalil-2002,Tempo-2013}. %such as failures that change dynamics.
 
-In control systems, a perfect model of the dynamics of the system is often necessary to guarantee the stabilization of the system. This can be problematic in complicated systems where the dynamics are difficult to model or require information that is not available to the designer. %such as failures that change dynamics.
+In control systems, a mathematical model of the dynamics of the system is often necessary to guarantee the stabilization of the system. This can be problematic in complicated systems where the dynamics are difficult to model or require information that is not available to the designer. %such as failures that change dynamics.
 
 
 % VIEW MODEL FREE AS LIFELONG LEARNING
@@ -464,7 +464,7 @@ dynamics and technological limitations. Unlike typical control system theory whe
 
 % RL methods
 %pilco model based but learns the model \cite{deisenroth2011pilco}
-Reinforcement learning \cite{kober2013reinforcement} is often utilized to learn controllers in a model-free settings. Amongst reinforcement learning algorithms, policy gradient (PG) methods \cite{sutton1999policy,williams1992simple} are popular in robotic applications \cite{kober2009policy,peters2008natural} since they accommodate continuous state/action spaces and can scale well to high dimensional spaces. Different from these works we use policy gradients in a lifelong learning setting.
+Reinforcement learning \cite{kober2013reinforcement} is often utilized to learn controllers in a model-free setting. Amongst reinforcement learning algorithms, policy gradient (PG) methods \cite{sutton1999policy,williams1992simple} are popular in robotic applications \cite{kober2009policy,peters2008natural} since they accommodate continuous state/action spaces and can scale well to high dimensional spaces. Different from these works we use policy gradients in a lifelong learning setting.
 
 %Examples exist that do not explicitly compute gradients (episodic REINFORCE)~\cite{williams1992simple}, specialized to dynamic motor primitives PoWER~\cite{kober2009policy}, and , use natural gradients Natural Actor Critic~\cite{peters2008natural})
 
@@ -491,9 +491,7 @@ a reward $r_{h}$ according to $R$. The action is selected according to a policy 
 specifies a probability distribution over actions given the current state. The goal of RL is to find the optimal policy $\pi^{*}$ 
 that maximizes the expected reward.
 
-We use a class of RL algorithms known as Policy Gradient (PG) methods \cite{sutton1999policy}, which are particularly well suited for solving high dimensional problems with continuous state and action spaces, such as robotic control \cite{peters2008natural}. %PG methods are appealing for their ability to handle continuous state and action spaces, as well as their ability to scale well to high dimensions. 
-
-The goal of PG is to use gradient steps to optimize the expected average return:
+We use a PG methods \cite{sutton1999policy}, which are particularly well suited for solving high dimensional problems with continuous state and action spaces, such as robotic control \cite{peters2008natural}. The goal of PG is to use gradient steps to optimize the expected average return:
 \begin{equation}
  \mathcal{J}(\boldsymbol{\theta})=\int_{\mathbb{T}}p_{\boldsymbol{\theta}}(\tau)\mathcal{R}(\tau)\mbox{d}\tau,
  \label{retPG}
@@ -552,7 +550,7 @@ considered to be noisy and inefficient for problems with large sets of parameter
 
 In our experiments, the policy is represented as a function defined over a parameter matrix 
 $\boldsymbol{\theta} \in \Re^{d_{\theta}}$. 
-Our goal is to optimize the expected average return of Equation \ref{retPG}.
+Our goal is to optimize the expected average return in (\ref{retPG}).
 
 
 In order to share information across different learned policies, we incorporate the PG learning process into a lifelong machine learning 
@@ -693,7 +691,7 @@ fault tolerant control applications, the Turtlebot should learn how to drive its
 We then artificially induce a random and constant disturbance to the control signal that is drawn uniformly from 
 $[-0.1, 0.1] \subset \Re$ and measured in $m/s$. These limits were selected to provide a large noise that was still within the bounds of what the turtlebot accepts.
 The disturbance now emulates a bias on the angular velocity of each robot that forces the robot to
-compensate for the induced failure. It is worth mentioning that the difficulty of the disturbance can be increased by introducing
+compensate for the induced failure. Notice that this is a common issue observed in real car-like robots. It is worth mentioning that the difficulty of the disturbance can be increased by introducing
 time varying disturbance and stochastic disturbances later on.
 
 
@@ -708,9 +706,9 @@ In the kinematic model, the state space is given by $\boldsymbol{x} \in \Re^3$ a
 $\boldsymbol{a} \in \Re^2$. Notice that the model in \cite{aicardi1994closed} just considers the kinematics of a unicycle in polar coordinates
 so we do not consider the dynamics of the system, \emph{i.e.,} we are neglecting model parameters such as mass, damping and friction 
 coefficients, as well as inputs such as forces and torques. Then, the nonlinear policy is derived neglecting the dynamics and just assuming
-simple kinematics, therefore, taking into account that our action is given by 
+simple kinematics. The action is given by 
 $\boldsymbol{a} = \boldsymbol{\theta}^\transpose\boldsymbol{\phi}(\boldsymbol{x}) = (u,w)^\transpose$
-where $\boldsymbol{x} = (\rho,\gamma,\psi)^\transpose$ as illustrated in Fig. \ref{fig:reward} we propose the following nonlinear gain vector
+where where $u$ and $w$ are the linear and angular velocities of the robots. The state space vector is defined as  $\boldsymbol{x} = (\rho,\gamma,\psi)^\transpose$, with $\rho,\gamma$ and $\psi$ as illustrated in Fig. \ref{fig:reward}. We propose the following nonlinear gain vector
 structure,
 
 \begin{equation} \label{eqn:state}
@@ -726,14 +724,14 @@ where $\rho$, $\gamma$ and $\psi$ are indicated in Fig. \ref{fig:numfeat}.
         \includegraphics[width=.45\textwidth]{images/unicycle.png}
         \caption{State variables of simplified go-to-goal problem.}\label{fig:numfeat}
 \end{figure}
-The state is a non-linear transformation of the position and heading angle. We ran experiments using natural actor critic \cite{peters2008natural}, episodic REINFORCE \cite{williams1992simple}, and FD \cite{Bagnell-2013} and found FD to work best for our problem. We believe \comGabe{Is this speculating?} this is a result of the particular nonlinear transformation we are using and the fact that FD optimizes the true return. In future work we will present a comparison of different base learners. 
+The state is a non-linear transformation of the position and heading angle. We have run preliminary experiments using FD \cite{Bagnell-2013} given its simple implementation, and the fact that, despite its stability issues, it provided actions that exhibited good performance in simulation. In our future research agenda we are planning on carrying out a comparison between different base learners such as natural actor critic \cite{peters2008natural}, episodic REINFORCE \cite{williams1992simple}.
 
 \subsection{Methodology}
 We start by generating 20 robots, each with a different constant disturbance and a unique goal, both selected uniformly. 
 We use 20 robots because it provides a large diversity in tasks but is a number that is still practical to run in simulation. 
 
 To learn a controller for each task in RL, we use FD. Parameters are $\delta=1\times 10^{-6}$, $\gamma=0.9999$, and $\sigma=0.001$. 
-Note that the same parameter values are used in PG-ELLA.\comGabe{not sure if sigma should be mentioned here because it's not mentioned in the algorithm section and should we add the noiseval here as well?}
+The same parameter values are used in PG-ELLA.\comGabe{not sure if sigma should be mentioned here because it's not mentioned in the algorithm section and should we add the noiseval here as well?}
 
 FD is used to train each robot for 20 iterations with 15 roll-outs per iteration and 50 time-steps per roll-out.
 %The robots are run for 20 learning steps of FD, each learning step consists of 15 roll-outs of 50 time steps each. 
@@ -743,9 +741,9 @@ The policy that is learned after 20 iterations is used as $\theta^*$ for PG-ELLA
 
 We learn our PG-ELLA knowledge repository $\bm{L}$ and sparse representation $\bm{s}^{(t)}$ using the update equations given 
 by (\ref{onlineupdate}). Tasks are encountered randomly with repetition and learning stops once every task has been observed 
-once. For our experiments we approximate the hessian with the identity matrix. For the parameters unique to PG-ELLA, we select $k=8$ to be the number of columns, and use sparsity coefficient $\mu = 1\times 10^{-3}$ and regularization coefficient $\lambda = 1\times 10^{-8}$. These coefficients were selected by trial and error. 
+once. For the parameters unique to PG-ELLA, we select $k=8$ to be the number of columns, and use sparsity coefficient $\mu = 1\times 10^{-3}$ and regularization coefficient $\lambda = 1\times 10^{-8}$. These coefficients were selected by trial and error. 
 
-We then compare the policy reconstructed from PG-ELLA against the policy that was learned after 20 iterations of FD by comparing the learning curves that result from running FD for an additional 80 learning iterations. Performance is averaged over 6 trials for all 20 robots to increase our confidence in the results. In Figure \ref{fig:reward} we see that PG-ELLA is successfully able to reconstruct the policies and provide an additional benefit of positive transfer. We plot the change in reward of using PG-ELLA instead of PG in Figure \ref{fig:gain}, and observe that PG-ELLA improves the quality of the learned controllers. Note that these are preliminary results and we suspect further refinements will enable us to achieve larger amounts of transfer.
+We then compare the policy reconstructed from PG-ELLA against the policy that was learned after 20 iterations of FD by comparing the learning curves that result from running FD for an additional 80 learning iterations. Performance is averaged over 6 trials for all 20 robots to increase our confidence in the results. In Figure \ref{fig:reward} we see that PG-ELLA is successfully able to reconstruct the policies and provide an additional benefit of positive transfer with the given number of trials. We plot the change in reward of using PG-ELLA instead of PG in Figure \ref{fig:gain}, and observe that PG-ELLA improves the quality of the learned controllers. Note that these are preliminary results and we suspect further refinements will enable us to achieve larger amounts of transfer.
 
 \begin{figure}[!htbp]
     \centering
@@ -760,7 +758,7 @@ We then compare the policy reconstructed from PG-ELLA against the policy that wa
 \end{figure}
 
 \section{Conclusions}
-We demonstrate the use of lifelong learning for disturbance rejection on Turtlebots. This is intended to lay the foundation for creating fault tolerant control on multi-agent systems. We show that PG-ELLA can be implemented on simulated turtlebots and that it outperforms standard PG. This suggests that PG-ELLA can be extended to real robotic systems.
+We demonstrate the use of lifelong learning for disturbance rejection on Turtlebots. This is intended to lay the foundation for creating fault tolerant control on multi-agent systems. The results show that PG-ELLA can be succesfully implemented on simulated and complex 3D environments, and that it outperforms standard PG methods. This suggests that PG-ELLA can be implemented using real robotic systems. The implementation on real Turtlebots and quad-rotors is part of our future research agenda.
 
 %Acknowledgements are optional
 \section*{Acknowledgments}
