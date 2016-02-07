@@ -737,7 +737,7 @@ Note that the same parameter values are used in PG-ELLA.\comGabe{not sure if sig
 
 FD is used to train each robot for 20 iterations with 15 roll-outs per iteration and 50 time-steps per roll-out.
 %The robots are run for 20 learning steps of FD, each learning step consists of 15 roll-outs of 50 time steps each. 
-Note that 20 learning steps is fewer iterations than is required for any system to converge to a good controller. 
+Note that 20 iterations is fewer than is required for any system to converge to a good controller. 
 The number of roll-outs and time steps were selected to allow for successful learning while minimizing the runtime. 
 The policy that is learned after 20 iterations is used as $\theta^*$ for PG-ELLA. %We use a learning rate of $1\times 10^{-6}$. 
 
