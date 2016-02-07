@@ -729,18 +729,28 @@ where $\rho$, $\gamma$ and $\psi$ are indicated in Fig. \ref{fig:numfeat}.
 The state is a non-linear transformation of the position and heading angle. We ran experiments using natural actor critic \cite{peters2008natural}, episodic REINFORCE \cite{williams1992simple}, and FD \cite{Bagnell-2013} and found FD to work best for our problem. We believe \comGabe{Is this speculating?} this is a result of the particular nonlinear transformation we are using and the fact that FD optimizes the true return. In future work we will present a comparison of different base learners. 
 
 \subsection{Methodology}
-We start by generating 20 robots, each with a different constant disturbance and a unique goal, both selected uniformly. We use 20 robots because it provdes a large diversity in tasks but is a number that is still practical to run in simulation. The robots are run for 20 learning steps of FD, each learning step consists of 15 roll-outs of 50 time steps each. Note that 20 learning steps is fewer iterations than is required for any system to converge to a good controller. The number of roll-outs and time steps were selected to allow for successful learning while minimizing the runtime. The policy that is learned after 20 iterations of FD is used as $\theta^*$ for PG-ELLA. We use a learning rate of $1\times 10^{-6}$. 
+We start by generating 20 robots, each with a different constant disturbance and a unique goal, both selected uniformly. 
+We use 20 robots because it provides a large diversity in tasks but is a number that is still practical to run in simulation. 
+
+To learn a controller for each task in RL, we use FD. Parameters are $\delta=1\times 10^{-6}$, $\gamma=0.9999$, and $\sigma=0.001$. 
+Note that the same parameter values are used in PG-ELLA.\comGabe{not sure if sigma should be mentioned here because it's not mentioned in the algorithm section and should we add the noiseval here as well?}
+
+FD is used to train each robot for 20 iterations with 15 roll-outs per iteration and 50 time-steps per roll-out.
+%The robots are run for 20 learning steps of FD, each learning step consists of 15 roll-outs of 50 time steps each. 
+Note that 20 learning steps is fewer iterations than is required for any system to converge to a good controller. 
+The number of roll-outs and time steps were selected to allow for successful learning while minimizing the runtime. 
+The policy that is learned after 20 iterations is used as $\theta^*$ for PG-ELLA. %We use a learning rate of $1\times 10^{-6}$. 
 
 We learn our PG-ELLA knowledge repository $\bm{L}$ and sparse representation $\bm{s}^{(t)}$ using the update equations given 
-by (\ref{onlineupdate}). Tasks are encountered randomly with repetition and learning stops once every task has been seen 
-once. For our experiments we approximate the hessian with the identity matrix. We select $k=8$ to be the number of columns, and use sparsity coefficient $\mu = 1\times 10^{-3}$ and regularization coefficient $\lambda = 1\times 10^{-8}$.These coefficients were selected by trial and error. 
+by (\ref{onlineupdate}). Tasks are encountered randomly with repetition and learning stops once every task has been observed 
+once. For our experiments we approximate the hessian with the identity matrix. For the parameters unique to PG-ELLA, we select $k=8$ to be the number of columns, and use sparsity coefficient $\mu = 1\times 10^{-3}$ and regularization coefficient $\lambda = 1\times 10^{-8}$. These coefficients were selected by trial and error. 
 
 We then compare the policy reconstructed from PG-ELLA against the policy that was learned after 20 iterations of FD by comparing the learning curves that result from running FD for an additional 80 learning iterations. Performance is averaged over 6 trials for all 20 robots to increase our confidence in the results. In Figure \ref{fig:reward} we see that PG-ELLA is successfully able to reconstruct the policies and provide an additional benefit of positive transfer. We plot the change in reward of using PG-ELLA instead of PG in Figure \ref{fig:gain}, and observe that PG-ELLA improves the quality of the learned controllers. Note that these are preliminary results and we suspect further refinements will enable us to achieve larger amounts of transfer.
 
 \begin{figure}[!htbp]
     \centering
         \includegraphics[width=.42\textwidth]{images/2016_02_06_learning.eps}
-        \caption{Learning curves for FD and PG-ELLA using FD to transfer information between tasks. }\label{fig:reward}
+        \caption{Learning curves for FD and PG-ELLA using FD to transfer information between tasks. \comGabe{The legend on the figure should be FD instead of PG?} }\label{fig:reward}
 \end{figure}
 
 \begin{figure}[!htbp]
