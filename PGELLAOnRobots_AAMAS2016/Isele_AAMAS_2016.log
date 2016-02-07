@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/TeX Live for SUSE Linux) (format=pdflatex 2015.9.2)  6 FEB 2016 19:46
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/TeX Live for SUSE Linux) (format=pdflatex 2015.9.2)  6 FEB 2016 22:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -283,18 +283,18 @@ Package: xspace 2009/10/20 v1.13 Space after command names (DPC,MH)
 ) (./Isele_AAMAS_2016.aux)
 \openout1 = `Isele_AAMAS_2016.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
 
 (/usr/share/texmf/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -357,99 +357,44 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Font Info:    Try loading font information for U+msa on input line 369.
+LaTeX Font Info:    Try loading font information for U+msa on input line 368.
 
 (/usr/share/texmf/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 369.
+LaTeX Font Info:    Try loading font information for U+msb on input line 368.
 
 (/usr/share/texmf/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+lasy on input line 369.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 368.
 
 (/usr/share/texmf/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
 LaTeX Font Info:    Font shape `U/lasy/b/n' in size <9> not available
-(Font)              Font shape `U/lasy/m/n' tried instead on input line 369.
+(Font)              Font shape `U/lasy/m/n' tried instead on input line 368.
 LaTeX Font Info:    Font shape `U/lasy/b/n' in size <6> not available
-(Font)              Font shape `U/lasy/m/n' tried instead on input line 369.
+(Font)              Font shape `U/lasy/m/n' tried instead on input line 368.
 LaTeX Font Info:    Font shape `U/lasy/b/n' in size <5> not available
-(Font)              Font shape `U/lasy/m/n' tried instead on input line 369.
+(Font)              Font shape `U/lasy/m/n' tried instead on input line 368.
 
-Overfull \hbox (34.25478pt too wide) in paragraph at lines 369--369
+Overfull \hbox (34.25478pt too wide) in paragraph at lines 368--368
  [][][][][] 
  []
 
-LaTeX Font Info:    Try loading font information for OMS+aer on input line 369.
+LaTeX Font Info:    Try loading font information for OMS+aer on input line 368.
 
 (/usr/share/texmf/tex/latex/ae/omsaer.fd
 File: omsaer.fd 1999/12/27
 )
 LaTeX Font Info:    Font shape `OMS/aer/m/n' in size <9> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 369.
-
-
-LaTeX Warning: Citation `Khalil-2002' on page \thepage  undefined on input line
- 449.
-
-
-LaTeX Warning: Citation `Nise-2010' on page \thepage  undefined on input line 4
-49.
-
-
-LaTeX Warning: Citation `Cassandras-2008' on page \thepage  undefined on input 
-line 450.
-
-
-LaTeX Warning: Citation `Luna-2015' on page \thepage  undefined on input line 4
-50.
-
-
-LaTeX Warning: Citation `Urgaonkar-2007' on page \thepage  undefined on input l
-ine 450.
-
-
-LaTeX Warning: Citation `Khalil-2002' on page \thepage  undefined on input line
- 455.
-
-
-LaTeX Warning: Citation `Lewis-2012' on page \thepage  undefined on input line 
-455.
-
-
-LaTeX Warning: Citation `Nise-2010' on page \thepage  undefined on input line 4
-55.
-
-
-LaTeX Warning: Citation `Dorato-2000' on page \thepage  undefined on input line
- 463.
-
-
-LaTeX Warning: Citation `Khalil-2002' on page \thepage  undefined on input line
- 463.
-
-
-LaTeX Warning: Citation `Lewis-2012' on page \thepage  undefined on input line 
-463.
-
-[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 368.
+ [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
 ]
-
-LaTeX Warning: Citation `Bagnell-2013' on page \thepage  undefined on input lin
-e 525.
-
-
-Overfull \hbox (23.28789pt too wide) in paragraph at lines 522--527
-[]\T1/aer/m/n/9 Most PG meth-ods (e.g. episodic RE-IN-FORCE [13], PoWER [6],
- []
-
-
-Overfull \hbox (5.03487pt too wide) in paragraph at lines 547--551
+Overfull \hbox (5.03487pt too wide) in paragraph at lines 539--543
 \T1/aer/m/n/9 where $\OT1/cmr/bx/n/9 ^^A\OML/cmm/b/it/9 ^^R[]$ \T1/aer/m/n/9 ar
 e the in-di-vid-ual per-tur-ba-tions for $\OT1/cmr/bx/n/9 p \OT1/cmr/m/n/9 = [1
 \OML/cmm/m/it/9 ; [] ; n\OT1/cmr/m/n/9 ]$\T1/aer/m/n/9 ,
@@ -457,100 +402,122 @@ e the in-di-vid-ual per-tur-ba-tions for $\OT1/cmr/bx/n/9 p \OT1/cmr/m/n/9 = [1
 
 [2]
 
-LaTeX Warning: Citation `Kumar-2012' on page \thepage  undefined on input line 
-579.
-
-
-LaTeX Warning: Command \l invalid in math mode on input line 579.
+LaTeX Warning: Command \l invalid in math mode on input line 572.
 
 Missing character: There is no ª in font cmr6!
-<images/turtlebotsim_crop.png, id=33, 602.25pt x 602.25pt>
+<images/turtlebotsim_crop.png, id=30, 602.25pt x 602.25pt>
 File: images/turtlebotsim_crop.png Graphic file (type png)
 
 <use images/turtlebotsim_crop.png>
-Package pdftex.def Info: images/turtlebotsim_crop.png used on input line 684.
+Package pdftex.def Info: images/turtlebotsim_crop.png used on input line 677.
 (pdftex.def)             Requested size: 226.79846pt x 226.7989pt.
 
-
-LaTeX Warning: Citation `Turtlebot-2016' on page \thepage  undefined on input l
-ine 690.
-
-
-LaTeX Warning: Citation `Gazebo-2016' on page \thepage  undefined on input line
- 692.
-
-
-LaTeX Warning: Citation `ROS-2016' on page \thepage  undefined on input line 69
-2.
-
-LaTeX Font Info:    Font shape `U/lasy/b/n' in size <8> not available
-(Font)              Font shape `U/lasy/m/n' tried instead on input line 713.
-
-Overfull \hbox (4.2651pt too wide) in paragraph at lines 703--714
+Overfull \hbox (4.2651pt too wide) in paragraph at lines 694--703
 []\T1/aer/m/n/9 We as-sume we have lit-tle knowl-edge of the Turtle-bot model,
  []
 
 [3 <./images/turtlebotsim_crop.png>]
-<images/unicycle.png, id=38, 505.89pt x 505.89pt>
+<images/unicycle.png, id=35, 505.89pt x 505.89pt>
 File: images/unicycle.png Graphic file (type png)
  <use images/unicycle.png>
-Package pdftex.def Info: images/unicycle.png used on input line 724.
+Package pdftex.def Info: images/unicycle.png used on input line 714.
 (pdftex.def)             Requested size: 226.79846pt x 226.79927pt.
 
-Overfull \hbox (1.93758pt too wide) in paragraph at lines 745--749
+Overfull \hbox (1.93758pt too wide) in paragraph at lines 722--725
 []\T1/aer/m/n/9 We learn our PG-ELLA knowl-edge repos-i-tory $\OML/cmm/b/it/9 L
 $ \T1/aer/m/n/9 and sparse
  []
 
-<images/2016_2_3_reward.png, id=39, 429.10312pt x 317.68687pt>
-File: images/2016_2_3_reward.png Graphic file (type png)
+Package epstopdf Info: Source file: <images/2016_02_06_learning.eps>
+(epstopdf)                    date: 2016-02-06 22:20:19
+(epstopdf)                    size: 20858 bytes
+(epstopdf)             Output file: <images/2016_02_06_learning-eps-converted-t
+o.pdf>
+(epstopdf)             Command: <repstopdf --outfile=images/2016_02_06_learning
+-eps-converted-to.pdf images/2016_02_06_learning.eps>
+(epstopdf)             \includegraphics on input line 730.
+runsystem(repstopdf --outfile=images/2016_02_06_learning-eps-converted-to.pdf i
+mages/2016_02_06_learning.eps)...executed safely (allowed).
 
-<use images/2016_2_3_reward.png>
-Package pdftex.def Info: images/2016_2_3_reward.png used on input line 755.
-(pdftex.def)             Requested size: 211.67908pt x 156.71498pt.
+Package epstopdf Info: Result file: <images/2016_02_06_learning-eps-converted-t
+o.pdf>
+(epstopdf)                    date: 2016-02-06 22:21:29
+(epstopdf)                    size: 7880 bytes.
 
-<images/2016_2_3_gain.png, id=40, 429.10312pt x 317.68687pt>
-File: images/2016_2_3_gain.png Graphic file (type png)
+<images/2016_02_06_learning-eps-converted-to.pdf, id=36, 421.575pt x 316.18124p
+t>
+File: images/2016_02_06_learning-eps-converted-to.pdf Graphic file (type pdf)
+ <use images/2016_02_06_learning-eps-converted-to.pdf>
+Package pdftex.def Info: images/2016_02_06_learning-eps-converted-to.pdf used o
+n input line 730.
+(pdftex.def)             Requested size: 211.67908pt x 158.76083pt.
+Package epstopdf Info: Source file: <images/2016_02_06_gain.eps>
+(epstopdf)                    date: 2016-02-06 22:20:16
+(epstopdf)                    size: 35671 bytes
+(epstopdf)             Output file: <images/2016_02_06_gain-eps-converted-to.pd
+f>
+(epstopdf)             Command: <repstopdf --outfile=images/2016_02_06_gain-eps
+-converted-to.pdf images/2016_02_06_gain.eps>
+(epstopdf)             \includegraphics on input line 736.
+runsystem(repstopdf --outfile=images/2016_02_06_gain-eps-converted-to.pdf image
+s/2016_02_06_gain.eps)...executed safely (allowed).
 
-<use images/2016_2_3_gain.png>
-Package pdftex.def Info: images/2016_2_3_gain.png used on input line 761.
-(pdftex.def)             Requested size: 211.67908pt x 156.71498pt.
- [4 <./images/unicycle.png> <./images/2016_2_3_reward.png (PNG copy)>] (./Isele
-_AAMAS_2016.bbl) [5 <./images/2016_2_3_gain.png (PNG copy)>] (./Isele_AAMAS_201
-6.aux) ) 
+Package epstopdf Info: Result file: <images/2016_02_06_gain-eps-converted-to.pd
+f>
+(epstopdf)                    date: 2016-02-06 22:21:29
+(epstopdf)                    size: 9089 bytes.
+
+<images/2016_02_06_gain-eps-converted-to.pdf, id=37, 414.54875pt x 315.1775pt>
+File: images/2016_02_06_gain-eps-converted-to.pdf Graphic file (type pdf)
+
+<use images/2016_02_06_gain-eps-converted-to.pdf>
+Package pdftex.def Info: images/2016_02_06_gain-eps-converted-to.pdf used on in
+put line 736.
+(pdftex.def)             Requested size: 211.67908pt x 160.93558pt.
+ (./Isele_AAMAS_2016.bbl
+LaTeX Font Info:    Try loading font information for T1+aett on input line 5.
+
+(/usr/share/texmf/tex/latex/ae/t1aett.fd
+File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
+)
+Underfull \vbox (badness 1137) has occurred while \output is active []
+
+ [4 <./images/unicycle.png> <./images/2016_02_06_learning-eps-converted-to.pdf>
+]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+) [5 <./images/2016_02_06_gain-eps-converted-to.pdf>] (./Isele_AAMAS_2016.aux) 
+) 
 Here is how much of TeX's memory you used:
- 3962 strings out of 493315
- 50127 string characters out of 6145894
- 122108 words of memory out of 5000000
- 7256 multiletter control sequences out of 15000+600000
- 63832 words of font info for 100 fonts, out of 8000000 for 9000
+ 3958 strings out of 493315
+ 50389 string characters out of 6145894
+ 122156 words of memory out of 5000000
+ 7260 multiletter control sequences out of 15000+600000
+ 56807 words of font info for 85 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 41i,14n,28p,852b,349s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/base/8r.enc}</usr/share/texmf/fonts/t
-ype1/public/amsfonts/cm/cmbx6.pfb></usr/share/texmf/fonts/type1/public/amsfonts
-/cm/cmbx9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cmextra/cmex9.pfb><
-/usr/share/texmf/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texmf/fon
-ts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texmf/fonts/type1/public/amsf
-onts/cm/cmmi8.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmmi9.pfb></
-usr/share/texmf/fonts/type1/public/amsfonts/cmextra/cmmib6.pfb></usr/share/texm
-f/fonts/type1/public/amsfonts/cmextra/cmmib9.pfb></usr/share/texmf/fonts/type1/
-public/amsfonts/cm/cmr5.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cm
-r6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/te
-xmf/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texmf/fonts/type1/publi
-c/amsfonts/cm/cmss8.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmssbx
-10.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/t
-exmf/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf/fonts/type1/pub
-lic/amsfonts/cm/cmti8.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmti
-9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/sh
-are/texmf/fonts/type1/public/amsfonts/symbols/msbm7.pfb></usr/share/texmf/fonts
-/type1/urw/helvetic/uhvb8a.pfb></usr/share/texmf/fonts/type1/urw/helvetic/uhvr8
-a.pfb></usr/share/texmf/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf/font
-s/type1/urw/times/utmr8a.pfb></usr/share/texmf/fonts/type1/urw/zapfding/uzdr.pf
-b>
-Output written on Isele_AAMAS_2016.pdf (5 pages, 478358 bytes).
+ 41i,14n,28p,794b,349s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf/fonts/enc/dvips/base/8r.enc}</usr/share/texmf/fonts/type1/pu
+blic/amsfonts/cm/cmbx6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmb
+x9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cmextra/cmex9.pfb></usr/sh
+are/texmf/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texmf/fonts/type
+1/public/amsfonts/cm/cmmi6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm
+/cmmi9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cmextra/cmmib6.pfb></u
+sr/share/texmf/fonts/type1/public/amsfonts/cmextra/cmmib9.pfb></usr/share/texmf
+/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texmf/fonts/type1/public/a
+msfonts/cm/cmr6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmr9.pfb><
+/usr/share/texmf/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/share/texmf/fon
+ts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/share/texmf/fonts/type1/public/a
+msfonts/cm/cmsy6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmsy9.pfb
+></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/share/texmf/f
+onts/type1/public/amsfonts/cm/cmtt9.pfb></usr/share/texmf/fonts/type1/public/am
+sfonts/symbols/msbm10.pfb></usr/share/texmf/fonts/type1/public/amsfonts/symbols
+/msbm7.pfb></usr/share/texmf/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/te
+xmf/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texmf/fonts/type1/urw/times
+/utmb8a.pfb></usr/share/texmf/fonts/type1/urw/times/utmr8a.pfb>
+Output written on Isele_AAMAS_2016.pdf (5 pages, 421787 bytes).
 PDF statistics:
- 129 PDF objects out of 1000 (max. 8388607)
- 91 compressed objects within 1 object stream
+ 133 PDF objects out of 1000 (max. 8388607)
+ 94 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  21 words of extra memory for PDF output out of 10000 (max. 10000000)
 
