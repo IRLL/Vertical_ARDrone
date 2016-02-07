@@ -417,7 +417,7 @@ In control systems, a perfect model of the dynamics of the system is often neces
 
 Lifelong learning \cite{Ruvolo2013} is a promising approach for accomplishing information sharing between different robots. It works on-line, allowing the different systems to be encountered consecutively so \textit{a priori} knowledge of all the different systems is not required at the start of training. It also preserves and possibly improves the models encountered early on, in contrast to transfer methods which only optimize performance on the target system.
 
-However most recent work in lifelong learning \cite{Ruvolo2013,BouAmmar2014a,bouAmmar2015unsupervised} has been theoretical, using simulations of benchmark problems with known dynamics to demonstrate knowledge sharing. The contribution of this work is to present the first results of lifelong learning on robotic systems. We do this by applying the PG-ELLA framework \cite{BouAmmar2014a} to the problem of disturbance rejection on a set of Turtlebots in the Gazebo simulator. In this work in progress, the obtained results motivate future experiments on the real robot. 
+However most recent work in lifelong learning \cite{BouAmmar2014a,bouAmmar2015unsupervised,Ruvolo2013} has been theoretical, using simulations of benchmark problems with known dynamics to demonstrate knowledge sharing. The contribution of this work is to present the first results of lifelong learning on robotic systems. We do this by applying the PG-ELLA framework \cite{BouAmmar2014a} to the problem of disturbance rejection on a set of Turtlebots in the Gazebo simulator. In this work in progress, the obtained results motivate future experiments on the real robot. 
 
 After discussing related work in section \ref{related}, we review policy gradients and describe the particular base-learner we are using for lifelong learning in  section \ref{background}. We then outline our experiments in section \ref{Experiments}, showing how lifelong learning can be used to accomplish disturbance rejection on robotic systems.
 
@@ -453,7 +453,7 @@ Unlike typical control system theory where policies are generated from a model, 
 %In a model-free setting, the goal is to design a controller that stabilizes a system whose model is not available due to complex internal iterations, uncertainty in the system, event-based dynamics and technological limitations. 
 % RL methods
 %pilco model based but learns the model \cite{deisenroth2011pilco}
-Reinforcement learning \cite{kober2013reinforcement} is often utilized to learn controllers in a model-free settings. Amongst reinforcement learning algorithms, policy gradient (PG) methods \cite{sutton1999policy,williams1992simple} are popular in robotic applications \cite{kober2009policy,peters2008natural} since they accommodate continuous state/action spaces and can scale well to high dimensional spaces. Unlike these methods where the goal is to learn a single controller, we use policy gradients in a lifelong learning setting.
+RL \cite{kober2013reinforcement} is often utilized to learn controllers in a model-free settings. Amongst reinforcement learning algorithms, policy gradient (PG) methods \cite{sutton1999policy,williams1992simple} are popular in robotic applications \cite{kober2009policy,peters2008natural} since they accommodate continuous state/action spaces and can scale well to high dimensional spaces. Unlike these methods where the goal is to learn a single controller, we use policy gradients in a lifelong learning setting.
 
 %Examples exist that do not explicitly compute gradients (episodic REINFORCE)~\cite{williams1992simple}, specialized to dynamic motor primitives PoWER~\cite{kober2009policy}, and , use natural gradients Natural Actor Critic~\cite{peters2008natural})
 
@@ -715,7 +715,8 @@ where $\rho$, $\gamma$ and $\psi$ are indicated in Fig. \ref{fig:numfeat}.
         \includegraphics[width=.45\textwidth]{images/unicycle.png}
         \caption{State variables of simplified go-to-goal problem.}\label{fig:numfeat}
 \end{figure}
-The state is a non-linear transformation of the position and heading angle. We ran experiments using natural actor critic \cite{peters2008natural}, episodic REINFORCE \cite{williams1992simple}, and FD \cite{Bagnell-2013} and found FD to work best for our problem. We believe \comGabe{Is this speculating?} this is a result of the particular nonlinear transformation we are using and the fact that FD optimizes the true return. In future work we will present a comparison of different base learners. 
+The state is a non-linear transformation of the position and heading angle. We ran experiments using natural actor critic \cite{peters2008natural}, episodic REINFORCE \cite{williams1992simple}, and FD \cite{Bagnell-2013} and found FD to work best for our problem. We believe %\comGabe{Is this speculating? David: Yes} 
+this is a result of the particular nonlinear transformation we are using and the fact that FD optimizes the true return. In future work we will present a comparison of different base learners. 
 
 \subsection{Methodology}
 We start by generating 20 robots, each with a different constant disturbance and a unique goal, both selected uniformly. 
