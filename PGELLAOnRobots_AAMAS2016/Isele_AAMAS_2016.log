@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/TeX Live for SUSE Linux) (format=pdflatex 2015.9.2)  6 FEB 2016 21:48
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/TeX Live for SUSE Linux) (format=pdflatex 2015.9.2)  6 FEB 2016 21:54
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -455,7 +455,7 @@ File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 Here is how much of TeX's memory you used:
  3964 strings out of 493315
  50259 string characters out of 6145894
- 122156 words of memory out of 5000000
+ 121156 words of memory out of 5000000
  7261 multiletter control sequences out of 15000+600000
  59869 words of font info for 91 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
@@ -480,7 +480,7 @@ bols/msbm7.pfb></usr/share/texmf/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/shar
 e/texmf/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texmf/fonts/type1/urw/t
 imes/utmb8a.pfb></usr/share/texmf/fonts/type1/urw/times/utmr8a.pfb></usr/share/
 texmf/fonts/type1/urw/zapfding/uzdr.pfb>
-Output written on Isele_AAMAS_2016.pdf (5 pages, 468538 bytes).
+Output written on Isele_AAMAS_2016.pdf (5 pages, 468541 bytes).
 PDF statistics:
  125 PDF objects out of 1000 (max. 8388607)
  88 compressed objects within 1 object stream
