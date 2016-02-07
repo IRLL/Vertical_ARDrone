@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/TeX Live for SUSE Linux) (format=pdflatex 2015.9.2)  6 FEB 2016 19:46
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/TeX Live for SUSE Linux) (format=pdflatex 2015.9.2)  6 FEB 2016 20:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -390,62 +390,12 @@ File: omsaer.fd 1999/12/27
 )
 LaTeX Font Info:    Font shape `OMS/aer/m/n' in size <9> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 369.
-
-
-LaTeX Warning: Citation `Khalil-2002' on page \thepage  undefined on input line
- 449.
-
-
-LaTeX Warning: Citation `Nise-2010' on page \thepage  undefined on input line 4
-49.
-
-
-LaTeX Warning: Citation `Cassandras-2008' on page \thepage  undefined on input 
-line 450.
-
-
-LaTeX Warning: Citation `Luna-2015' on page \thepage  undefined on input line 4
-50.
-
-
-LaTeX Warning: Citation `Urgaonkar-2007' on page \thepage  undefined on input l
-ine 450.
-
-
-LaTeX Warning: Citation `Khalil-2002' on page \thepage  undefined on input line
- 455.
-
-
-LaTeX Warning: Citation `Lewis-2012' on page \thepage  undefined on input line 
-455.
-
-
-LaTeX Warning: Citation `Nise-2010' on page \thepage  undefined on input line 4
-55.
-
-
-LaTeX Warning: Citation `Dorato-2000' on page \thepage  undefined on input line
- 463.
-
-
-LaTeX Warning: Citation `Khalil-2002' on page \thepage  undefined on input line
- 463.
-
-
-LaTeX Warning: Citation `Lewis-2012' on page \thepage  undefined on input line 
-463.
-
-[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+ [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
 ]
-
-LaTeX Warning: Citation `Bagnell-2013' on page \thepage  undefined on input lin
-e 525.
-
-
-Overfull \hbox (23.28789pt too wide) in paragraph at lines 522--527
-[]\T1/aer/m/n/9 Most PG meth-ods (e.g. episodic RE-IN-FORCE [13], PoWER [6],
+Overfull \hbox (27.90482pt too wide) in paragraph at lines 522--527
+[]\T1/aer/m/n/9 Most PG meth-ods (e.g. episodic RE-IN-FORCE [23], PoWER [13],
  []
 
 
@@ -457,10 +407,6 @@ e the in-di-vid-ual per-tur-ba-tions for $\OT1/cmr/bx/n/9 p \OT1/cmr/m/n/9 = [1
 
 [2]
 
-LaTeX Warning: Citation `Kumar-2012' on page \thepage  undefined on input line 
-579.
-
-
 LaTeX Warning: Command \l invalid in math mode on input line 579.
 
 Missing character: There is no ª in font cmr6!
@@ -470,23 +416,10 @@ File: images/turtlebotsim_crop.png Graphic file (type png)
 <use images/turtlebotsim_crop.png>
 Package pdftex.def Info: images/turtlebotsim_crop.png used on input line 684.
 (pdftex.def)             Requested size: 226.79846pt x 226.7989pt.
-
-
-LaTeX Warning: Citation `Turtlebot-2016' on page \thepage  undefined on input l
-ine 690.
-
-
-LaTeX Warning: Citation `Gazebo-2016' on page \thepage  undefined on input line
- 692.
-
-
-LaTeX Warning: Citation `ROS-2016' on page \thepage  undefined on input line 69
-2.
-
 LaTeX Font Info:    Font shape `U/lasy/b/n' in size <8> not available
-(Font)              Font shape `U/lasy/m/n' tried instead on input line 713.
+(Font)              Font shape `U/lasy/m/n' tried instead on input line 712.
 
-Overfull \hbox (4.2651pt too wide) in paragraph at lines 703--714
+Overfull \hbox (4.2651pt too wide) in paragraph at lines 703--713
 []\T1/aer/m/n/9 We as-sume we have lit-tle knowl-edge of the Turtle-bot model,
  []
 
@@ -494,10 +427,10 @@ Overfull \hbox (4.2651pt too wide) in paragraph at lines 703--714
 <images/unicycle.png, id=38, 505.89pt x 505.89pt>
 File: images/unicycle.png Graphic file (type png)
  <use images/unicycle.png>
-Package pdftex.def Info: images/unicycle.png used on input line 724.
+Package pdftex.def Info: images/unicycle.png used on input line 723.
 (pdftex.def)             Requested size: 226.79846pt x 226.79927pt.
 
-Overfull \hbox (1.93758pt too wide) in paragraph at lines 745--749
+Overfull \hbox (1.93758pt too wide) in paragraph at lines 744--748
 []\T1/aer/m/n/9 We learn our PG-ELLA knowl-edge repos-i-tory $\OML/cmm/b/it/9 L
 $ \T1/aer/m/n/9 and sparse
  []
@@ -506,51 +439,56 @@ $ \T1/aer/m/n/9 and sparse
 File: images/2016_2_3_reward.png Graphic file (type png)
 
 <use images/2016_2_3_reward.png>
-Package pdftex.def Info: images/2016_2_3_reward.png used on input line 755.
+Package pdftex.def Info: images/2016_2_3_reward.png used on input line 754.
 (pdftex.def)             Requested size: 211.67908pt x 156.71498pt.
 
 <images/2016_2_3_gain.png, id=40, 429.10312pt x 317.68687pt>
 File: images/2016_2_3_gain.png Graphic file (type png)
 
 <use images/2016_2_3_gain.png>
-Package pdftex.def Info: images/2016_2_3_gain.png used on input line 761.
+Package pdftex.def Info: images/2016_2_3_gain.png used on input line 760.
 (pdftex.def)             Requested size: 211.67908pt x 156.71498pt.
  [4 <./images/unicycle.png> <./images/2016_2_3_reward.png (PNG copy)>] (./Isele
-_AAMAS_2016.bbl) [5 <./images/2016_2_3_gain.png (PNG copy)>] (./Isele_AAMAS_201
-6.aux) ) 
+_AAMAS_2016.bbl
+LaTeX Font Info:    Try loading font information for T1+aett on input line 5.
+
+(/usr/share/texmf/tex/latex/ae/t1aett.fd
+File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
+)) [5 <./images/2016_2_3_gain.png (PNG copy)>] (./Isele_AAMAS_2016.aux) ) 
 Here is how much of TeX's memory you used:
- 3962 strings out of 493315
- 50127 string characters out of 6145894
- 122108 words of memory out of 5000000
- 7256 multiletter control sequences out of 15000+600000
- 63832 words of font info for 100 fonts, out of 8000000 for 9000
+ 3984 strings out of 493315
+ 50462 string characters out of 6145894
+ 122148 words of memory out of 5000000
+ 7273 multiletter control sequences out of 15000+600000
+ 64320 words of font info for 102 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
  41i,14n,28p,852b,349s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/base/8r.enc}</usr/share/texmf/fonts/t
-ype1/public/amsfonts/cm/cmbx6.pfb></usr/share/texmf/fonts/type1/public/amsfonts
-/cm/cmbx9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cmextra/cmex9.pfb><
-/usr/share/texmf/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texmf/fon
-ts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texmf/fonts/type1/public/amsf
-onts/cm/cmmi8.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmmi9.pfb></
-usr/share/texmf/fonts/type1/public/amsfonts/cmextra/cmmib6.pfb></usr/share/texm
-f/fonts/type1/public/amsfonts/cmextra/cmmib9.pfb></usr/share/texmf/fonts/type1/
-public/amsfonts/cm/cmr5.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cm
-r6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/te
-xmf/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texmf/fonts/type1/publi
-c/amsfonts/cm/cmss8.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmssbx
-10.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/t
-exmf/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf/fonts/type1/pub
-lic/amsfonts/cm/cmti8.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmti
-9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/sh
-are/texmf/fonts/type1/public/amsfonts/symbols/msbm7.pfb></usr/share/texmf/fonts
-/type1/urw/helvetic/uhvb8a.pfb></usr/share/texmf/fonts/type1/urw/helvetic/uhvr8
-a.pfb></usr/share/texmf/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf/font
-s/type1/urw/times/utmr8a.pfb></usr/share/texmf/fonts/type1/urw/zapfding/uzdr.pf
-b>
-Output written on Isele_AAMAS_2016.pdf (5 pages, 478358 bytes).
+{/usr/
+share/texmf/fonts/enc/dvips/base/8r.enc}</usr/share/texmf/fonts/type1/public/am
+sfonts/cm/cmbx6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmbx9.pfb>
+</usr/share/texmf/fonts/type1/public/amsfonts/cmextra/cmex9.pfb></usr/share/tex
+mf/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texmf/fonts/type1/publi
+c/amsfonts/cm/cmmi6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmmi8.
+pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texm
+f/fonts/type1/public/amsfonts/cmextra/cmmib6.pfb></usr/share/texmf/fonts/type1/
+public/amsfonts/cmextra/cmmib9.pfb></usr/share/texmf/fonts/type1/public/amsfont
+s/cm/cmr5.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/s
+hare/texmf/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf/fonts/type
+1/public/amsfonts/cm/cmr9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/
+cmss8.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/s
+hare/texmf/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texmf/fonts/typ
+e1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/c
+m/cmti8.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/sh
+are/texmf/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/share/texmf/fonts/type
+1/public/amsfonts/symbols/msbm10.pfb></usr/share/texmf/fonts/type1/public/amsfo
+nts/symbols/msbm7.pfb></usr/share/texmf/fonts/type1/urw/helvetic/uhvb8a.pfb></u
+sr/share/texmf/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texmf/fonts/type
+1/urw/times/utmb8a.pfb></usr/share/texmf/fonts/type1/urw/times/utmr8a.pfb></usr
+/share/texmf/fonts/type1/urw/zapfding/uzdr.pfb>
+Output written on Isele_AAMAS_2016.pdf (5 pages, 490129 bytes).
 PDF statistics:
- 129 PDF objects out of 1000 (max. 8388607)
- 91 compressed objects within 1 object stream
+ 133 PDF objects out of 1000 (max. 8388607)
+ 94 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  21 words of extra memory for PDF output out of 10000 (max. 10000000)
 

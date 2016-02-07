@@ -692,7 +692,7 @@ Turtlebots are an affordable robotic platform that uses the Robotic Operating Sy
 which is compatible with the Gazebo simulator \cite{Gazebo-2016,ROS-2016}. We artificially induce a random and
 constant disturbance to the control signal to emulate a bias on the angular velocity of each robot. 
 Each turtlebot has a different constant disturbance drawn uniformly from 
-$[-0.1, 0.1] \subset \Re$ and measured in $m/s$. 
+$[-0.1, 0.1] \subset \Re$ and measured in $m/s$. These limits were selected to provide a large noise that was still within the bounds of what the turtlebot correct. 
 
 The Gazebo simulator considers the kinematics and mechanics of the system. In a first attempt to explore disturbance rejection as a preamble of
 fault tolerant control applications, the Turtlebot should learn how to drive itself from an initial to a goal point.
@@ -700,16 +700,15 @@ It should accomplish this simple task while being affected by a constant and unk
 compensate for the induced failure. It is worth mentioning that the difficulty of the disturbance will be increased by assuming
 time varying disturbance and stochastic disturbances later on.
 
-We assume we have little knowledge of the Turtlebot model, so we use the oversimplified kinematic model provided in \cite{aicardi1994closed}.
-In the kinematic model, the estate space is given by $\boldsymbol{x} \in \Re^3$ and the action space is described by 
+We assume we have little knowledge of the Turtlebot model, so we use the simplified kinematic model provided in \cite{aicardi1994closed}.
+In the kinematic model, the state space is given by $\boldsymbol{x} \in \Re^3$ and the action space is described by 
 $\boldsymbol{a} \in \Re^2$. Notice that the model in \cite{aicardi1994closed} just considers the kinematics of a unicycle in polar coordinates
 so we do not consider the dynamics of the system, \emph{i.e.,} we are neglecting model parameters such as mass, damping and friction 
 coefficients, as well as inputs such as forces and torques. Then, the nonlinear policy is derived neglecting the dynamics and just assuming
 simple kinematics, therefore, taking into account that our action is given by 
-$\boldsymbol{a} = \boldsymbol{\theta}^{T}\boldsymbol{\phi}(\boldsymbol{x})$
-where $\boldsymbol{x} = (\rho,\gamma,\psi)$ as illustrated in Fig. \ref{fig:reward} we propose the following nonlinear gain vector
+$\boldsymbol{a} = \boldsymbol{\theta}^\transpose\boldsymbol{\phi}(\boldsymbol{x})$
+where $\boldsymbol{x} = (\rho,\gamma,\psi)^\transpose$ as illustrated in Fig. \ref{fig:reward} we propose the following nonlinear gain vector
 structure,
-{\color{red} The names of the state variables in the figure don't correspond to the names used in the control gain, namely, $\alpha,\psi,\kappa$.}
 \comEric{Remember, $\alpha$ is the estimated single-task policy parameters, so don't overload the notation.}
 \begin{equation} \label{eqn:state}
 	%\bm{x}^{(t)} \!=\! \begin{bmatrix} r cos(\alpha) & \alpha & \frac{cos(\alpha)sin(\alpha)}{\alpha}\left(\alpha + \kappa + \phi \right) & 1 \end{bmatrix} \enspace
