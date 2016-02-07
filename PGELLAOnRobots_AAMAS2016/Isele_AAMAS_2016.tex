@@ -51,6 +51,14 @@
 \usepackage{algorithmicx}
 \usepackage{algpseudocode}
 \usepackage{algorithm}
+
+% For algorithms
+%\usepackage{algorithm}
+%\usepackage{algorithmic}
+%\usepackage{hyperref}
+%\newcommand{\listspace}{\vspace{0.5em}}
+%\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
 % Mathematics
 \newcommand{\iforget}{\displaystyle}
 \newcommand\Nat{\mathbb{N}}
@@ -83,6 +91,35 @@
 
 % if you are using PDF LaTeX and you cannot find a way for producing
 % letter, the following explicit settings may help
+
+\usepackage{pifont}
+\newcommand{\note}[3]{{\color{#2} [ \ding{42} \textbf{#1:} {\small #3} ]}}
+\newcommand{\comMarcio}[1]{\note{Marcio}{red}{#1}}
+\newcommand{\comEric}[1]{\note{Eric}{blue}{#1}}
+\newcommand{\comMatt}[1]{\note{Matt}{green}{#1}}
+
+\newcommand{\Task}[1]{\mathcal{Z}^{(#1)}}
+\newcommand{\Mt}[1]{\phi\bigl(\mt{#1}\bigr)}
+\newcommand{\mt}[1]{\bm{m}^{(#1)}}
+\newcommand{\Dt}[1]{D^{(#1)}}
+\newcommand{\st}[1]{\bm{s}^{(#1)}}
+\newcommand{\sthat}[1]{\hat{\bm{s}}^{(#1)}}
+\newcommand{\Th}[1]{\bm{\theta}^{(#1)}}
+\newcommand{\At}[1]{\bm{\alpha}^{(#1)}}
+\newcommand{\ComboVec}[1]{\bm{\beta}^{(#1)}}
+\newcommand{\ComboDict}{\bm{K}}
+\newcommand{\xit}[2]{\bm{x}_{#1}^{(#2)}}
+\newcommand{\Xt}[1]{X^{(#1)}}
+\newcommand{\yit}[2]{y_{#1}^{(#2)}}
+\newcommand{\yt}[1]{\bm{y}^{(#1)}}
+\newcommand{\pairsim}[1]{d(#1)}
+\newcommand{\learned}[1]{h\Big( \pairsim{#1},\phi \Big)} %\tilde{p(#1)}
+\newcommand{\pairset}[1]{\bm{D}_{#1}}
+\newcommand{\learnedset}[1]{\bm{D}_{#1}'}
+\newcommand{\reveng}[1]{R(#1)}
+%\newcommand{\argmin}{\arg\!\min}
+\newcommand{\Tau}{|\mathbf{T}|} 
+
 
 \usepackage{bm}
 %\usepackage{mathrsfs}
@@ -368,14 +405,13 @@ Learning controllers for multiple systems is often an expensive process when con
 %6. Turtlebot and Quadcopter experiments with linear and nonlinear policies\\
 %5. Learning in simulation and then physical robots}
 
-<<<<<<< HEAD
 
-In control systems, a perfect model of the dynamics of the system is often necessary to guarantee the stabilization of the system. 
-This can be problematic in complicated systems where the dynamics are difficult to model or require information that is not available to 
-the designer \cite{Khalil-2002,Tempo-2013}. %such as failures that change dynamics.
-=======
+%
+%In control systems, a perfect model of the dynamics of the system is often necessary to guarantee the stabilization of the system. 
+%This can be problematic in complicated systems where the dynamics are difficult to model or require information that is not available to 
+%the designer \cite{Khalil-2002,Tempo-2013}. %such as failures that change dynamics.
+
 In control systems, a perfect model of the dynamics of the system is often necessary to guarantee the stabilization of the system. This can be problematic in complicated systems where the dynamics are difficult to model or require information that is not available to the designer. %such as failures that change dynamics.
->>>>>>> 2dd06404ca4d8d723fb9360d229614dddb7b4664
 
 
 % VIEW MODEL FREE AS LIFELONG LEARNING
@@ -392,7 +428,7 @@ Lifelong learning \cite{Ruvolo2013} is a promising approach for accomplishing in
 
 However most recent work in lifelong learning \cite{Ruvolo2013,BouAmmar2014a,bouAmmar2015unsupervised} has been theoretical, using simulations of benchmark problems with known dynamics to demonstrate knowledge sharing. The contribution of this work is to present the first results of lifelong learning on robotic systems. We do this by applying the PG-ELLA framework \cite{BouAmmar2014a} to the problem of disturbance rejection.
 
-{\color{red} Marcio's Comment: The introduction needs more work, please don't forget to clarify our main contributions/goals and please 
+\comMarcio{The introduction needs more work, please don't forget to clarify our main contributions/goals and please 
 provide the organization of the paper.}
 
 % Learning on robotic systems is a very costly process. The time needed to run learning algorithms often prohibits running the large number of trials needed to learn a robust model. %, and physical systems wear down from repeated trials often changing the system over time. This problem is greatly exacerbated in multi-robot systems which can contain many possibly different systems, each of  which may have a different objective, and therefore may require learning a unique controller for each agent in the system.
@@ -429,7 +465,7 @@ However, things get more complicated when no model is provided, even for simple 
 controller that stabilizes a system whose model is not available due to complex internal iterations, uncertainty in the system, event-based
 dynamics and technological limitations.
 
-{\color{red} Marcio's comment: From here on this section needs more specifics about model-free approaches. Please make sure you cite 
+\comMarcio{From here on this section needs more specifics about model-free approaches. Please make sure you cite 
 relevant and recent literature, \emph{e.g.,} the Pilco paper.}
 % RL methods
 
@@ -463,7 +499,17 @@ that maximizes the expected reward.
 
 We use a class of RL algorithms known as Policy Gradient (PG) methods \cite{sutton1999policy}, which are particularly well suited for solving high dimensional problems with continuous state and action spaces, such as robotic control \cite{peters2008natural}. %PG methods are appealing for their ability to handle continuous state and action spaces, as well as their ability to scale well to high dimensions. 
 
-The goal of PG is to use gradient steps to optimize the expected average return. 
+The goal of PG is to use gradient steps to optimize the expected average return:
+\begin{equation}
+ \mathcal{J}(\boldsymbol{\theta})=\int_{\mathbb{T}}p_{\boldsymbol{\theta}}(\tau)\mathcal{R}(\tau)\mbox{d}\tau,
+ \label{retPG}
+\end{equation}
+where $\mathbb{T}$ is the set of all trajectories and $\mathcal{R}(\tau)$ is the average per-step reward, specifically:
+\begin{eqnarray}
+ p_{\boldsymbol{\theta}} & = & \prod_{h=0}^{H}p(\mathbf{x}_{h+1}|\mathbf{x}_{h},\mathbf{a}_{h})\pi(\mathbf{a}_{h},\mathbf{x}_{h})  \enspace, \nonumber \\
+ \mathcal{R}(\tau) & = & \frac{1}{H}\sum_{h=0}^{H} r(\mathbf{s}_{h},\mathbf{a}_{h},\mathbf{s}_{h+1})  \enspace. \nonumber
+\end{eqnarray}
+
 %%\mbox{$
 %\begin{equation} \label{pgreturn}
 %	\mathcal{J}(\bm{\theta}) = E \left[ \frac{1}{H} \sum_{h=1}^H r_h \right] = \int_{\mathbb{T}} p_{\bm{\theta}}(\bm{\tau})\mathfrak{R}(\bm{\tau})d\bm{\tau}
@@ -512,16 +558,8 @@ considered to be noisy and inefficient for problems with large sets of parameter
 
 In our experiments, the policy is represented as a function defined over a parameter matrix 
 $\boldsymbol{\theta} \in \Re^{d_{\theta}\times M}$, that provides the gains of the $M$ control inputs of the system. 
-Our goal is to optimize the expected average return,
-\begin{equation}
- \mathcal{J}(\boldsymbol{\theta})=\int_{\mathbb{T}}p_{\boldsymbol{\theta}}(\tau)\mathcal{R}(\tau)\mbox{d}\tau,
- \label{retPG}
-\end{equation}
-where $\mathbb{T}$ is the set of all trajectories and $\mathcal{R}(\tau)$ is the average per-step reward, specifically:
-\begin{eqnarray}
- p_{\boldsymbol{\theta}} & = & \prod_{h=0}^{H}p(\mathbf{x}_{h+1}|\mathbf{x}_{h},\mathbf{a}_{h})\pi(\mathbf{a}_{h},\mathbf{x}_{h}) \nonumber \\
- \mathcal{R}(\tau) & = & \frac{1}{H}\sum_{h=0}^{H} r(\mathbf{s}_{h},\mathbf{a}_{h},\mathbf{s}_{h+1}) \nonumber
-\end{eqnarray}
+Our goal is to optimize the expected average return of Equation \ref{retPG}.
+
 
 In order to share information across different learned policies, we incorporate the PG learning process into a lifelong machine learning 
 setting.
@@ -535,7 +573,8 @@ setting.
 
 \subsection{Lifelong Machine Learning}
 
-Lifelong learning focuses on learning a set of tasks consecutively while performing well across all tasks. Given a round $t = 1,\dots,t_{\max}$ a task $T^{(t)}$ is observed. In our setting, each task corresponds to a reinforcement learning problem for an individual robot. We assume that the model associated to $T^{(t)}$ is parameterized by a parameter $\boldsymbol{\theta}^{(t)} \in \Re^{d_{\theta_{t}}\times M}$. The ideal goal is that prior knowledge about tasks $T^{(1)},\ldots,T^{(t-1)}$ should provide enough information so that the lifelong learning algorithm performs better and faster on $T^{(t)}$ while being able to scale as the number of tasks increases.
+
+Lifelong learning focuses on learning a set of tasks consecutively while performing well across all tasks. Given a round $t = 1,\dots,t_{\max}$ a task $T^{(t)}$ is observed. \comEric{Please don't change notation between papers unless absolutely necessary.  Let's use the exact same notation as in the recent IJCAI paper.} In our setting, each task corresponds to a reinforcement learning problem for an individual robot. We assume that the model associated to $T^{(t)}$ is parameterized by a parameter $\boldsymbol{\theta}^{(t)} \in \Re^{d_{\theta_{t}}\times M}$. The ideal goal is that prior knowledge about tasks $T^{(1)},\ldots,T^{(t-1)}$ should provide enough information so that the lifelong learning algorithm performs better and faster on $T^{(t)}$ while being able to scale as the number of tasks increases.
 
 Following work in both multi-task \cite{Kumar-2012} and lifelong learning \cite{Ruvolo2013}, we assume there is a shared basis $\boldsymbol{L}\in \Re^{d_{x}\times l}$ and a sparse weight vector $\boldsymbol{s}^{(t)}\in \Re^{\l}$, so that the policy parameters $\boldsymbol{\theta}^{(t)}$
 are given by,
@@ -573,11 +612,76 @@ the Hessian of the PG objective function, and $\boldsymbol{A}$ and $\boldsymbol{
 
 %Notice that PG relies on the indirect maximization of the return function based on the maximization of a lower bound. Although this bound has reportedly been tight enough to guarantee maximization of the return function, we chose to use finite differences to search the optimal policy to make sure we maximize the return function directly.
 
+%\begin{algorithm}[t]
+%\caption{$\mbox{PG-ELLA}\left (k,\lambda,\mu \right)$\label{alg:PGELLA}}          % give the algorithm a caption
+%\begin{algorithmic}
+%\STATE $T \gets 0$, \enspace $\mathbf{A}\gets \mbox{\textbf{zeros}}_{k\times d,k \times d}$,
+%\STATE $\mathbf{b} \gets \mbox{\textbf{zeros}}_{k\times d,1}$, \enspace $\mathbf{L} \gets \mbox{\textbf{zeros}}_{d,k}$%	 \COMMENT{$\mathbf{\mbox{\textbf{zeros}}_{m,n}}$ is an $m\times n$ matrix of all zeros}
+%\WHILE{some task $t$ is available}
+%\IF{$\mbox{isNewTask}(t)$}
+%\STATE $T \gets T + 1$
+%\STATE $\left(\trajectories^{(t)}, R^{(t)}\right) \gets \mbox{getRandomTrajectories()}$
+%\ELSE
+%\STATE $\Bigl(\trajectories^{(t)}, R^{(t)}\Bigr) \gets \mbox{getTrajectories}\left( \bm{\alpha}^{(t)} \right)$
+%\STATE $\mathbf{A} \gets \mathbf{A} - \left ( \st \sttranspose \right) \otimes \bm{\Gamma}^{(t)}$
+%\STATE $\mathbf{b} \gets \mathbf{b} - \mbox{vec}\left ( \sttranspose \otimes \left ( \bm{\alpha}^{(t)\transpose} \bm{\Gamma}^{(t)} \right) \right)$
+%\ENDIF
+%\STATE Compute $\alpha^{(t)}$ and $\bm{\Gamma^{(t)}}$ from $\left(\trajectories^{(t)}, R^{(t)}\right)$
+%\STATE $\mathbf{L} \gets \mbox{reinitializeAllZeroColumns}(\mathbf{L})$\vspace{.25em}
+%\STATE $\st \gets \arg\min_{\bm{s}} \ell \left(\bm{L},\bm{s}, \bm{\alpha}^{(t)}, \bm{\Gamma}^{(t)}\right)$
+%%\STATE  $\st \gets$ Equation~\eqref{eq:S}
+%\STATE $\mathbf{A} \gets \mathbf{A} + \left ( \st \sttranspose \right) \otimes \bm{\Gamma}^{(t)}$
+%\STATE $\mathbf{b} \gets \mathbf{b} + \mbox{vec}\left ( \sttranspose \otimes \left ( \bm{\alpha}^{(t)\transpose} \bm{\Gamma}^{(t)} \right) \right)$
+%\STATE $\mathbf{L} \gets \mbox{mat}\left (\left ( \frac{1}{T}\mathbf{A} + \lambda \mathbf{I}_{k\times d,k\times d}\right)^{-1} \frac{1}{T}\mathbf{b}\right)$ %\COMMENT{$\mathbf{I_{m,n}}$ is the $m\times n$ identity matrix}
+%\ENDWHILE
+%\end{algorithmic}
+%\end{algorithm}
+
+\begin{algorithm}[tb!]
+%\caption{Lifelong Learning with Task Features $\left( \{\Th{1},\Mt{1}\}, \dots, \{\Th{\Tau}, \Mt{\Tau}\} \right)$}
+\caption{$\mbox{PG-ELLA}\left (k,\lambda,\mu \right)$\label{alg:PGELLA}}
+\label{algo:PGELLA}
+\begin{algorithmic}[1]
+%\Procedure{CH\textendash Election}{}
+%\State \textbf{Inputs:}  $ \{\Task{1},\Mt{1}\}, \dots, \{\Task{\Tau}, \Mt{\Tau}\} $
+\State $T \gets 0$
+\State $\mathbf{A}\gets \mbox{\textbf{zeros}}_{k\times d,k \times d}$, \enspace $\mathbf{b} \gets \mbox{\textbf{zeros}}_{k\times d,1}$
+
+%\Comment{$\mathbf{\mbox{\textbf{zeros}}_{m,n}}$ is an $m\times n$ matrix of all zeros}
+\State $\bm{L} \gets  \bm{\text{RandomMatrix}}_{d,k}, \ \bm{D} \gets  \bm{\text{RandomMatrix}}_{m,k}$
+
+\While {some task $t$ is available}
+\If {$\mbox{isNewTask}(t)$}
+\State $T \gets T+1$
+\State $\left(\mathbb{T}^{(t)}, R^{(t)}\right) \gets \mbox{getRandomTrajectories()}$%$\mathbb{T}^{(t)} \gets$ sampleRandomTrajectories($\Task{t}$)
+\Else
+\State  $\Bigl(\mathbb{T}^{(t)}, R^{(t)}\Bigr) \gets \mbox{getTrajectories}\left( \bm{\alpha}^{(t)} \right)$%$\mathbb{T}^{(t)} \gets$ sampleTrajectories($\Task{t}$, $\pi_{\At{t}}$)
+\State $\mathbf{A} \gets \mathbf{A} - \left ( \boldsymbol{s}^{(t)}\boldsymbol{s}^{(t)\transpose} \right) \otimes \bm{\Gamma}^{(t)}$
+\State $\mathbf{b}\gets \mathbf{b} - \mbox{vec} \left( \boldsymbol{s}^{(t)\transpose} \otimes \left( \bm{\alpha}^{(t)\transpose} \bm{\Gamma}^{(t)} \right) \right)$
+
+%\State $\bm{L} \gets$ update$L(\bm{L},\st{t},\Th{t}, \bm{\Gamma}^{(t)})$
+%\State $\bm{D} \gets$ update$D(\bm{D},\st{t},\Mt{t}, \bm{\Gamma}^{(t)})$ 
+\EndIf
+\State Compute $\At{t}$ and $\bm{\Gamma}^{(t)}$ from $\mathbb{T}^{(t)}$
+%\State $\st{t} \gets \argmin_s \ell(\bm{L},\bm{D},\st{t},\Th{t},\Mt{t}, \bm{\Gamma}^{(t)}  )$
+\State $\st{t}  \leftarrow  \arg\min_{\boldsymbol{s}} \left\| \boldsymbol{\alpha}^{(t)}-\boldsymbol{L} \st{t} \right\|_{\boldsymbol{\Gamma}^{(t)}}^{2} + \mu\left\|\boldsymbol{s}\right\|_{1}$
+\State $\mathbf{A} \gets \mathbf{A} + \left ( \st{t} \boldsymbol{s}^{(t)\transpose} \right) \otimes \bm{\Gamma}^{(t)}$
+\State $\mathbf{b}\gets \mathbf{b} + \mbox{vec} \left( \boldsymbol{s}^{(t)\transpose} \otimes \left( \bm{\alpha}^{(t)\transpose} \bm{\Gamma}^{(t)} \right) \right)$
+\State $\mathbf{L} \gets \mbox{mat}\left (\left ( \frac{1}{T}\mathbf{A} + \lambda \mathbf{I}_{k\times d,k\times d}\right)^{-1} \frac{1}{T}\mathbf{b}\right)$
+%\For {$t = \{1, \ldots, T\}$} 
+\State \textbf{for} $t \in \{1, \ldots, T\}$ \textbf{do}:\ \ $\Th{t} \gets \bm{L} \st{t}$ 
+%\EndFor
+\EndWhile
+%\State \textbf{Return:} $\bm{L}, \bm{D}, \bm{S} $
+%\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
 \section{Experiments} \label{Experiments}
 
 \begin{figure}[!htbp]
     \centering
-        \includegraphics[width=.45\textwidth]{images/turtlebot_crop.png}
+        \includegraphics[width=.45\textwidth]{images/turtlebotsim_crop.png}
         \caption{Turtlebot model in Gazebo Simulator. {\color{red} Marcio's comment: The reason why figures are usually squared in papers
         is because authors prefer to fill the largest space possible so they look as big as possible. I suggest to try to enlarge the figures.
         Their purpose is to be illustrative and that sometimes implies size.}}\label{fig:gazebo}
@@ -588,7 +692,7 @@ Turtlebots are an affordable robotic platform that uses the Robotic Operating Sy
 which is compatible with the Gazebo simulator \cite{Gazebo-2016,ROS-2016}. We artificially induce a random and
 constant disturbance to the control signal to emulate a bias on the angular velocity of each robot. 
 Each turtlebot has a different constant disturbance drawn uniformly from 
-$[-.1, .1] \subset \Re$ and measured in $m/s$. 
+$[-0.1, 0.1] \subset \Re$ and measured in $m/s$. 
 
 The Gazebo simulator considers the kinematics and mechanics of the system. In a first attempt to explore disturbance rejection as a preamble of
 fault tolerant control applications, the Turtlebot should learn how to drive itself from an initial to a goal point.
@@ -605,11 +709,15 @@ simple kinematics, therefore, taking into account that our action is given by
 $\boldsymbol{a} = \boldsymbol{\theta}^{T}\boldsymbol{\phi}(\boldsymbol{x})$
 where $\boldsymbol{x} = (\rho,\gamma,\psi)$ as illustrated in Fig. \ref{fig:reward} we propose the following nonlinear gain vector
 structure,
+{\color{red} The names of the state variables in the figure don't correspond to the names used in the control gain, namely, $\alpha,\psi,\kappa$.}
+\comEric{Remember, $\alpha$ is the estimated single-task policy parameters, so don't overload the notation.}
 \begin{equation} \label{eqn:state}
 	%\bm{x}^{(t)} \!=\! \begin{bmatrix} r cos(\alpha) & \alpha & \frac{cos(\alpha)sin(\alpha)}{\alpha}\left(\alpha + \kappa + \phi \right) & 1 \end{bmatrix} \enspace
 	\boldsymbol{\phi}(\boldsymbol{x}) = \left(\begin{array}{c} \rho \cos(\gamma) \\ \gamma \\ \frac{\cos(\gamma)\sin(\gamma)}{\gamma}\left(\gamma + \psi \right) \\ 1 \end{array}\right) \enspace
 \end{equation}
 where $\rho$, $\gamma$ and $\psi$ are indicated in Fig. \ref{fig:numfeat}.
+
+
 
 \begin{figure}[!htbp]
     \centering
@@ -620,16 +728,24 @@ where $\rho$, $\gamma$ and $\psi$ are indicated in Fig. \ref{fig:numfeat}.
 \end{figure}
 The state is a non-linear transformation of the position and heading angle. This implementation was entirely done in Python.
 
+{\color{red} Although this is true, these kind of assertions are not appreciated unless there's a good reason for it we could provide. In that
+case is better not to mention the fact, unless we have a hipothesis or a conclusion of what's going on. The reason why this is incorrect has
+to do with teh fact that the original authors of REIFORCE and NAC would desire an explanation about why we are questioning the correctness
+of their algorithm, given that a lot of papers rely on their result, therefore, we look as if we don't know what we're doing, and
+that isn't the case. We just need to somehow come up with a formal proof that our result is better.}
+We were not able to learn a policy on this non-linear state transformation using either the natural actor critic \cite{peters2008natural} or episodic REINFORCE \cite{williams1992simple} policy gradient methods.   
+\comEric{WHY are we using FD?  I.e., what are its advantages in this application over REINFORCE and NAC?}
+
 \subsection{Methodology}
 {\color{red} Marcio's comments: This is just a suggestion. I usually divide the experimental section in two subsections, namely,
 'experimental design' and 'Results'. In the first one, I provide the details of the experiment such as parameters, programing language, hardware
 specs, etc. In the second one I present the result and the analysis of the results. I believe this section still lacks more analysis.}
 We start by generating 20 robots, each with a different constant disturbance and a unique goal, both selected uniformly. The robots are run for 20 learning steps of FD, each learning step consists of 15 roll-outs of 50 time steps each. Note that 20 learning steps is fewer iterations than is required for any system to converge to a good controller. The policy that is learned after 20 iterations of FD is used as $\theta^*$ for PG-ELLA. We use a learning rate of $1\times 10^{-6}$.
+>>>>>>> cfccddf19d69461feab3603018c618c67dea09a6
 
 We learn our PG-ELLA knowledge repository $\bm{L}$ and sparse representation $\bm{s}^{(t)}$ using the update equations given 
 by (\ref{onlineupdate}). Tasks are encountered randomly with repetition and learning stops once every task has been seen 
-once. We select $k=8$ to be the number of columns, and use sparsity coefficient of $1\times 10^{-3}$ and regularization coefficient of 
-$1\times 10^{-8}$.
+once. We select $k=8$ to be the number of columns, and use sparsity coefficient $\mu = 1\times 10^{-3}$ and regularization coefficient $\lambda = 1\times 10^{-8}$.
 % use identity as Hessian 
 
 We then compare the policy reconstructed from PG-ELLA against the policy that was learned after 20 iterations of FD by comparing the learning curves that result from running FD for an additional 80 learning iterations. Performance is averaged over 6 trials for all 20 robots. In Fig. \ref{fig:reward} we see that PG-ELLA is successfully able to reconstruct the policies and provide an additional benefit of positive transfer. Note that these are preliminary results and we suspect further refinements will enable us to achieve larger amounts of transfer.
@@ -654,7 +770,7 @@ We demonstrate the use of lifelong learning for disturbance rejection on Turtleb
 %Acknowledgements are optional
 \section*{Acknowledgments}
 {\color{red} 
-Here goes the grant
+the grant goes here
 }
 
 
