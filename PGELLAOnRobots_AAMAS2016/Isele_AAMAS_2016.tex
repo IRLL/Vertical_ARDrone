@@ -687,21 +687,29 @@ the Hessian of the PG objective function, and $\boldsymbol{A}$ and $\boldsymbol{
         Their purpose is to be illustrative and that sometimes implies size.}}\label{fig:gazebo}
 \end{figure}
 
-We evaluated our approach by modeling the control policies for different Turtlebot systems \cite{Turtlebot-2016}.
-Turtlebots are an affordable robotic platform that uses the Robotic Operating System (ROS) in its hydro version,
-which is compatible with the Gazebo simulator \cite{Gazebo-2016,ROS-2016}. We artificially induce a random and
-constant disturbance to the control signal to emulate a bias on the angular velocity of each robot. 
-Each turtlebot has a different constant disturbance drawn uniformly from 
-$[-0.1, 0.1] \subset \Re$ and measured in $m/s$. 
+We evaluate our approach by modeling the control policies for different Turtlebot systems \cite{Turtlebot-2016}. 
+%Turtlebots are an affordable robotic platform that uses the Robotic Operating System (ROS) in its hydro version,
+%which is compatible with the Gazebo simulator \cite{Gazebo-2016,ROS-2016}. 
+Experiments where conducted using the Gazebo simulator \cite{Gazebo-2016,ROS-2016} with a simulated model of the Turtlebot as shown in Fig~\ref{fig:gazebo}. 
+The implementation of our approach uses Python and the Hydro version of Robot Operating System (ROS).
+This experimental setup allows us to use the same code in both simulation and the physical robots.
 
-The Gazebo simulator considers the kinematics and mechanics of the system. In a first attempt to explore disturbance rejection as a preamble of
+In a first attempt to explore disturbance rejection as a preamble of
 fault tolerant control applications, the Turtlebot should learn how to drive itself from an initial to a goal point.
-It should accomplish this simple task while being affected by a constant and unknown angular disturbance. Thus the robot is enforced to
+%It should accomplish this simple task while being affected by a constant and unknown angular disturbance. 
+We then artificially induce a random and constant disturbance to the control signal that is drawn uniformly from 
+$[-0.1, 0.1] \subset \Re$ and measured in $m/s$. This emulates a bias on the angular velocity of each robot that forces the robot to
 compensate for the induced failure. It is worth mentioning that the difficulty of the disturbance will be increased by assuming
 time varying disturbance and stochastic disturbances later on.
 
+%The Gazebo simulator considers the kinematics and mechanics of the system. In a first attempt to explore disturbance rejection as a preamble of
+%fault tolerant control applications, the Turtlebot should learn how to drive itself from an initial to a goal point.
+%It should accomplish this simple task while being affected by a constant and unknown angular disturbance. Thus the robot is enforced to
+%compensate for the induced failure. It is worth mentioning that the difficulty of the disturbance will be increased by assuming
+%time varying disturbance and stochastic disturbances later on.
+
 We assume we have little knowledge of the Turtlebot model, so we use the oversimplified kinematic model provided in \cite{aicardi1994closed}.
-In the kinematic model, the estate space is given by $\boldsymbol{x} \in \Re^3$ and the action space is described by 
+In the kinematic model, the state space is given by $\boldsymbol{x} \in \Re^3$ and the action space is described by 
 $\boldsymbol{a} \in \Re^2$. Notice that the model in \cite{aicardi1994closed} just considers the kinematics of a unicycle in polar coordinates
 so we do not consider the dynamics of the system, \emph{i.e.,} we are neglecting model parameters such as mass, damping and friction 
 coefficients, as well as inputs such as forces and torques. Then, the nonlinear policy is derived neglecting the dynamics and just assuming
