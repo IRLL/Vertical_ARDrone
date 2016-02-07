@@ -420,7 +420,7 @@ Our goal is to learn fault tolerant control in multi-agent systems. In order to 
 %This motivates us to phrase the problem of learning robust controllers that reject disturbances as a multi-system problem.
 Given a collection of robots each with a different unknown disturbance, learning a unique control policy for each robot in the system can be very costly. One approach to reduce the amount of learning is to share information between robots. 
 
-Lifelong learning \cite{Ruvolo2013} is a promising approach for accomplishing information sharing between different robots. It works on-line, allowing the different systems to be encountered consecutively so a priori knowledge of all the different systems is not required at the start of training. Also it preserves and possibly improves the models encountered early on, in contrast to transfer methods which only optimize performance on the target system.
+Lifelong learning \cite{Ruvolo2013} is a promising approach for accomplishing information sharing between different robots. It works on-line, allowing the different systems to be encountered consecutively so \textit{a priori} knowledge of all the different systems is not required at the start of training. It also preserves and possibly improves the models encountered early on, in contrast to transfer methods which only optimize performance on the target system.
 
 However most recent work in lifelong learning \cite{Ruvolo2013,BouAmmar2014a,bouAmmar2015unsupervised} has been theoretical, using simulations of benchmark problems with known dynamics to demonstrate knowledge sharing. The contribution of this work is to present the first results of lifelong learning on robotic systems. We do this by applying the PG-ELLA framework \cite{BouAmmar2014a} to the problem of disturbance rejection on a set of Turtlebots in Gazebo Simulator. In this work in progress, the obtained results motivate future experiments on the real robot. 
 
@@ -601,7 +601,7 @@ update equations,
 
 
 where $\|\boldsymbol{v}\|_{\boldsymbol{A}}^{2}=\boldsymbol{v}^{\transpose}\boldsymbol{A}\boldsymbol{v}$ and $\boldsymbol{\Gamma}^{(t)}$ is 
-the Hessian of the PG objective function, and $\boldsymbol{A}$ and $\boldsymbol{b}$ are initialized to zero matrices. The full algorithm is described in Algorithm \ref{algo:PGELLA}
+the Hessian of the PG objective function, and $\boldsymbol{A}$ and $\boldsymbol{b}$ are initialized to zero matrices. The full algorithm is described in Algorithm \ref{algo:PGELLA}.
 
 %Notice that PG relies on the indirect maximization of the return function based on the maximization of a lower bound. Although this bound has reportedly been tight enough to guarantee maximization of the return function, we chose to use finite differences to search the optimal policy to make sure we maximize the return function directly.
 
