@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/TeX Live for SUSE Linux) (format=pdflatex 2015.9.2)  6 FEB 2016 22:06
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/TeX Live for SUSE Linux) (format=pdflatex 2015.9.2)  6 FEB 2016 22:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -428,58 +428,96 @@ Overfull \hbox (1.93758pt too wide) in paragraph at lines 722--725
 $ \T1/aer/m/n/9 and sparse
  []
 
-<images/2016_2_3_reward.png, id=36, 429.10312pt x 317.68687pt>
-File: images/2016_2_3_reward.png Graphic file (type png)
+Package epstopdf Info: Source file: <images/2016_02_06_learning.eps>
+(epstopdf)                    date: 2016-02-06 22:20:19
+(epstopdf)                    size: 20858 bytes
+(epstopdf)             Output file: <images/2016_02_06_learning-eps-converted-t
+o.pdf>
+(epstopdf)             Command: <repstopdf --outfile=images/2016_02_06_learning
+-eps-converted-to.pdf images/2016_02_06_learning.eps>
+(epstopdf)             \includegraphics on input line 730.
+runsystem(repstopdf --outfile=images/2016_02_06_learning-eps-converted-to.pdf i
+mages/2016_02_06_learning.eps)...executed safely (allowed).
 
-<use images/2016_2_3_reward.png>
-Package pdftex.def Info: images/2016_2_3_reward.png used on input line 730.
-(pdftex.def)             Requested size: 211.67908pt x 156.71498pt.
+Package epstopdf Info: Result file: <images/2016_02_06_learning-eps-converted-t
+o.pdf>
+(epstopdf)                    date: 2016-02-06 22:21:29
+(epstopdf)                    size: 7880 bytes.
 
-<images/2016_2_3_gain.png, id=37, 429.10312pt x 317.68687pt>
-File: images/2016_2_3_gain.png Graphic file (type png)
+<images/2016_02_06_learning-eps-converted-to.pdf, id=36, 421.575pt x 316.18124p
+t>
+File: images/2016_02_06_learning-eps-converted-to.pdf Graphic file (type pdf)
+ <use images/2016_02_06_learning-eps-converted-to.pdf>
+Package pdftex.def Info: images/2016_02_06_learning-eps-converted-to.pdf used o
+n input line 730.
+(pdftex.def)             Requested size: 211.67908pt x 158.76083pt.
+Package epstopdf Info: Source file: <images/2016_02_06_gain.eps>
+(epstopdf)                    date: 2016-02-06 22:20:16
+(epstopdf)                    size: 35671 bytes
+(epstopdf)             Output file: <images/2016_02_06_gain-eps-converted-to.pd
+f>
+(epstopdf)             Command: <repstopdf --outfile=images/2016_02_06_gain-eps
+-converted-to.pdf images/2016_02_06_gain.eps>
+(epstopdf)             \includegraphics on input line 736.
+runsystem(repstopdf --outfile=images/2016_02_06_gain-eps-converted-to.pdf image
+s/2016_02_06_gain.eps)...executed safely (allowed).
 
-<use images/2016_2_3_gain.png>
-Package pdftex.def Info: images/2016_2_3_gain.png used on input line 736.
-(pdftex.def)             Requested size: 211.67908pt x 156.71498pt.
- [4 <./images/unicycle.png> <./images/2016_2_3_reward.png (PNG copy)> <./images
-/2016_2_3_gain.png (PNG copy)>]
-(./Isele_AAMAS_2016.bbl
+Package epstopdf Info: Result file: <images/2016_02_06_gain-eps-converted-to.pd
+f>
+(epstopdf)                    date: 2016-02-06 22:21:29
+(epstopdf)                    size: 9089 bytes.
+
+<images/2016_02_06_gain-eps-converted-to.pdf, id=37, 414.54875pt x 315.1775pt>
+File: images/2016_02_06_gain-eps-converted-to.pdf Graphic file (type pdf)
+
+<use images/2016_02_06_gain-eps-converted-to.pdf>
+Package pdftex.def Info: images/2016_02_06_gain-eps-converted-to.pdf used on in
+put line 736.
+(pdftex.def)             Requested size: 211.67908pt x 160.93558pt.
+ (./Isele_AAMAS_2016.bbl
 LaTeX Font Info:    Try loading font information for T1+aett on input line 5.
- (/usr/share/texmf/tex/latex/ae/t1aett.fd
+
+(/usr/share/texmf/tex/latex/ae/t1aett.fd
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
-)) [5]
-(./Isele_AAMAS_2016.aux) ) 
+)
+Underfull \vbox (badness 1137) has occurred while \output is active []
+
+ [4 <./images/unicycle.png> <./images/2016_02_06_learning-eps-converted-to.pdf>
+]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+) [5 <./images/2016_02_06_gain-eps-converted-to.pdf>] (./Isele_AAMAS_2016.aux) 
+) 
 Here is how much of TeX's memory you used:
- 3957 strings out of 493315
- 50219 string characters out of 6145894
+ 3958 strings out of 493315
+ 50389 string characters out of 6145894
  122156 words of memory out of 5000000
  7260 multiletter control sequences out of 15000+600000
  56807 words of font info for 85 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
  41i,14n,28p,794b,349s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/base/8r.enc}</usr/s
-hare/texmf/fonts/type1/public/amsfonts/cm/cmbx6.pfb></usr/share/texmf/fonts/typ
-e1/public/amsfonts/cm/cmbx9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/c
-mextra/cmex9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmmi5.pfb></u
-sr/share/texmf/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texmf/fonts
-/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texmf/fonts/type1/public/amsfon
-ts/cmextra/cmmib6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cmextra/cmm
-ib9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/t
-exmf/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texmf/fonts/type1/publ
-ic/amsfonts/cm/cmr9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmss8.
-pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/share/t
-exmf/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texmf/fonts/type1/pub
-lic/amsfonts/cm/cmsy9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmti
-9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/share/te
-xmf/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texmf/fonts/type
-1/public/amsfonts/symbols/msbm7.pfb></usr/share/texmf/fonts/type1/urw/helvetic/
-uhvb8a.pfb></usr/share/texmf/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/te
-xmf/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf/fonts/type1/urw/times/ut
-mr8a.pfb>
-Output written on Isele_AAMAS_2016.pdf (5 pages, 454049 bytes).
+{/usr/share/texmf/fonts/enc/dvips/base/8r.enc}</usr/share/texmf/fonts/type1/pu
+blic/amsfonts/cm/cmbx6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmb
+x9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cmextra/cmex9.pfb></usr/sh
+are/texmf/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texmf/fonts/type
+1/public/amsfonts/cm/cmmi6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm
+/cmmi9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cmextra/cmmib6.pfb></u
+sr/share/texmf/fonts/type1/public/amsfonts/cmextra/cmmib9.pfb></usr/share/texmf
+/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texmf/fonts/type1/public/a
+msfonts/cm/cmr6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmr9.pfb><
+/usr/share/texmf/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/share/texmf/fon
+ts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/share/texmf/fonts/type1/public/a
+msfonts/cm/cmsy6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmsy9.pfb
+></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/share/texmf/f
+onts/type1/public/amsfonts/cm/cmtt9.pfb></usr/share/texmf/fonts/type1/public/am
+sfonts/symbols/msbm10.pfb></usr/share/texmf/fonts/type1/public/amsfonts/symbols
+/msbm7.pfb></usr/share/texmf/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/te
+xmf/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texmf/fonts/type1/urw/times
+/utmb8a.pfb></usr/share/texmf/fonts/type1/urw/times/utmr8a.pfb>
+Output written on Isele_AAMAS_2016.pdf (5 pages, 421787 bytes).
 PDF statistics:
- 117 PDF objects out of 1000 (max. 8388607)
- 82 compressed objects within 1 object stream
+ 133 PDF objects out of 1000 (max. 8388607)
+ 94 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  21 words of extra memory for PDF output out of 10000 (max. 10000000)
 
