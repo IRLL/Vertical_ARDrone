@@ -410,21 +410,23 @@ Learning controllers for multiple systems is often an expensive process when con
 %This can be problematic in complicated systems where the dynamics are difficult to model or require information that is not available to 
 %the designer \cite{Khalil-2002,Tempo-2013}. %such as failures that change dynamics.
 
+<<<<<<< HEAD
 In control systems, a mathematical model of the dynamics of the system is often necessary to guarantee the stabilization of the system. This can be problematic in complicated systems where the dynamics are difficult to model or require information that is not available to the designer. %such as failures that change dynamics.
 
 
 % VIEW MODEL FREE AS LIFELONG LEARNING
 Policy search approaches have been proposed to deal with the design of controllers in model-free applications.
 However, it is difficult to make claims of robustness or generalization of the learned controllers 
+=======
+>>>>>>> aa851d5e07139f4d8bce606d171ff70d43cd462b
 
 Our goal is to learn fault tolerant control in multi-agent systems. In order to approach this problem we begin by developing a method that can accomplish disturbance rejection across multiple robots. 
-%Given differences in manufacturing and wear, even identically designed robots may require very different control policies. % very robustness as many different systems
-%This motivates us to phrase the problem of learning robust controllers that reject disturbances as a multi-system problem.
-Given a collection of robots each with a different unknown disturbance, learning a unique control policy for each robot in the system can be very costly. One approach to reduce the amount of learning is to share information between robots. 
+
+In control systems, a perfect model of the dynamics of the system is often necessary to guarantee the stabilization of the system. Policy search approaches have been proposed to deal with the design of controllers in model-free applications. However, given a collection of robots each with a different unknown disturbance, learning a unique control policy for each robot in the system can be very costly. One approach to reduce the amount of learning is to share information between robots. 
 
 Lifelong learning \cite{Ruvolo2013} is a promising approach for accomplishing information sharing between different robots. It works on-line, allowing the different systems to be encountered consecutively so \textit{a priori} knowledge of all the different systems is not required at the start of training. It also preserves and possibly improves the models encountered early on, in contrast to transfer methods which only optimize performance on the target system.
 
-However most recent work in lifelong learning \cite{Ruvolo2013,BouAmmar2014a,bouAmmar2015unsupervised} has been theoretical, using simulations of benchmark problems with known dynamics to demonstrate knowledge sharing. The contribution of this work is to present the first results of lifelong learning on robotic systems. We do this by applying the PG-ELLA framework \cite{BouAmmar2014a} to the problem of disturbance rejection on a set of Turtlebots in Gazebo Simulator. In this work in progress, the obtained results motivate future experiments on the real robot. 
+However most recent work in lifelong learning \cite{BouAmmar2014a,bouAmmar2015unsupervised,Ruvolo2013} has been theoretical, using simulations of benchmark problems with known dynamics to demonstrate knowledge sharing. The contribution of this work is to present the first results of lifelong learning on robotic systems. We do this by applying the PG-ELLA framework \cite{BouAmmar2014a} to the problem of disturbance rejection on a set of Turtlebots in the Gazebo simulator. In this work in progress, the obtained results motivate future experiments on the real robot. 
 
 After discussing related work in section \ref{related}, we review policy gradients and describe the particular base-learner we are using for lifelong learning in  section \ref{background}. We then outline our experiments in section \ref{Experiments}, showing how lifelong learning can be used to accomplish disturbance rejection on robotic systems.
 
@@ -441,30 +443,30 @@ After discussing related work in section \ref{related}, we review policy gradien
 \section{Related work}\label{related}
 
 % CURRENT CONTROL STATE OF THE ART
-Building mathematical models that describe the behavior of physical systems is common practice to analyze, predict and 
-control their behavior to fulfill specific goals. Well known techniques for modeling physical systems include partial, ordinary
-differential and difference equations \cite{Khalil-2002,Nise-2010}, and Discrete Event Systems (DES) such as queueing and Petri networks 
-\cite{Cassandras-2008,Luna-2015,Urgaonkar-2007}.\comJames{This list of modeling techniques might want to get reworded}
-Control systems theory uses differential and difference equations to model the mechanics of physical systems. In control systems
-a validated model provides ways of assessing the stability and stabilizability of the system to be able to control its behavior.
+%Building mathematical models that describe the behavior of physical systems is common practice to analyze, predict and 
+%control their behavior to fulfill specific goals. Well known techniques for modeling physical systems include partial, ordinary
+%differential and difference equations \cite{Khalil-2002,Nise-2010}, and Discrete Event Systems (DES) such as queueing and Petri networks 
+%\cite{Cassandras-2008,Luna-2015,Urgaonkar-2007}.\comJames{This list of modeling techniques might want to get reworded}
+%Control systems theory uses differential and difference equations to model the mechanics of physical systems. In control systems
+%a validated model provides ways of assessing the stability and stabilizability of the system to be able to control its behavior.
 
-Some of the typical problems in control systems are regulation, trajectory tracking, disturbance rejection and
-robustness among many others \cite{Khalil-2002, Lewis-2012,Nise-2010}. All these problems are associated with the analysis of the stabilizability of the system, 
-as well as the design of controllers to stabilize it. These controllers consist of theoretical artifacts that would allow 
-the solution of control problems such as the aforementioned ones. 
-
+Some of the typical problems in control systems are regulation, trajectory tracking, disturbance rejection and robustness \cite{Khalil-2002, Lewis-2012,Nise-2010}. %All these problems are associated with the analysis of the stabilizability of the system, as well as the design of controllers to stabilize it. %These controllers consist of theoretical artifacts that would allow the solution of control problems such as the aforementioned ones. 
 % DISTURBANCE REJECTION
 The disturbance rejection problem consists of implementing a controller that allows the plant to fulfill the desired task while compensating
 for a disturbance that modifies its nominal dynamics. As long as there is an accurate model of the plant, several mathematical
 artifacts have been provided to handle constant, constant and unknown, time-varying and even stochastic disturbances 
 \cite{Dorato-2000,Khalil-2002,Lewis-2012}. 
-However, things get more complicated when no model is provided, even for simple disturbances. In a model-free setting, the goal is to design a 
-controller that stabilizes a system whose model is not available due to complex internal iterations, uncertainty in the system, event-based
-dynamics and technological limitations. Unlike typical control system theory where policies are generated from a model, we generate policies based on sampled trajectories generated by simulation.
 
+However, things get more complicated when the goal is to design a controller that stabilizes a system whose model is not available due to complex internal iterations, uncertainty in the system, event-based dynamics and technological limitations. %no model is provided.% even for simple disturbances. 
+Unlike typical control system theory where policies are generated from a model, we generate policies based on sampled trajectories generated by simulation using reinforcement learning (RL).
+%In a model-free setting, the goal is to design a controller that stabilizes a system whose model is not available due to complex internal iterations, uncertainty in the system, event-based dynamics and technological limitations. 
 % RL methods
 %pilco model based but learns the model \cite{deisenroth2011pilco}
+<<<<<<< HEAD
 Reinforcement learning \cite{kober2013reinforcement} is often utilized to learn controllers in a model-free setting. Amongst reinforcement learning algorithms, policy gradient (PG) methods \cite{sutton1999policy,williams1992simple} are popular in robotic applications \cite{kober2009policy,peters2008natural} since they accommodate continuous state/action spaces and can scale well to high dimensional spaces. Different from these works we use policy gradients in a lifelong learning setting.
+=======
+RL \cite{kober2013reinforcement} is often utilized to learn controllers in a model-free settings. Amongst reinforcement learning algorithms, policy gradient (PG) methods \cite{sutton1999policy,williams1992simple} are popular in robotic applications \cite{kober2009policy,peters2008natural} since they accommodate continuous state/action spaces and can scale well to high dimensional spaces. Unlike these methods where the goal is to learn a single controller, we use policy gradients in a lifelong learning setting.
+>>>>>>> aa851d5e07139f4d8bce606d171ff70d43cd462b
 
 %Examples exist that do not explicitly compute gradients (episodic REINFORCE)~\cite{williams1992simple}, specialized to dynamic motor primitives PoWER~\cite{kober2009policy}, and , use natural gradients Natural Actor Critic~\cite{peters2008natural})
 
@@ -675,7 +677,7 @@ the Hessian of the PG objective function, and $\boldsymbol{A}$ and $\boldsymbol{
 \begin{figure}[!htbp]
     \centering
         \includegraphics[width=.45\textwidth]{images/turtlebotsim_crop.png}
-        \caption{Turtlebot model in Gazebo Simulator.}\label{fig:gazebo}
+        \caption{Turtlebot model in Gazebo simulator.}\label{fig:gazebo}
 \end{figure}
 
 We evaluate our approach by modeling the control policies for different Turtlebot systems \cite{Turtlebot-2016}. 
@@ -724,31 +726,46 @@ where $\rho$, $\gamma$ and $\psi$ are indicated in Fig. \ref{fig:numfeat}.
         \includegraphics[width=.45\textwidth]{images/unicycle.png}
         \caption{State variables of simplified go-to-goal problem.}\label{fig:numfeat}
 \end{figure}
+<<<<<<< HEAD
 The state is a non-linear transformation of the position and heading angle. We have run preliminary experiments using FD \cite{Bagnell-2013} given its simple implementation, and the fact that, despite its stability issues, it provided actions that exhibited good performance in simulation. In our future research agenda we are planning on carrying out a comparison between different base learners such as natural actor critic \cite{peters2008natural}, episodic REINFORCE \cite{williams1992simple}.
+=======
+The state is a non-linear transformation of the position and heading angle. We ran experiments using natural actor critic \cite{peters2008natural}, episodic REINFORCE \cite{williams1992simple}, and FD \cite{Bagnell-2013} and found FD to work best for our problem. We believe %\comGabe{Is this speculating? David: Yes} 
+this is a result of the particular nonlinear transformation we are using and the fact that FD optimizes the true return. In future work we will present a comparison of different base learners. 
+>>>>>>> aa851d5e07139f4d8bce606d171ff70d43cd462b
 
 \subsection{Methodology}
 We start by generating 20 robots, each with a different constant disturbance and a unique goal, both selected uniformly. 
 We use 20 robots because it provides a large diversity in tasks but is a number that is still practical to run in simulation. 
 
+<<<<<<< HEAD
 To learn a controller for each task in RL, we use FD. Parameters are $\delta=1\times 10^{-6}$, $\gamma=0.9999$, and $\sigma=0.001$. 
 The same parameter values are used in PG-ELLA.\comGabe{not sure if sigma should be mentioned here because it's not mentioned in the algorithm section and should we add the noiseval here as well?}
 
+=======
+>>>>>>> aa851d5e07139f4d8bce606d171ff70d43cd462b
 FD is used to train each robot for 20 iterations with 15 roll-outs per iteration and 50 time-steps per roll-out.
 %The robots are run for 20 learning steps of FD, each learning step consists of 15 roll-outs of 50 time steps each. 
 Note that 20 iterations is fewer than is required for any system to converge to a good controller. 
 The number of roll-outs and time steps were selected to allow for successful learning while minimizing the runtime. 
-The policy that is learned after 20 iterations is used as $\theta^*$ for PG-ELLA. %We use a learning rate of $1\times 10^{-6}$. 
+The policy that is learned after 20 iterations is used as %$\theta^*$ 
+$\boldsymbol{\alpha}^{(t)}$ for PG-ELLA. %We use a learning rate of $1\times 10^{-6}$. 
 
 We learn our PG-ELLA knowledge repository $\bm{L}$ and sparse representation $\bm{s}^{(t)}$ using the update equations given 
 by (\ref{onlineupdate}). Tasks are encountered randomly with repetition and learning stops once every task has been observed 
+<<<<<<< HEAD
 once. For the parameters unique to PG-ELLA, we select $k=8$ to be the number of columns, and use sparsity coefficient $\mu = 1\times 10^{-3}$ and regularization coefficient $\lambda = 1\times 10^{-8}$. These coefficients were selected by trial and error. 
+=======
+once. For our experiments we approximate the hessian with the identity matrix. For the parameters unique to PG-ELLA, we select $k=8$ to be the number of columns, and use sparsity coefficient $\mu = 1\times 10^{-3}$ and regularization coefficient $\lambda = 1\times 10^{-8}$. These coefficients were selected by trial and error. Other parameters include the learning rate $\delta=1\times 10^{-6}$ and policy noise $\sigma=0.001$. 
+%Note that the same parameter values are used in PG-ELLA.\comGabe{not sure if sigma should be mentioned here because it's not mentioned in the algorithm section and should we add the noiseval here as well?}
+>>>>>>> aa851d5e07139f4d8bce606d171ff70d43cd462b
 
 We then compare the policy reconstructed from PG-ELLA against the policy that was learned after 20 iterations of FD by comparing the learning curves that result from running FD for an additional 80 learning iterations. Performance is averaged over 6 trials for all 20 robots to increase our confidence in the results. In Figure \ref{fig:reward} we see that PG-ELLA is successfully able to reconstruct the policies and provide an additional benefit of positive transfer with the given number of trials. We plot the change in reward of using PG-ELLA instead of PG in Figure \ref{fig:gain}, and observe that PG-ELLA improves the quality of the learned controllers. Note that these are preliminary results and we suspect further refinements will enable us to achieve larger amounts of transfer.
 
 \begin{figure}[!htbp]
     \centering
         \includegraphics[width=.42\textwidth]{images/2016_02_06_learning.eps}
-        \caption{Learning curves for FD and PG-ELLA using FD to transfer information between tasks. \comGabe{The legend on the figure should be FD instead of PG?} }\label{fig:reward}
+        \caption{Learning curves for PG and PG-ELLA. Using PG-ELLA to transfer information between tasks improves the performance over standard PG. %\comGabe{The legend on the figure should be FD instead of PG?} 
+        }\label{fig:reward}
 \end{figure}
 
 \begin{figure}[!htbp]
