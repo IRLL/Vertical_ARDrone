@@ -415,8 +415,7 @@ In control systems, a perfect model of the dynamics of the system is often neces
 
 % VIEW MODEL FREE AS LIFELONG LEARNING
 Policy search approaches have been proposed to deal with the design of controllers in model-free applications.
-However, it is difficult to make claims of robustness or generalization of the learned controllers {\color{red} Marcio's Comment: 
-We need citations for this}.
+However, it is difficult to make claims of robustness or generalization of the learned controllers 
 
 Our goal is to learn fault tolerant control in multi-agent systems. In order to approach this problem we begin by developing a method that can accomplish disturbance rejection across multiple robots. 
 %Given differences in manufacturing and wear, even identically designed robots may require very different control policies. % very robustness as many different systems
@@ -425,8 +424,9 @@ Given a collection of robots each with a different unknown disturbance, learning
 
 Lifelong learning \cite{Ruvolo2013} is a promising approach for accomplishing information sharing between different robots. It works on-line, allowing the different systems to be encountered consecutively so a priori knowledge of all the different systems is not required at the start of training. Also it preserves and possibly improves the models encountered early on, in contrast to transfer methods which only optimize performance on the target system.
 
-However most recent work in lifelong learning \cite{Ruvolo2013,BouAmmar2014a,bouAmmar2015unsupervised} has been theoretical, using simulations of benchmark problems with known dynamics to demonstrate knowledge sharing. The contribution of this work is to present the first results of lifelong learning on robotic systems. We do this by applying the PG-ELLA framework \cite{BouAmmar2014a} to the problem of disturbance rejection.
+However most recent work in lifelong learning \cite{Ruvolo2013,BouAmmar2014a,bouAmmar2015unsupervised} has been theoretical, using simulations of benchmark problems with known dynamics to demonstrate knowledge sharing. The contribution of this work is to present the first results of lifelong learning on robotic systems. We do this by applying the PG-ELLA framework \cite{BouAmmar2014a} to the problem of disturbance rejection on a set of Turtlebots in Gazebo Simulator. In this work in progress, the obtained results motivate future experiments on the real robot. 
 
+\ref{related} \ref{background} \ref{Experiments}
 \comMarcio{The introduction needs more work, please don't forget to clarify our main contributions/goals and please 
 provide the organization of the paper.}
 
@@ -440,7 +440,7 @@ provide the organization of the paper.}
 
 % We propose a lifelong learning method that can learn controllers in the presence of unknown disturbances that differ from task to task. Unlike most previous work in lifelong learning, we demonstrate this method on Turtlebots, an affordable robotics platform.  
 
-\section{Related work}
+\section{Related work}\label{related}
 
 % CURRENT CONTROL STATE OF THE ART
 Building mathematical models that describe the behavior of physical systems is common practice to analyze, predict and 
@@ -474,7 +474,7 @@ Reinforcement learning \cite{kober2013reinforcement} is often utilized to learn 
 %Examples exist that do not explicitly compute gradients (episodic REINFORCE)~\cite{williams1992simple}, specialized to dynamic motor primitives PoWER~\cite{kober2009policy}, and , use natural gradients Natural Actor Critic~\cite{peters2008natural})
 
 % RL to LL
-It has been shown that PG methods can be used in a lifelong learning setting \cite{BouAmmar2014a,bouAmmar2015unsupervised}, however these works focused largely on theory, using benchmark simulations to demonstrate their results. While there are examples of lifelong learning on robots, they tend to focus in skill refinement on a single robot \cite{kleiner2002towards,thrun1995lifelong} rather than sharing information across multiple robots as we do in our work. 
+It has been shown that PG methods can be used in a lifelong learning setting \cite{BouAmmar2014a,bouAmmar2015unsupervised}, however these works focus largely on theory, using benchmark simulations to demonstrate their results. While there are examples of lifelong learning on robots, they tend to focus in skill refinement on a single robot \cite{kleiner2002towards,thrun1995lifelong} rather than sharing information across multiple robots as we do in our work. 
 
 
 
@@ -556,7 +556,7 @@ to the step size $\delta$. Since the number of perturbations needs to be as larg
 considered to be noisy and inefficient for problems with large sets of parameters.%However since it optimizes the expected return directly, it can potentially learn better policies than methods that optimize a bound that isn\rq{}t tight.
 
 In our experiments, the policy is represented as a function defined over a parameter matrix 
-$\boldsymbol{\theta} \in \Re^{d_{\theta}\times M}$, that provides the gains of the $M$ control inputs of the system. 
+$\boldsymbol{\theta} \in \Re^{d_{\theta}}$. 
 Our goal is to optimize the expected average return of Equation \ref{retPG}.
 
 
@@ -573,9 +573,9 @@ setting.
 \subsection{Lifelong Machine Learning}
 
 
-Lifelong learning focuses on learning a set of tasks consecutively while performing well across all tasks. Given a round $t = 1,\dots,t_{\max}$ a task $T^{(t)}$ is observed. \comEric{Please don't change notation between papers unless absolutely necessary.  Let's use the exact same notation as in the recent IJCAI paper.} In our setting, each task corresponds to a reinforcement learning problem for an individual robot. We assume that the model associated to $T^{(t)}$ is parameterized by a parameter $\boldsymbol{\theta}^{(t)} \in \Re^{d_{\theta_{t}}\times M}$. The ideal goal is that prior knowledge about tasks $T^{(1)},\ldots,T^{(t-1)}$ should provide enough information so that the lifelong learning algorithm performs better and faster on $T^{(t)}$ while being able to scale as the number of tasks increases.
+Lifelong learning focuses on learning a set of tasks consecutively while performing well across all tasks. Given a round $t = 1,\dots,T$ a task $Z^{(t)}$ is observed. \comEric{Please don't change notation between papers unless absolutely necessary.  Let's use the exact same notation as in the recent IJCAI paper.} In our setting, each task corresponds to a reinforcement learning problem for an individual robot. We assume that the model associated to $Z^{(t)}$ is parameterized by a parameter $\boldsymbol{\theta}^{(t)} \in \Re^{d_{\theta_{t}}}$. The ideal goal is that prior knowledge about tasks $Z^{(1)},\ldots,Z^{(t-1)}$ should provide enough information so that the lifelong learning algorithm performs better and faster on $Z^{(t)}$ while being able to scale as the number of tasks increases.
 
-Following work in both multi-task \cite{Kumar-2012} and lifelong learning \cite{Ruvolo2013}, we assume there is a shared basis $\boldsymbol{L}\in \Re^{d_{x}\times l}$ and a sparse weight vector $\boldsymbol{s}^{(t)}\in \Re^{\l}$, so that the policy parameters $\boldsymbol{\theta}^{(t)}$
+Following work in both multi-task \cite{Kumar-2012} and lifelong learning \cite{Ruvolo2013}, we assume there is a shared basis $\boldsymbol{L}\in \Re^{d_{x}\times k}$ and a sparse weight vector $\boldsymbol{s}^{(t)}\in \Re^{\l}$, so that the policy parameters $\boldsymbol{\theta}^{(t)}$
 are given by,
 \begin{displaymath}
  \boldsymbol{\theta}^{(t)}=\boldsymbol{Ls}^{(t)}.
@@ -583,7 +583,7 @@ are given by,
 
 Using the return function in (\ref{retPG}) we propose the following multi-task objective function,
 \begin{displaymath}
- \argmin_{\boldsymbol{L},\boldsymbol{S}}\frac{1}{|\boldsymbol{T}|}\sum_{t}\left[ -\mathcal{J}(\boldsymbol{\theta}^{(t)}) + \lambda \| \boldsymbol{s}^{(t)} \|_{1} \right] + \mu\|\boldsymbol{L}\|_{F}^{2},
+ \argmin_{\boldsymbol{L},\boldsymbol{S}}\frac{1}{T}\sum_{t}\left[ -\mathcal{J}(\boldsymbol{\theta}^{(t)}) + \lambda \| \boldsymbol{s}^{(t)} \|_{1} \right] + \mu\|\boldsymbol{L}\|_{F}^{2},
 \end{displaymath}
 where $\boldsymbol{S}$ is the set of the sparse vectors $\boldsymbol{s}^{(t)}$, the L1 norm of $\| \boldsymbol{s}^{(t)} \|_{1}$ 
 provides sparse code for $\boldsymbol{s}^{(t)}$ and the Frobenious norm in $\|\boldsymbol{L}\|_{F}^{2}$ provides regularization of $\mathbf{L}$. The
@@ -607,7 +607,7 @@ update equations,
 
 
 where $\|\boldsymbol{v}\|_{\boldsymbol{A}}^{2}=\boldsymbol{v}^{\transpose}\boldsymbol{A}\boldsymbol{v}$ and $\boldsymbol{\Gamma}^{(t)}$ is 
-the Hessian of the PG objective function, and $\boldsymbol{A}$ and $\boldsymbol{b}$ are initialized to zero matrices.
+the Hessian of the PG objective function, and $\boldsymbol{A}$ and $\boldsymbol{b}$ are initialized to zero matrices. The full algorithm is described in Algorithm \ref{algo:PGELLA}
 
 %Notice that PG relies on the indirect maximization of the return function based on the maximization of a lower bound. Although this bound has reportedly been tight enough to guarantee maximization of the return function, we chose to use finite differences to search the optimal policy to make sure we maximize the return function directly.
 
@@ -647,10 +647,10 @@ the Hessian of the PG objective function, and $\boldsymbol{A}$ and $\boldsymbol{
 \State $\mathbf{A}\gets \mbox{\textbf{zeros}}_{k\times d,k \times d}$, \enspace $\mathbf{b} \gets \mbox{\textbf{zeros}}_{k\times d,1}$
 
 %\Comment{$\mathbf{\mbox{\textbf{zeros}}_{m,n}}$ is an $m\times n$ matrix of all zeros}
-\State $\bm{L} \gets  \bm{\text{RandomMatrix}}_{d,k}, \ \bm{D} \gets  \bm{\text{RandomMatrix}}_{m,k}$
+\State $\bm{L} \gets  \bm{\text{RandomMatrix}}_{d,k}$
 
-\While {some task $t$ is available}
-\If {$\mbox{isNewTask}(t)$}
+\While {some task $\left(\Task{t}, \Mt{t}\right)$ is available}
+\If {isNewTask($\Task{t}$)} 
 \State $T \gets T+1$
 \State $\left(\mathbb{T}^{(t)}, R^{(t)}\right) \gets \mbox{getRandomTrajectories()}$%$\mathbb{T}^{(t)} \gets$ sampleRandomTrajectories($\Task{t}$)
 \Else
@@ -705,7 +705,7 @@ $\boldsymbol{a} \in \Re^2$. Notice that the model in \cite{aicardi1994closed} ju
 so we do not consider the dynamics of the system, \emph{i.e.,} we are neglecting model parameters such as mass, damping and friction 
 coefficients, as well as inputs such as forces and torques. Then, the nonlinear policy is derived neglecting the dynamics and just assuming
 simple kinematics, therefore, taking into account that our action is given by 
-$\boldsymbol{a} = \boldsymbol{\theta}^\transpose\boldsymbol{\phi}(\boldsymbol{x})$
+$\boldsymbol{a} = \boldsymbol{\theta}^\transpose\boldsymbol{\phi}(\boldsymbol{x}) = (u,w)^\transpose$
 where $\boldsymbol{x} = (\rho,\gamma,\psi)^\transpose$ as illustrated in Fig. \ref{fig:reward} we propose the following nonlinear gain vector
 structure,
 \comEric{Remember, $\alpha$ is the estimated single-task policy parameters, so don't overload the notation.}

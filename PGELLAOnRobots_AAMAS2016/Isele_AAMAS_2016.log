@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/TeX Live for SUSE Linux) (format=pdflatex 2015.9.2)  6 FEB 2016 20:28
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/TeX Live for SUSE Linux) (format=pdflatex 2015.9.2)  6 FEB 2016 21:05
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -394,6 +394,9 @@ LaTeX Font Info:    Font shape `OMS/aer/m/n' in size <9> not available
 
 
 ]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
 Overfull \hbox (27.90482pt too wide) in paragraph at lines 521--526
 []\T1/aer/m/n/9 Most PG meth-ods (e.g. episodic RE-IN-FORCE [23], PoWER [13],
  []
@@ -448,49 +451,53 @@ File: images/2016_2_3_gain.png Graphic file (type png)
 <use images/2016_2_3_gain.png>
 Package pdftex.def Info: images/2016_2_3_gain.png used on input line 759.
 (pdftex.def)             Requested size: 211.67908pt x 156.71498pt.
-
-Underfull \vbox (badness 1019) has occurred while \output is active []
-
- [4 <./images/unicycle.png> <./images/2016_2_3_reward.png (PNG copy)>]
-(./Isele_AAMAS_2016.bbl
+ (./Isele_AAMAS_2016.bbl
 LaTeX Font Info:    Try loading font information for T1+aett on input line 5.
- (/usr/share/texmf/tex/latex/ae/t1aett.fd
+
+(/usr/share/texmf/tex/latex/ae/t1aett.fd
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
-)) [5 <./images/2016_2_3_gain.png (PNG copy)>] (./Isele_AAMAS_2016.aux) ) 
+) [4 <./images/unicycle.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [5 <./images/2016_2_3_reward.png (PNG copy)> <./images/2016_2_3_gain.png (PNG 
+copy)>])
+[6
+
+] (./Isele_AAMAS_2016.aux) ) 
 Here is how much of TeX's memory you used:
- 3984 strings out of 493315
- 50462 string characters out of 6145894
- 122148 words of memory out of 5000000
- 7273 multiletter control sequences out of 15000+600000
+ 3985 strings out of 493315
+ 50471 string characters out of 6145894
+ 122156 words of memory out of 5000000
+ 7274 multiletter control sequences out of 15000+600000
  64320 words of font info for 102 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 41i,14n,28p,852b,349s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/
-share/texmf/fonts/enc/dvips/base/8r.enc}</usr/share/texmf/fonts/type1/public/am
-sfonts/cm/cmbx6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmbx9.pfb>
-</usr/share/texmf/fonts/type1/public/amsfonts/cmextra/cmex9.pfb></usr/share/tex
-mf/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texmf/fonts/type1/publi
-c/amsfonts/cm/cmmi6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmmi8.
-pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texm
-f/fonts/type1/public/amsfonts/cmextra/cmmib6.pfb></usr/share/texmf/fonts/type1/
-public/amsfonts/cmextra/cmmib9.pfb></usr/share/texmf/fonts/type1/public/amsfont
-s/cm/cmr5.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/s
-hare/texmf/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf/fonts/type
-1/public/amsfonts/cm/cmr9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/
-cmss8.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/s
-hare/texmf/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texmf/fonts/typ
-e1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/c
-m/cmti8.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/sh
-are/texmf/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/share/texmf/fonts/type
-1/public/amsfonts/symbols/msbm10.pfb></usr/share/texmf/fonts/type1/public/amsfo
-nts/symbols/msbm7.pfb></usr/share/texmf/fonts/type1/urw/helvetic/uhvb8a.pfb></u
-sr/share/texmf/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texmf/fonts/type
-1/urw/times/utmb8a.pfb></usr/share/texmf/fonts/type1/urw/times/utmr8a.pfb></usr
-/share/texmf/fonts/type1/urw/zapfding/uzdr.pfb>
-Output written on Isele_AAMAS_2016.pdf (5 pages, 490548 bytes).
+ 41i,14n,28p,837b,349s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf/fonts/enc/dvips/base/8r.enc}</usr
+/share/texmf/fonts/type1/public/amsfonts/cm/cmbx6.pfb></usr/share/texmf/fonts/t
+ype1/public/amsfonts/cm/cmbx9.pfb></usr/share/texmf/fonts/type1/public/amsfonts
+/cmextra/cmex9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmmi5.pfb><
+/usr/share/texmf/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texmf/fon
+ts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf/fonts/type1/public/amsf
+onts/cm/cmmi9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cmextra/cmmib6.
+pfb></usr/share/texmf/fonts/type1/public/amsfonts/cmextra/cmmib9.pfb></usr/shar
+e/texmf/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texmf/fonts/type1/p
+ublic/amsfonts/cm/cmr6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmr
+8.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/tex
+mf/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/share/texmf/fonts/type1/publi
+c/amsfonts/cm/cmssbx10.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cms
+y6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/t
+exmf/fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/share/texmf/fonts/type1/pub
+lic/amsfonts/cm/cmti9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmtt
+9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/sh
+are/texmf/fonts/type1/public/amsfonts/symbols/msbm7.pfb></usr/share/texmf/fonts
+/type1/urw/helvetic/uhvb8a.pfb></usr/share/texmf/fonts/type1/urw/helvetic/uhvr8
+a.pfb></usr/share/texmf/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf/font
+s/type1/urw/times/utmr8a.pfb></usr/share/texmf/fonts/type1/urw/zapfding/uzdr.pf
+b>
+Output written on Isele_AAMAS_2016.pdf (6 pages, 490485 bytes).
 PDF statistics:
- 133 PDF objects out of 1000 (max. 8388607)
- 94 compressed objects within 1 object stream
+ 136 PDF objects out of 1000 (max. 8388607)
+ 96 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  21 words of extra memory for PDF output out of 10000 (max. 10000000)
 
