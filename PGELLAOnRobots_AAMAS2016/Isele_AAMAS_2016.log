@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/TeX Live for SUSE Linux) (format=pdflatex 2015.9.2)  6 FEB 2016 21:05
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/TeX Live for SUSE Linux) (format=pdflatex 2015.9.2)  6 FEB 2016 21:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -397,12 +397,7 @@ LaTeX Font Info:    Font shape `OMS/aer/m/n' in size <9> not available
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
-Overfull \hbox (27.90482pt too wide) in paragraph at lines 521--526
-[]\T1/aer/m/n/9 Most PG meth-ods (e.g. episodic RE-IN-FORCE [23], PoWER [13],
- []
-
-
-Overfull \hbox (5.03487pt too wide) in paragraph at lines 546--550
+Overfull \hbox (5.03487pt too wide) in paragraph at lines 543--547
 \T1/aer/m/n/9 where $\OT1/cmr/bx/n/9 ^^A\OML/cmm/b/it/9 ^^R[]$ \T1/aer/m/n/9 ar
 e the in-di-vid-ual per-tur-ba-tions for $\OT1/cmr/bx/n/9 p \OT1/cmr/m/n/9 = [1
 \OML/cmm/m/it/9 ; [] ; n\OT1/cmr/m/n/9 ]$\T1/aer/m/n/9 ,
@@ -410,94 +405,85 @@ e the in-di-vid-ual per-tur-ba-tions for $\OT1/cmr/bx/n/9 p \OT1/cmr/m/n/9 = [1
 
 [2]
 
-LaTeX Warning: Command \l invalid in math mode on input line 578.
+LaTeX Warning: Command \l invalid in math mode on input line 576.
 
 Missing character: There is no ª in font cmr6!
-<images/turtlebotsim_crop.png, id=33, 602.25pt x 602.25pt>
+<images/turtlebotsim_crop.png, id=32, 602.25pt x 602.25pt>
 File: images/turtlebotsim_crop.png Graphic file (type png)
 
 <use images/turtlebotsim_crop.png>
-Package pdftex.def Info: images/turtlebotsim_crop.png used on input line 683.
+Package pdftex.def Info: images/turtlebotsim_crop.png used on input line 681.
 (pdftex.def)             Requested size: 226.79846pt x 226.7989pt.
-LaTeX Font Info:    Font shape `U/lasy/b/n' in size <8> not available
-(Font)              Font shape `U/lasy/m/n' tried instead on input line 711.
 
-Overfull \hbox (4.2651pt too wide) in paragraph at lines 702--712
+Overfull \hbox (4.2651pt too wide) in paragraph at lines 698--707
 []\T1/aer/m/n/9 We as-sume we have lit-tle knowl-edge of the Turtle-bot model,
  []
 
 [3 <./images/turtlebotsim_crop.png>]
-<images/unicycle.png, id=38, 505.89pt x 505.89pt>
+<images/unicycle.png, id=37, 505.89pt x 505.89pt>
 File: images/unicycle.png Graphic file (type png)
  <use images/unicycle.png>
-Package pdftex.def Info: images/unicycle.png used on input line 722.
+Package pdftex.def Info: images/unicycle.png used on input line 718.
 (pdftex.def)             Requested size: 226.79846pt x 226.79927pt.
 
-Overfull \hbox (1.93758pt too wide) in paragraph at lines 743--747
+Overfull \hbox (1.93758pt too wide) in paragraph at lines 726--729
 []\T1/aer/m/n/9 We learn our PG-ELLA knowl-edge repos-i-tory $\OML/cmm/b/it/9 L
 $ \T1/aer/m/n/9 and sparse
  []
 
-<images/2016_2_3_reward.png, id=39, 429.10312pt x 317.68687pt>
+<images/2016_2_3_reward.png, id=38, 429.10312pt x 317.68687pt>
 File: images/2016_2_3_reward.png Graphic file (type png)
 
 <use images/2016_2_3_reward.png>
-Package pdftex.def Info: images/2016_2_3_reward.png used on input line 753.
+Package pdftex.def Info: images/2016_2_3_reward.png used on input line 734.
 (pdftex.def)             Requested size: 211.67908pt x 156.71498pt.
 
-<images/2016_2_3_gain.png, id=40, 429.10312pt x 317.68687pt>
+<images/2016_2_3_gain.png, id=39, 429.10312pt x 317.68687pt>
 File: images/2016_2_3_gain.png Graphic file (type png)
 
 <use images/2016_2_3_gain.png>
-Package pdftex.def Info: images/2016_2_3_gain.png used on input line 759.
+Package pdftex.def Info: images/2016_2_3_gain.png used on input line 740.
 (pdftex.def)             Requested size: 211.67908pt x 156.71498pt.
- (./Isele_AAMAS_2016.bbl
+ [4 <./images/unicycle.png> <./images/2016_2_3_reward.png (PNG copy)> <./images
+/2016_2_3_gain.png (PNG copy)>]
+(./Isele_AAMAS_2016.bbl
 LaTeX Font Info:    Try loading font information for T1+aett on input line 5.
-
-(/usr/share/texmf/tex/latex/ae/t1aett.fd
+ (/usr/share/texmf/tex/latex/ae/t1aett.fd
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
-) [4 <./images/unicycle.png>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [5 <./images/2016_2_3_reward.png (PNG copy)> <./images/2016_2_3_gain.png (PNG 
-copy)>])
-[6
-
-] (./Isele_AAMAS_2016.aux) ) 
+)) [5]
+(./Isele_AAMAS_2016.aux) ) 
 Here is how much of TeX's memory you used:
- 3985 strings out of 493315
- 50471 string characters out of 6145894
+ 3964 strings out of 493315
+ 50259 string characters out of 6145894
  122156 words of memory out of 5000000
- 7274 multiletter control sequences out of 15000+600000
- 64320 words of font info for 102 fonts, out of 8000000 for 9000
+ 7261 multiletter control sequences out of 15000+600000
+ 59869 words of font info for 91 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 41i,14n,28p,837b,349s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/base/8r.enc}</usr
-/share/texmf/fonts/type1/public/amsfonts/cm/cmbx6.pfb></usr/share/texmf/fonts/t
-ype1/public/amsfonts/cm/cmbx9.pfb></usr/share/texmf/fonts/type1/public/amsfonts
-/cmextra/cmex9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmmi5.pfb><
-/usr/share/texmf/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texmf/fon
-ts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf/fonts/type1/public/amsf
-onts/cm/cmmi9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cmextra/cmmib6.
-pfb></usr/share/texmf/fonts/type1/public/amsfonts/cmextra/cmmib9.pfb></usr/shar
-e/texmf/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texmf/fonts/type1/p
-ublic/amsfonts/cm/cmr6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmr
-8.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/tex
-mf/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/share/texmf/fonts/type1/publi
-c/amsfonts/cm/cmssbx10.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cms
-y6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/t
-exmf/fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/share/texmf/fonts/type1/pub
-lic/amsfonts/cm/cmti9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmtt
-9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/sh
-are/texmf/fonts/type1/public/amsfonts/symbols/msbm7.pfb></usr/share/texmf/fonts
-/type1/urw/helvetic/uhvb8a.pfb></usr/share/texmf/fonts/type1/urw/helvetic/uhvr8
-a.pfb></usr/share/texmf/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf/font
-s/type1/urw/times/utmr8a.pfb></usr/share/texmf/fonts/type1/urw/zapfding/uzdr.pf
-b>
-Output written on Isele_AAMAS_2016.pdf (6 pages, 490485 bytes).
+ 41i,14n,28p,794b,349s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf/fonts/enc/dvips/base/8r.enc}</usr/s
+hare/texmf/fonts/type1/public/amsfonts/cm/cmbx6.pfb></usr/share/texmf/fonts/typ
+e1/public/amsfonts/cm/cmbx9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/c
+mextra/cmex9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmmi5.pfb></u
+sr/share/texmf/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texmf/fonts
+/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texmf/fonts/type1/public/amsfon
+ts/cmextra/cmmib6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cmextra/cmm
+ib9.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/t
+exmf/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texmf/fonts/type1/publ
+ic/amsfonts/cm/cmr8.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmr9.p
+fb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/share/texmf
+/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/share/texmf/fonts/type1/publ
+ic/amsfonts/cm/cmsy6.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmsy9
+.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/share/tex
+mf/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/share/texmf/fonts/type1/publi
+c/amsfonts/symbols/msbm10.pfb></usr/share/texmf/fonts/type1/public/amsfonts/sym
+bols/msbm7.pfb></usr/share/texmf/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/shar
+e/texmf/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texmf/fonts/type1/urw/t
+imes/utmb8a.pfb></usr/share/texmf/fonts/type1/urw/times/utmr8a.pfb></usr/share/
+texmf/fonts/type1/urw/zapfding/uzdr.pfb>
+Output written on Isele_AAMAS_2016.pdf (5 pages, 468538 bytes).
 PDF statistics:
- 136 PDF objects out of 1000 (max. 8388607)
- 96 compressed objects within 1 object stream
+ 125 PDF objects out of 1000 (max. 8388607)
+ 88 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  21 words of extra memory for PDF output out of 10000 (max. 10000000)
 
