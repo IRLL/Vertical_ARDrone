@@ -741,7 +741,6 @@ We were not able to learn a policy on this non-linear state transformation using
 'experimental design' and 'Results'. In the first one, I provide the details of the experiment such as parameters, programing language, hardware
 specs, etc. In the second one I present the result and the analysis of the results. I believe this section still lacks more analysis.}
 We start by generating 20 robots, each with a different constant disturbance and a unique goal, both selected uniformly. The robots are run for 20 learning steps of FD, each learning step consists of 15 roll-outs of 50 time steps each. Note that 20 learning steps is fewer iterations than is required for any system to converge to a good controller. The policy that is learned after 20 iterations of FD is used as $\theta^*$ for PG-ELLA. We use a learning rate of $1\times 10^{-6}$.
->>>>>>> cfccddf19d69461feab3603018c618c67dea09a6
 
 We learn our PG-ELLA knowledge repository $\bm{L}$ and sparse representation $\bm{s}^{(t)}$ using the update equations given 
 by (\ref{onlineupdate}). Tasks are encountered randomly with repetition and learning stops once every task has been seen 
