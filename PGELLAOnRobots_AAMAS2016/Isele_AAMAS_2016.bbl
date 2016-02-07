@@ -1,0 +1,79 @@
+\begin{thebibliography}{10}
+
+\bibitem{aicardi1994closed}
+M.~Aicardi, G.~Casalino, A.~Balestrino, and A.~Bicchi.
+\newblock Closed loop smooth steering of unicycle-like vehicles.
+\newblock In {\em Decision and Control, 1994., Proceedings of the 33rd IEEE
+  Conference on}, volume~3, pages 2455--2458. IEEE, 1994.
+
+\bibitem{BouAmmar2014a}
+H.~Bou~Ammar, E.~Eaton, and P.~Ruvolo.
+\newblock {Online multi-task learning for policy gradient methods}.
+\newblock {\em International Conference on Machine Learning}, 2014.
+
+\bibitem{bouAmmar2015unsupervised}
+H.~Bou~Ammar, E.~Eaton, P.~Ruvolo, and M.~E. Taylor.
+\newblock Unsupervised cross-domain transfer in policy gradient reinforcement
+  learning via manifold alignment.
+\newblock {\em International Joint Conference on Artificial Intelligence},
+  2015.
+
+\bibitem{kleiner2002towards}
+A.~Kleiner, M.~Dietl, and B.~Nebel.
+\newblock Towards a life-long learning soccer agent.
+\newblock In {\em RoboCup 2002: Robot Soccer World Cup VI}, pages 126--134.
+  Springer, 2002.
+
+\bibitem{kober2013reinforcement}
+J.~Kober, J.~A. Bagnell, and J.~Peters.
+\newblock Reinforcement learning in robotics: A survey.
+\newblock {\em The International Journal of Robotics Research}, page
+  0278364913495721, 2013.
+
+\bibitem{kober2009policy}
+J.~Kober and J.~Peters.
+\newblock Policy search for motor primitives in robotics.
+\newblock {\em Advances in Neural Information Processing Systems}, pages
+  849--856, 2009.
+
+\bibitem{Kumar2012}
+A.~Kumar and H.~Daum{\'e}.
+\newblock {Learning task grouping and overlap in multi-task learning}.
+\newblock {\em International Conference on Machine Learning}, pages 1383--1390,
+  2012.
+
+\bibitem{peters2006policy}
+J.~Peters and S.~Schaal.
+\newblock Policy gradient methods for robotics.
+\newblock pages 2219--2225, 2006.
+
+\bibitem{peters2008natural}
+J.~Peters and S.~Schaal.
+\newblock Natural actor-critic.
+\newblock {\em Neurocomputing}, 71(7):1180--1190, 2008.
+
+\bibitem{Ruvolo2013}
+P.~Ruvolo and E.~Eaton.
+\newblock {ELLA: An efficient lifelong learning algorithm}.
+\newblock {\em International Conference on Machine Learning}, 28:507--515,
+  2013.
+
+\bibitem{sutton1999policy}
+R.~S. Sutton, D.~A. McAllester, S.~P. Singh, and Y.~Mansour.
+\newblock Policy gradient methods for reinforcement learning with function
+  approximation.
+\newblock {\em Advances in Neural Information Processing Systems},
+  99:1057--1063, 1999.
+
+\bibitem{thrun1995lifelong}
+S.~Thrun and T.~M. Mitchell.
+\newblock {\em Lifelong robot learning}.
+\newblock Springer, 1995.
+
+\bibitem{williams1992simple}
+R.~J. Williams.
+\newblock Simple statistical gradient-following algorithms for connectionist
+  reinforcement learning.
+\newblock {\em Machine learning}, 8(3-4):229--256, 1992.
+
+\end{thebibliography}
