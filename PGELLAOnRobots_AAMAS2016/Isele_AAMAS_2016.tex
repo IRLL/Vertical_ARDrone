@@ -417,7 +417,7 @@ In control systems, a perfect model of the dynamics of the system is often neces
 
 Lifelong learning \cite{Ruvolo2013} is a promising approach for accomplishing information sharing between different robots. It works on-line, allowing the different systems to be encountered consecutively so \textit{a priori} knowledge of all the different systems is not required at the start of training. It also preserves and possibly improves the models encountered early on, in contrast to transfer methods which only optimize performance on the target system.
 
-However most recent work in lifelong learning \cite{Ruvolo2013,BouAmmar2014a,bouAmmar2015unsupervised} has been theoretical, using simulations of benchmark problems with known dynamics to demonstrate knowledge sharing. The contribution of this work is to present the first results of lifelong learning on robotic systems. We do this by applying the PG-ELLA framework \cite{BouAmmar2014a} to the problem of disturbance rejection on a set of Turtlebots in the Gazebo Simulator. In this work in progress, the obtained results motivate future experiments on real robots. 
+However most recent work in lifelong learning \cite{Ruvolo2013,BouAmmar2014a,bouAmmar2015unsupervised} has been theoretical, using simulations of benchmark problems with known dynamics to demonstrate knowledge sharing. The contribution of this work is to present the first results of lifelong learning on robotic systems. We do this by applying the PG-ELLA framework \cite{BouAmmar2014a} to the problem of disturbance rejection on a set of Turtlebots in the Gazebo simulator. In this work in progress, the obtained results motivate future experiments on the real robot. 
 
 After discussing related work in section \ref{related}, we review policy gradients and describe the particular base-learner we are using for lifelong learning in  section \ref{background}. We then outline our experiments in section \ref{Experiments}, showing how lifelong learning can be used to accomplish disturbance rejection on robotic systems.
 
@@ -666,7 +666,7 @@ the Hessian of the PG objective function, and $\boldsymbol{A}$ and $\boldsymbol{
 \begin{figure}[!htbp]
     \centering
         \includegraphics[width=.45\textwidth]{images/turtlebotsim_crop.png}
-        \caption{Turtlebot model in Gazebo Simulator.}\label{fig:gazebo}
+        \caption{Turtlebot model in Gazebo simulator.}\label{fig:gazebo}
 \end{figure}
 
 We evaluate our approach by modeling the control policies for different Turtlebot systems \cite{Turtlebot-2016}. 
