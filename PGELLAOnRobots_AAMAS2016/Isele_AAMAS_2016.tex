@@ -97,6 +97,7 @@
 \newcommand{\comEric}[1]{\note{Eric}{blue}{#1}}
 \newcommand{\comMatt}[1]{\note{Matt}{green}{#1}}
 \newcommand{\comJames}[1]{\note{James}{magenta}{#1}}
+\newcommand{\comGabe}[1]{\note{Gabe}{cyan}{#1}}
 
 \newcommand{\Task}[1]{\mathcal{Z}^{(#1)}}
 \newcommand{\Mt}[1]{\phi\bigl(\mt{#1}\bigr)}
@@ -725,7 +726,7 @@ where $\rho$, $\gamma$ and $\psi$ are indicated in Fig. \ref{fig:numfeat}.
         \includegraphics[width=.45\textwidth]{images/unicycle.png}
         \caption{State variables of simplified go-to-goal problem.}\label{fig:numfeat}
 \end{figure}
-The state is a non-linear transformation of the position and heading angle. This implementation was entirely done in Python. We ran experiments using natural actor critic \cite{peters2008natural}, episodic REINFORCE \cite{williams1992simple}, and FD \cite{Bagnell-2013} and found FD to work best for our problem. We believe this is a result of the particular nonlinear transformation we are using and the fact that FD optimizes the true return. In future work we will present a comparison of different base learners. 
+The state is a non-linear transformation of the position and heading angle. We ran experiments using natural actor critic \cite{peters2008natural}, episodic REINFORCE \cite{williams1992simple}, and FD \cite{Bagnell-2013} and found FD to work best for our problem. We believe \comGabe{Is this speculating?} this is a result of the particular nonlinear transformation we are using and the fact that FD optimizes the true return. In future work we will present a comparison of different base learners. 
 
 \subsection{Methodology}
 We start by generating 20 robots, each with a different constant disturbance and a unique goal, both selected uniformly. We use 20 robots because it provdes a large diversity in tasks but is a number that is still practical to run in simulation. The robots are run for 20 learning steps of FD, each learning step consists of 15 roll-outs of 50 time steps each. Note that 20 learning steps is fewer iterations than is required for any system to converge to a good controller. The number of roll-outs and time steps were selected to allow for successful learning while minimizing the runtime. The policy that is learned after 20 iterations of FD is used as $\theta^*$ for PG-ELLA. We use a learning rate of $1\times 10^{-6}$. 
