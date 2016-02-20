@@ -72,8 +72,8 @@ find_package( OpenCV REQUIRED )
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   std_msgs
-# )
+#  std_msgs
+#)
 
 ###################################
 ## catkin specific configuration ##
@@ -117,7 +117,7 @@ add_executable(real_sensor src/real_sensor.cpp)
 # add_dependencies(vertical_control_node vertical_control_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(real_sensor 
+target_link_libraries(real_sensor
    ${catkin_LIBRARIES}
    ${OpenCV_LIBRARIES}
 )
