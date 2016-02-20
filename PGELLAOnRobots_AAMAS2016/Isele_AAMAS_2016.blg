@@ -1,0 +1,58 @@
+This is BibTeX, Version 0.99d (TeX Live 2013/TeX Live for SUSE Linux)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: Isele_AAMAS_2016.aux
+The style file: abbrv.bst
+Database file #1: sigproc.bib
+Repeated entry---line 293 of file sigproc.bib
+ : @article{williams1992simple
+ :                            ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 355 of file sigproc.bib
+ : @article{peters2008natural
+ :                           ,
+I'm skipping whatever remains of this entry
+Warning--to sort, need author or key in Turtlebot-2016
+Warning--to sort, need author or key in Gazebo-2016
+Warning--to sort, need author or key in ROS-2016
+You've used 23 entries,
+            2118 wiz_defined-function locations,
+            636 strings with 7025 characters,
+and the built_in function-call counts, 7430 in all, are:
+= -- 746
+> -- 320
+< -- 5
++ -- 127
+- -- 104
+* -- 445
+:= -- 1174
+add.period$ -- 67
+call.type$ -- 23
+change.case$ -- 118
+chr.to.int$ -- 0
+cite$ -- 26
+duplicate$ -- 324
+empty$ -- 593
+format.name$ -- 104
+if$ -- 1616
+int.to.chr$ -- 0
+int.to.str$ -- 23
+missing$ -- 26
+newline$ -- 115
+num.names$ -- 40
+pop$ -- 156
+preamble$ -- 1
+purify$ -- 98
+quote$ -- 0
+skip$ -- 262
+stack$ -- 0
+substring$ -- 403
+swap$ -- 98
+text.length$ -- 5
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 80
+warning$ -- 3
+while$ -- 61
+width$ -- 25
+write$ -- 242
+(There were 2 error messages)

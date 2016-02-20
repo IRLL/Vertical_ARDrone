@@ -1,0 +1,63 @@
+\begin{thebibliography}{10}
+
+\bibitem{aicardi1994closed}
+M.~Aicardi, G.~Casalino, A.~Balestrino, and A.~Bicchi.
+\newblock Closed loop smooth steering of unicycle-like vehicles.
+\newblock In {\em Decision and Control, 1994., Proceedings of the 33rd IEEE
+  Conference on}, volume~3, pages 2455--2458. IEEE, 1994.
+
+\bibitem{barrett2010transfer}
+S.~Barrett, M.~E. Taylor, and P.~Stone.
+\newblock Transfer learning for reinforcement learning on a physical robot.
+\newblock In {\em Ninth International Conference on Autonomous Agents and
+  Multiagent Systems-Adaptive Learning Agents Workshop (AAMAS-ALA)}. Citeseer,
+  2010.
+
+\bibitem{BouAmmar2014a}
+H.~Bou~Ammar, E.~Eaton, and P.~Ruvolo.
+\newblock {Online multi-task learning for policy gradient methods}.
+\newblock {\em International Conference on Machine Learning}, 2014.
+
+\bibitem{bouAmmar2015unsupervised}
+H.~Bou~Ammar, E.~Eaton, P.~Ruvolo, and M.~E. Taylor.
+\newblock Unsupervised cross-domain transfer in policy gradient reinforcement
+  learning via manifold alignment.
+\newblock {\em International Joint Conference on Artificial Intelligence},
+  2015.
+
+\bibitem{chalup2007machine}
+S.~K. Chalup, C.~L. Murch, and M.~J. Quinlan.
+\newblock Machine learning with aibo robots in the four-legged league of
+  robocup.
+\newblock {\em Systems, Man, and Cybernetics, Part C: Applications and Reviews,
+  IEEE Transactions on}, 37(3):297--310, 2007.
+
+\bibitem{kleiner2002towards}
+A.~Kleiner, M.~Dietl, and B.~Nebel.
+\newblock Towards a life-long learning soccer agent.
+\newblock In {\em RoboCup 2002: Robot Soccer World Cup VI}, pages 126--134.
+  Springer, 2002.
+
+\bibitem{peters2008natural}
+J.~Peters and S.~Schaal.
+\newblock Natural actor-critic.
+\newblock {\em Neurocomputing}, 71(7):1180--1190, 2008.
+
+\bibitem{Ruvolo2013}
+P.~Ruvolo and E.~Eaton.
+\newblock {ELLA: An efficient lifelong learning algorithm}.
+\newblock {\em International Conference on Machine Learning}, 28:507--515,
+  2013.
+
+\bibitem{thrun1995lifelong}
+S.~Thrun and T.~M. Mitchell.
+\newblock {\em Lifelong robot learning}.
+\newblock Springer, 1995.
+
+\bibitem{williams1992simple}
+R.~J. Williams.
+\newblock Simple statistical gradient-following algorithms for connectionist
+  reinforcement learning.
+\newblock {\em Machine learning}, 8(3-4):229--256, 1992.
+
+\end{thebibliography}
