@@ -27,17 +27,34 @@ def computeHessian(data, sigma):
         YPosZPos = np.sum(YPos * ZPos)
 
         RewardDum = np.sum(Reward)
-        Array = np.array([[XPosSquare, XPosSquare, XPosSquare,   XPosYPos,   XPosYPos,   XPosYPos,   XPosZPos,   XPosZPos,   XPosZPos],
-                          [XPosSquare, XPosSquare, XPosSquare,   XPosYPos,   XPosYPos,   XPosYPos,   XPosZPos,   XPosZPos,   XPosZPos],
-                          [XPosSquare, XPosSquare, XPosSquare,   XPosYPos,   XPosYPos,   XPosYPos,   XPosZPos,   XPosZPos,   XPosZPos],
-                          [  XPosYPos,   XPosYPos,   XPosYPos, YPosSquare, YPosSquare, YPosSquare,   YPosZPos,   YPosZPos,   YPosZPos],
-                          [  XPosYPos,   XPosYPos,   XPosYPos, YPosSquare, YPosSquare, YPosSquare,   YPosZPos,   YPosZPos,   YPosZPos],
-                          [  XPosYPos,   XPosYPos,   XPosYPos, YPosSquare, YPosSquare, YPosSquare,   YPosZPos,   YPosZPos,   YPosZPos],
-                          [  XPosZPos,   XPosZPos,   XPosZPos,   YPosZPos,   YPosZPos,   YPosZPos, ZPosSquare, ZPosSquare, ZPosSquare],
-                          [  XPosZPos,   XPosZPos,   XPosZPos,   YPosZPos,   YPosZPos,   YPosZPos, ZPosSquare, ZPosSquare, ZPosSquare],
-                          [  XPosZPos,   XPosZPos,   XPosZPos,   YPosZPos,   YPosZPos,   YPosZPos, ZPosSquare, ZPosSquare, ZPosSquare]])
-        Matrix = 1. / 1 *(Array * RewardDum)
-        #Matrix = 1.0 / 1.0 * np.array([[PosSquare, PosVel], [PosVel, VelSquare]]) * RewardDum
+        Array = np.array([[XPosSquare, XPosSquare, XPosSquare,
+                           XPosYPos,   XPosYPos,   XPosYPos,
+                           XPosZPos,   XPosZPos,   XPosZPos],
+                          [XPosSquare, XPosSquare, XPosSquare,
+                           XPosYPos,   XPosYPos,   XPosYPos,
+                           XPosZPos,   XPosZPos,   XPosZPos],
+                          [XPosSquare, XPosSquare, XPosSquare,
+                           XPosYPos,   XPosYPos,   XPosYPos,
+                           XPosZPos,   XPosZPos,   XPosZPos],
+                          [XPosYPos,   XPosYPos,   XPosYPos,
+                           YPosSquare, YPosSquare, YPosSquare,
+                           YPosZPos,   YPosZPos,   YPosZPos],
+                          [XPosYPos,   XPosYPos,   XPosYPos,
+                           YPosSquare, YPosSquare, YPosSquare,
+                           YPosZPos,   YPosZPos,   YPosZPos],
+                          [XPosYPos,   XPosYPos,   XPosYPos,
+                           YPosSquare, YPosSquare, YPosSquare,
+                           YPosZPos,   YPosZPos,   YPosZPos],
+                          [XPosZPos,   XPosZPos,   XPosZPos,
+                           YPosZPos,   YPosZPos,   YPosZPos,
+                           ZPosSquare, ZPosSquare, ZPosSquare],
+                          [XPosZPos,   XPosZPos,   XPosZPos,
+                           YPosZPos,   YPosZPos,   YPosZPos,
+                           ZPosSquare, ZPosSquare, ZPosSquare],
+                          [XPosZPos,   XPosZPos,   XPosZPos,
+                           YPosZPos,   YPosZPos,   YPosZPos,
+                           ZPosSquare, ZPosSquare, ZPosSquare]])
+        Matrix = 1. / 1 * (Array * RewardDum)
         Hes = Hes + Matrix
 
     Hessian = -Hes * (1. / nRollouts)

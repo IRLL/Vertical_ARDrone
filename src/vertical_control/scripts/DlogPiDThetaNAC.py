@@ -19,7 +19,6 @@ def DlogPiDThetaNAC(policy, x, u, param):
 
     der = np.empty(shape=(0, N))
     for i in range(M):
-        #der = np.concatenate((der, np.dot((u[i]-np.dot(k[N*(i):N*(i)+N].conj().T, x)), x.conj().T) / (sigma[i]**2)))
         u_ = np.dot(k[0, N*(i):N*(i)+N].reshape(1, M), x)
         val = (u[i] - u_) * x / (sigma[i]**2)
         der = np.concatenate((der, val.conj().T))
