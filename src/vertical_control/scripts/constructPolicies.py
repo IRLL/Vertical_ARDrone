@@ -7,11 +7,12 @@ Created on Tue Aug 11 12:02:53 2015
 
 import numpy as np
 import sys
+import types
 
 from structs import PGPolicy, Policy
 
 
-def constructPolicies(Tasks):
+def constructPolicies(Tasks, init_policy=None):
     nSystems = np.shape(Tasks)[0]
 
     PGPol = [PGPolicy() for i in range(nSystems)]
@@ -29,6 +30,8 @@ def constructPolicies(Tasks):
             # for j in range(N*M):
             #    val = policy.theta[j]
             #    policy.theta[j] = val if np.random.randint(2) == 1 else -val
+            if not isinstance(init_policy, types.NoneType):
+                policy.theta = init_policy
             # policy.sigma = np.random.rand(1, M)
             policy.sigma = np.array([[0, 0, 0]])
         else:

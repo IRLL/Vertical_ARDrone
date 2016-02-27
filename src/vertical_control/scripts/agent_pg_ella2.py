@@ -222,8 +222,8 @@ class Agent():
                     else:
                         noiseval = -noiseval
                     data[trials].policy.theta = data[0].policy.theta + noiseval
-                print("\n      T:", data[trials].policy.theta.T)  # theta
-                print("      P:", policy.theta.T)  # policy
+                # print("\n      T:", data[trials].policy.theta.T)  # theta
+                # print("      P:", policy.theta.T)  # policy
 
             command = Twist()
             command.linear.x = 0
@@ -525,7 +525,7 @@ class Agent():
                 D = computeHessian(data, Policies[taskId].policy.sigma)
             else:
                 # Use the identity matrix
-                D = np.identity(np.shape(dJdtheta)[0])
+                D = np.identity(np.shape(dJdTheta)[0])
 
             HessianArray[taskId].D = D
 
@@ -749,11 +749,11 @@ class Agent():
         self.Test_Avg_rPGELLA = Test_Avg_rPGELLA
 
 if __name__ == "__main__":
-    np.random.seed(10)
+    #np.random.seed(10)
     np.set_printoptions(precision=3)
     np.set_printoptions(suppress=True)
-    random.seed(10)
-    n_systems = 20  # Integer number of tasks 4
+    #random.seed(10)
+    n_systems = 1  # Integer number of tasks 4
     learning_rate = 0.000001  # Learning rate for stochastic gradient descent
     gamma = 0.9999  # Discount factor gamma
 
@@ -769,24 +769,24 @@ if __name__ == "__main__":
 
     traj_length = 150  # Number of time steps
     num_rollouts = 15  # Number of trajectories/trials for testing
-    num_iterations = 20  # Number of learning episodes/iterations
+    num_iterations = 90  # Number of learning episodes/iterations
 
     agent = Agent(n_systems, learning_rate, gamma)
     time.sleep(.5)
 
     # Learning PG
-    agent.startPg(poli_type, base_learner, traj_length,
-                  num_rollouts, num_iterations, task_file='task_5.p',
-                  policy_file='policy_5.p', avg_file='average_5.p',
-                  is_load=False)
+    # agent.startPg(poli_type, base_learner, traj_length,
+    #               num_rollouts, num_iterations, task_file='task_1_fd_target_new.p',
+    #               policy_file='policy_1_fd_target_new.p', avg_file='average_1_fd_target_new.p',
+    #               is_load=False)
 
     # Continue Learning PG
     # NOTE: Make a Backup of the files before running to ensure
     #       you have a copy of the original policy
-    # agent.startPg(poli_type, base_learner, traj_length,
-    #          num_rollouts, num_iterations, task_file='task_5.p',
-    #          policy_file='policy_5.p', avg_file='average_5.p',
-    #          is_continue=True)
+    agent.startPg(poli_type, base_learner, traj_length,
+             num_rollouts, num_iterations, task_file='task_1_fd_target_new.p',
+             policy_file='policy_1_fd_target_new.p', avg_file='average_1_fd_target_new.p',
+             is_continue=True)
 
     # Loading PG policies from file
     # agent.startPg(task_file='task_10.p', policy_file='policy_10.p',

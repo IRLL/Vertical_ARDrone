@@ -2,7 +2,7 @@ from __future__ import print_function
 import numpy as np
 import cPickle as pickle
 
-PATH = '../../../final_converged/'
+PATH = '../../../'
 
 def savePolicies(tasks, policies, avg_rPG,
                  task_file, policy_file, avg_file):
@@ -23,15 +23,15 @@ if __name__ == '__main__':
     #==================CONFIG VARIABLES====================
     rm_idx = [] # identify indices to remove/prune out
 
-    files = {'tsk_files':[PATH+'task_new.p', PATH+'task_700.p'],
-             'pol_files':[PATH+'policy_new.p', PATH+'policy_700.p'],
-             'avg_files':[PATH+'average_new.p', PATH+'average_700.p']}
+    files = {'tsk_files':[PATH+'task_18_fd_source.p', PATH+'task_1_fd_source7.p'],
+             'pol_files':[PATH+'policy_18_fd_source.p', PATH+'policy_1_fd_source7.p'],
+             'avg_files':[PATH+'average_18_fd_source.p', PATH+'average_1_fd_source7.p']}
 
     num_files = len(files['tsk_files'])
 
-    t_out_file = PATH + 'task_new_10.p'
-    p_out_file = PATH + 'policy_new_10.p'
-    a_out_file = PATH + 'average_new_10.p'
+    t_out_file = PATH + 'task_19_fd_source.p'
+    p_out_file = PATH + 'policy_19_fd_source.p'
+    a_out_file = PATH + 'average_19_fd_source.p'
     #======================================================
 
     task_all = []
@@ -42,9 +42,9 @@ if __name__ == '__main__':
 
     # Retrieve data from files
     for i in range(num_files):
-        tasks, policies, avg_r = loadPolicies(task_file = files['tsk_files'][i],
-                                              policy_file = files['pol_files'][i],
-                                              avg_file = files['avg_files'][i])
+        tasks, policies, avg_r = loadPolicies(task_file=files['tsk_files'][i],
+                                              policy_file=files['pol_files'][i],
+                                              avg_file=files['avg_files'][i])
         n_tasks = len(tasks)
         print("{} tasks in set {}".format(n_tasks, i+1))
         if type(avg_r) == np.ndarray:
@@ -61,10 +61,11 @@ if __name__ == '__main__':
             else:
                 avg_r_all.append(avg_r[j])
 
+    total_tasks = len(task_all)
     print("Total # of Tasks: ", total_tasks)
     task_all[0].nSystems = total_tasks
 
     savePolicies(task_all, policy_all, avg_r_all,
-                 task_file = t_out_file,
-                 policy_file = p_out_file,
-                 avg_file = a_out_file)
+                 task_file=t_out_file,
+                 policy_file=p_out_file,
+                 avg_file=a_out_file)

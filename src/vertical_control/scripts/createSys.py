@@ -29,10 +29,10 @@ def createSys(nSystems, poliType, baseLearner, gamma):
 
         # ensure at least one disturbance is non-zero
         # while param.disturbance[0] == 0.0 and param.disturbance[1] == 0.0:
-        # x gets disturbance
-        param.disturbance[0] = round(np.random.rand()/2*0.1, 4)
+        # x gets disturbanc
+        param.disturbance[0] = round(np.random.rand()/2*0.3, 4)
         # y gets disturbance
-        param.disturbance[1] = round(np.random.rand()/2*0.1, 4)
+        param.disturbance[1] = round(np.random.rand()/2*0.3, 4)
 
         # Parameters for policy
         param.poliType = poliType
