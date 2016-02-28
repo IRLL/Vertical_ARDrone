@@ -103,7 +103,7 @@ class Agent():
             task_str = None
             # Creating Tasks
             if not isinstance(tasks, types.NoneType):
-                task_str = str(test_task) + "_base"
+                task_str = str(test_task+1) + "_base"
                 self.Tasks = copy.deepcopy(tasks)
             else:
                 self.Tasks = createSys(self._n_systems, poli_type,
@@ -112,7 +112,7 @@ class Agent():
             ave = None
             if not isinstance(source, types.NoneType):
                 self.Tasks[0] = source.Tasks[test_task]
-                task_str = str(test_task)
+                task_str = str(test_task+1)
                 sum_ = np.zeros((self.Tasks[0].param.N * self.Tasks[0].param.M, 1))
                 for index, p in enumerate(source.Policies):
                     if test_task != index:
@@ -449,7 +449,7 @@ class Agent():
             print("")
             file_name = "PG Task {n}.png".format(n=i+1)
             if not isinstance(test_task, types.NoneType):
-                file_name = "FirstIter_PG_Task_{n}.png".format(n=test_task+1)
+                file_name = "FirstIter_PG_Task_{n}.png".format(n=test_task)
             plt.savefig(file_name, bbox_inches='tight')
             plt.close(fig)
         print("Task completion times: ", tasks_time)
