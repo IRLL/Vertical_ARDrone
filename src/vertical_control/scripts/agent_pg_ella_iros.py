@@ -594,7 +594,8 @@ class Agent():
     def startTest(self, traj_length=100, num_rollouts=40,
                   num_iterations=150, learning_rate=0.1,
                   test_file='test.p', is_load=False,
-                  is_continue=False, baseline=None, test_task=None):
+                  is_continue=False, baseline=None,
+                  test_task=None, source=None):
         if is_continue:
             # Continue learning from a loaded policy
             # num_iterations treated as additional iterations
@@ -617,10 +618,10 @@ class Agent():
             # Creating new PG policies
             # self.PGPol = constructPolicies(self.Tasks)
             self.PGPol = copy.deepcopy(self.Policies)  # NEW
-            if not isinstance(baseline, types.NoneType):
-                # print("PGPOL1: ", baseline.Policies[0].policy.theta.T)
-                self.PGPol[test_task] = copy.deepcopy(baseline.Policies[0])
-                # print("PGPOL2: ", self.PGPol[self.modelPGELLA.targetIdx].policy.theta.T)
+            # if not isinstance(baseline, types.NoneType):
+            #     # print("PGPOL1: ", baseline.Policies[0].policy.theta.T)
+            #     self.PGPol[test_task] = copy.deepcopy(baseline.Policies[0])
+            #     # print("PGPOL2: ", self.PGPol[self.modelPGELLA.targetIdx].policy.theta.T)
 
             self.PolicyPGELLAGroup = \
                 [PGPolicy() for i in range(self._n_systems)]
@@ -636,7 +637,7 @@ class Agent():
                 print("Task Id#", i+1, " ", theta_PG_ELLA.T)
 
             avg_RPGELLA = self.Test_Avg_rPGELLA = None
-            avg_RPG = self.Test_Avg_rPG = None
+            avg_RPG = self.Test_Avg_rPG = source.Avg_rPG
             self.saveModelTest(test_file)
 
         else:
@@ -684,20 +685,21 @@ class Agent():
         tasks_time = [0] * tasks_size
         start_it = [0] * tasks_size
 
+        Test_Avg_rPG = avgRPG
         if isinstance(avgRPGELLA, types.NoneType) or \
            isinstance(avgRPG, types.NoneType):
             Test_Avg_rPGELLA = \
                 [np.zeros((numIterations, 1)) for i in range(tasks_size)]
-            Test_Avg_rPG = \
-                [np.zeros((numIterations, 1)) for i in range(tasks_size)]
+            # Test_Avg_rPG = \
+            #    [np.zeros((numIterations, 1)) for i in range(tasks_size)]
         elif type(avgRPGELLA) == list or type(avgRPG) == list:
             for j in range(tasks_size):
                 start_it[j] = np.shape(avgRPG[j])[0]
-                avgRPG[j] = np.append(avgRPG[j],
-                                      np.zeros((numIterations, 1)), axis=0)
+                # avgRPG[j] = np.append(avgRPG[j],
+                #                      np.zeros((numIterations, 1)), axis=0)
                 avgRPGELLA[j] = np.append(avgRPGELLA[j],
                                           np.zeros((numIterations, 1)), axis=0)
-            Test_Avg_rPG = avgRPG
+            #Test_Avg_rPG = avgRPG
             Test_Avg_rPGELLA = avgRPGELLA
         # Avg_rPGELLA = np.zeros((numIterations, tasks_size))
         # Avg_rPG = np.zeros((numIterations, tasks_size))
@@ -725,28 +727,28 @@ class Agent():
                 fig.canvas.flush_events()
 
             start_time = datetime.now()
-            print("Init PG policy: ", PGPol[k].policy.theta.T)
+            # print("Init PG policy: ", PGPol[k].policy.theta.T)
             # Loop over Iterations
             for m in range(start_it[k], numIterations+start_it[k]):
                 print("@ Iteration: ", m+1)
                 print("    Perturbation: ", Tasks[k].param.disturbance)
                 # PG
-                data = self.obtainData(PGPol[k].policy, trajLength,
-                                       numRollouts, Tasks[k])
-
-                if Tasks[k].param.baseLearner == 'REINFORCE':
-                    dJdTheta = episodicREINFORCE(PGPol[k].policy,
-                                                 data, Tasks[k])
-                elif Tasks[k].param.baseLearner == 'NAC':
-                    dJdTheta = episodicNaturalActorCritic(PGPol[k].policy,
-                                                          data, Tasks[k])
-                elif Tasks[k].param.baseLearner == 'FD':
-                    dJdTheta = finiteDifferences(data, numRollouts)
-
-                # Update Policy Parameters
-                PGPol[k].policy.theta = PGPol[k].policy.theta + \
-                    learningRate * dJdTheta.reshape(9, 1)
-                print("    PG policy    : ", PGPol[k].policy.theta.T)
+                # data = self.obtainData(PGPol[k].policy, trajLength,
+                #                        numRollouts, Tasks[k])
+                #
+                # if Tasks[k].param.baseLearner == 'REINFORCE':
+                #     dJdTheta = episodicREINFORCE(PGPol[k].policy,
+                #                                  data, Tasks[k])
+                # elif Tasks[k].param.baseLearner == 'NAC':
+                #     dJdTheta = episodicNaturalActorCritic(PGPol[k].policy,
+                #                                           data, Tasks[k])
+                # elif Tasks[k].param.baseLearner == 'FD':
+                #     dJdTheta = finiteDifferences(data, numRollouts)
+                #
+                # # Update Policy Parameters
+                # PGPol[k].policy.theta = PGPol[k].policy.theta + \
+                #     learningRate * dJdTheta.reshape(9, 1)
+                # print("    PG policy    : ", PGPol[k].policy.theta.T)
 
                 # PG-ELLA
                 dataPGELLA = self.obtainData(PolicyPGELLAGroup[k].policy,
@@ -770,10 +772,10 @@ class Agent():
                 print("    PGELLA policy: ", PolicyPGELLAGroup[k].policy.theta.T)
 
                 # Computing Average in one System per iteration
-                data_size = np.shape(data)[0]
-                Sum_rPG = np.zeros((data_size, 1))
-                for z in range(data_size):
-                    Sum_rPG[z, :] = np.sum(data[z].r)
+                # data_size = np.shape(data)[0]
+                # Sum_rPG = np.zeros((data_size, 1))
+                # for z in range(data_size):
+                #     Sum_rPG[z, :] = np.sum(data[z].r)
 
                 dataPG_size = np.shape(dataPGELLA)[0]
                 Sum_rPGELLA = np.zeros((dataPG_size, 1))
@@ -781,14 +783,15 @@ class Agent():
                     Sum_rPGELLA[z, :] = np.sum(dataPGELLA[z].r)
 
                 Test_Avg_rPGELLA[k][m] = np.mean(Sum_rPGELLA)
-                Test_Avg_rPG[k][m] = np.mean(Sum_rPG)
-                print("    PG Mean: ", Test_Avg_rPG[k][m][0])
+                # Test_Avg_rPG[k][m] = np.mean(Sum_rPG)
+                print("    PG Mean: ", Test_Avg_rPG[k][m+10][0])
                 print("    PGELLA Mean: ", Test_Avg_rPGELLA[k][m][0])
 
                 # Plot graph
                 ax.scatter(m, Test_Avg_rPGELLA[k][m],
                            marker=u'o', color='r', cmap=cm.jet, label='PG-ELLA')
-                ax.scatter(m, Test_Avg_rPG[k][m],
+                print ("reward: ", m+10)
+                ax.scatter(m, Test_Avg_rPG[k][m+10],
                            marker=u'*', color='b', cmap=cm.jet, label='PG')
                 ax.figure.canvas.draw()
                 fig.canvas.draw()
@@ -870,12 +873,12 @@ if __name__ == "__main__":
                        policy_file='policy_1_fd_target_task{0}.p'.format(test_task+1),
                        avg_file='average_1_fd_target_task{0}.p'.format(test_task+1),
                        is_load=False, source=agent, test_task=test_task)
-        agent_b.startPg(poli_type, base_learner, traj_length,
-                        num_rollouts, num_iterations_,
-                        task_file='task_1_fd_target_base_task{0}.p'.format(test_task+1),
-                        policy_file='policy_1_fd_target_base_task{0}.p'.format(test_task+1),
-                        avg_file='average_1_fd_target_base_task{0}.p'.format(test_task+1),
-                        is_load=False, tasks=agent_.Tasks, test_task=test_task)
+        # agent_b.startPg(poli_type, base_learner, traj_length,
+        #                 num_rollouts, num_iterations_,
+        #                 task_file='task_1_fd_target_base_task{0}.p'.format(test_task+1),
+        #                 policy_file='policy_1_fd_target_base_task{0}.p'.format(test_task+1),
+        #                 avg_file='average_1_fd_target_base_task{0}.p'.format(test_task+1),
+        #                 is_load=False, tasks=agent_.Tasks, test_task=test_task)
 
         # Continue Learning PG
         # NOTE: Make a Backup of the files before running to ensure
@@ -921,9 +924,9 @@ if __name__ == "__main__":
 
         agent_.startTest(traj_length, num_rollouts, num_iterations,
                          learning_rate, test_file='test_1_fd_target_task{0}.p'.format(test_task+1),
-                         is_load=False, baseline=agent_b, test_task=test_task)
+                         is_load=False, baseline=agent_b, source=agent, test_task=test_task)
 
-    # agent_.startTest(traj_length, num_rollouts, num_iterations, learning_rate,
-    #                test_file='test_1_fd_target.p', is_continue=True)
+        # agent_.startTest(traj_length, num_rollouts, num_iterations, learning_rate,
+        #                test_file='test_1_fd_target.p', is_continue=True)
 
     rospy.spin()
