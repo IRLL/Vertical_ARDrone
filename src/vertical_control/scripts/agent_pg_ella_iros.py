@@ -500,23 +500,26 @@ class Agent():
         tasks_size = np.shape(Tasks)[0]
         ObservedTasks = np.zeros((tasks_size, 1))
         limitOne = 0
-        limitTwo = tasks_size - 1
+        limitTwo = tasks_size
         print("Task size: ", tasks_size)
 
         HessianArray = [Hessianarray() for i in range(tasks_size)]
         ParameterArray = [Parameterarray() for i in range(tasks_size)]
 
-        tasknum = np.random.permutation(tasks_size)
-        tasknum = tasknum[tasknum != test_task]
+        ObservedTasks[test_task] = 1
+        # tasknum = np.random.permutation(tasks_size)
+        # tasknum = tasknum[tasknum != test_task]
         # for taskId in range(tasks_size):
-        # while not np.all(ObservedTasks):  # Repeat until all tasks are observed
-        for i in range(tasks_size-1):
+        # for i in range(tasks_size-1):
+        while not np.all(ObservedTasks):  # Repeat until all tasks are observed
             # Pick a random task
-            # taskId = np.random.randint(limitOne, limitTwo, 1)
+            taskId = np.random.randint(limitOne, limitTwo, 1)
+            if taskId == test_task:
+                continue
             # taskId = np.ones((1,))
             # taskId[0, ] = tasknum[i]
             # taskId = taskId.astype(int)
-            taskId = tasknum[i]
+            # taskId = tasknum[i]
 
             print("Task ID: ", taskId)
 
@@ -572,6 +575,7 @@ class Agent():
             print("Iterating @: ", counter)
             counter = counter + 1
 
+        ObservedTasks[test_task] = 0
         # Learn L&S for target task (last task)
         while not np.all(ObservedTasks):
             ObservedTasks[test_task] = 1
@@ -904,7 +908,7 @@ if __name__ == "__main__":
         num_rollouts = 0  # 200
         learning_rate_ella = learning_rate
         mu1 = 0.00001  # 0.0000001 #0.0000001 # 0.01  # exp(-5)  # Sparsity coefficient
-        mu2 = 0.001  # 0.00000001 #0.001 #0.00000001  # exp(-5)  # Regularization coefficient
+        mu2 = 0.000001  # 0.00000001 #0.001 #0.00000001  # exp(-5)  # Regularization coefficient
         k = 4  # Number of inner layers
 
         # Learning PGELLA from SOURCE to TARGET
