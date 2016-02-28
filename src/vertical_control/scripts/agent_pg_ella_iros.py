@@ -705,19 +705,22 @@ class Agent():
                 # plot the rewards from previous learning session
                 for m in range(start_it[k]):
                     ax.scatter(m, Test_Avg_rPGELLA[k][m],
-                               marker=u'*', color='r', cmap=cm.jet)
+                               marker=u'o', color='r', cmap=cm.jet, label='PG-ELLA')
                     ax.scatter(m, Test_Avg_rPG[k][m],
-                               marker=u'*', color='b', cmap=cm.jet)
+                               marker=u'*', color='b', cmap=cm.jet, label='PG')
+                    if m == 0:
+                        ax.legend(loc=4)
                 ax.figure.canvas.draw()
                 fig.canvas.draw()
                 fig.canvas.flush_events()
+                plt.savefig("PGELLA.eps", bbox_inches='tight', format='eps')
 
             start_time = datetime.now()
             print("Init PG policy: ", PGPol[k].policy.theta.T)
             # Loop over Iterations
             for m in range(start_it[k], numIterations+start_it[k]):
                 print("    @ Iteration: ", m+1)
-                print("    Perturbation: ", Tasks[i].param.disturbance)
+                print("    Perturbation: ", Tasks[k].param.disturbance)
                 # PG
                 data = self.obtainData(PGPol[k].policy, trajLength,
                                        numRollouts, Tasks[k])
@@ -773,18 +776,19 @@ class Agent():
 
                 # Plot graph
                 ax.scatter(m, Test_Avg_rPGELLA[k][m],
-                           marker=u'*', color='r', cmap=cm.jet)
+                           marker=u'o', color='r', cmap=cm.jet, label='PG-ELLA')
                 ax.scatter(m, Test_Avg_rPG[k][m],
-                           marker=u'*', color='b', cmap=cm.jet)
+                           marker=u'*', color='b', cmap=cm.jet, label='PG')
                 ax.figure.canvas.draw()
                 fig.canvas.draw()
                 fig.canvas.flush_events()
 
+
             stop_time = datetime.now()
             tasks_time[k] = str(stop_time - start_time)
 
-            file_name = "PG-ELLA Task {n}.png".format(n=k+1)
-            plt.savefig(file_name, bbox_inches='tight')
+            file_name = "PG-ELLA Task {n}.eps".format(n=k+1)
+            plt.savefig(file_name, bbox_inches='tight', format='eps')
             plt.close(fig)
 
         print("Task completion times: ", tasks_time)
@@ -898,7 +902,7 @@ if __name__ == "__main__":
     # Testing Phase
     # traj_length = 150
     num_rollouts = 15  # 100
-    num_iterations = 60  # 200
+    num_iterations = 50  # 200
     # learning_rate = .1
 
     # agent_.startTest(traj_length, num_rollouts, num_iterations,
