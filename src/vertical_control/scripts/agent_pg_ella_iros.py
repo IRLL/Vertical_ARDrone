@@ -76,7 +76,7 @@ class Agent():
                 traj_length=100, num_rollouts=40, num_iterations=150,
                 task_file='task.p', policy_file='policy.p',
                 avg_file='average.p', is_continue=False, is_load=False,
-                source=None, tasks=None):
+                source=None, tasks=None, test_task=None):
         self.Policies_ = None
         if is_continue:
             # Continue learning from a loaded policy
@@ -100,8 +100,10 @@ class Agent():
 
             self.savePolicies(task_file, policy_file, avg_file)
         elif not is_load:
+            task_str = None
             # Creating Tasks
             if not isinstance(tasks, types.NoneType):
+                task_str = str(test_task) + "_base"
                 self.Tasks = copy.deepcopy(tasks)
             else:
                 self.Tasks = createSys(self._n_systems, poli_type,
@@ -109,10 +111,14 @@ class Agent():
 
             ave = None
             if not isinstance(source, types.NoneType):
+                self.Tasks[0] = source.Tasks[test_task]
+                task_str = str(test_task)
                 sum_ = np.zeros((self.Tasks[0].param.N * self.Tasks[0].param.M, 1))
-                for p in source.Policies:
-                    sum_ += p.policy.theta
-                ave = sum_ / source._n_systems
+                for index, p in enumerate(source.Policies):
+                    if test_task != index:
+                        sum_ += p.policy.theta
+                ave = sum_ / (source._n_systems-1)
+                print("Ori Policy: ", source.Policies[test_task].policy.theta.T)
                 print("Ave Policy: ", ave.T)
 
             # Constructing policies
@@ -122,7 +128,8 @@ class Agent():
             self.Policies, self.Avg_rPG = \
                 self.calcThetaStar(self.Tasks, self.Policies,
                                    self._learning_rate, traj_length,
-                                   num_rollouts, num_iterations)
+                                   num_rollouts, num_iterations,
+                                   test_task=task_str)
 
             self.savePolicies(task_file, policy_file, avg_file)
         else:
@@ -340,7 +347,7 @@ class Agent():
 
     def calcThetaStar(self, Params, Policies, rates,
                       trajlength, rollouts, numIterations,
-                      avgRPG=None):
+                      avgRPG=None, test_task=None):
 
         plt.ion()
 
@@ -441,6 +448,8 @@ class Agent():
             print("    Learned Theta: ", Policies[i].policy.theta.T)
             print("")
             file_name = "PG Task {n}.png".format(n=i+1)
+            if not isinstance(test_task, types.NoneType):
+                file_name = "FirstIter_PG_Task_{n}.png".format(n=test_task)
             plt.savefig(file_name, bbox_inches='tight')
             plt.close(fig)
         print("Task completion times: ", tasks_time)
@@ -450,32 +459,27 @@ class Agent():
 
     def startElla(self, traj_length=100, num_rollouts=40,
                   learning_rate=0.1, mu1=0.1, mu2=0.1, k=1,
-                  model_file='model.p', is_load=False, source=None):
+                  model_file='model.p', is_load=False, source=None,
+                  test_task=None):
 
         if not isinstance(source, types.NoneType):
-            self.targetStartIndex = len(source.Tasks)
             # Append target tasks to source tasks list
-            for task in self.Tasks:
-                source.Tasks.append(task)
-            self.Tasks = source.Tasks
+            self.Tasks = copy.deepcopy(source.Tasks)
             self.Tasks[0].nSystems = len(self.Tasks)
             self._n_systems = self.Tasks[0].nSystems
-            # Append target policies to source policies list
-            for policy in self.Policies:
-                source.Policies.append(policy)
-            self.Policies = source.Policies
+            self.Policies = copy.deepcopy(source.Policies)
 
         if not is_load:
             # self._learning_rate = learning_rate
             self.modelPGELLA = initPGELLA(self.Tasks, k, mu1, mu2,
-                                          learning_rate,
-                                          self.targetStartIndex)
+                                          learning_rate)
 
             print("Learn PGELLA")
             self.modelPGELLA = self.learnPGELLA(self.Tasks, self.Policies,
                                                 self._learning_rate,
                                                 traj_length, num_rollouts,
-                                                self.modelPGELLA)
+                                                self.modelPGELLA,
+                                                test_task=test_task)
 
             self.saveModelPGELLA(model_file)
         else:
@@ -491,7 +495,7 @@ class Agent():
         self.modelPGELLA = pickle.load(open(model_file, 'rb'))
 
     def learnPGELLA(self, Tasks, Policies, learningRate,
-                    trajLength, numRollouts, modelPGELLA):
+                    trajLength, numRollouts, modelPGELLA, test_task=None):
         counter = 0
         tasks_size = np.shape(Tasks)[0]
         ObservedTasks = np.zeros((tasks_size, 1))
@@ -502,10 +506,18 @@ class Agent():
         HessianArray = [Hessianarray() for i in range(tasks_size)]
         ParameterArray = [Parameterarray() for i in range(tasks_size)]
 
+        tasknum = np.random.permutation(tasks_size)
+        tasknum = tasknum[tasknum != test_task]
         # for taskId in range(tasks_size):
-        while not np.all(ObservedTasks[:-1]):  # Repeat until all tasks are observed
+        # while not np.all(ObservedTasks):  # Repeat until all tasks are observed
+        for i in range(tasks_size-1):
             # Pick a random task
-            taskId = np.random.randint(limitOne, limitTwo, 1)
+            # taskId = np.random.randint(limitOne, limitTwo, 1)
+            # taskId = np.ones((1,))
+            # taskId[0, ] = tasknum[i]
+            # taskId = taskId.astype(int)
+            taskId = tasknum[i]
+
             print("Task ID: ", taskId)
 
             if ObservedTasks[taskId] == 0:
@@ -562,15 +574,15 @@ class Agent():
 
         # Learn L&S for target task (last task)
         while not np.all(ObservedTasks):
-            ObservedTasks[tasks_size-1] = 1
-            D = np.identity(np.shape(Policies[tasks_size-1].policy.theta)[0])
-            HessianArray[tasks_size-1].D = D
-            ParameterArray[tasks_size-1].alpha = \
-                copy.deepcopy(Policies[tasks_size-1].policy.theta)
+            ObservedTasks[test_task] = 1
+            D = np.identity(np.shape(Policies[test_task].policy.theta)[0])
+            HessianArray[test_task].D = D
+            ParameterArray[test_task].alpha = \
+                copy.deepcopy(Policies[test_task].policy.theta)
 
             # Perform Updating L and S
             # Perform PGELLA for that Group
-            modelPGELLA = updatePGELLA(modelPGELLA, taskId, ObservedTasks,
+            modelPGELLA = updatePGELLA(modelPGELLA, test_task, ObservedTasks,
                                        HessianArray, ParameterArray)
             print("Iterating @: ", counter)
             counter = counter + 1
@@ -582,7 +594,7 @@ class Agent():
     def startTest(self, traj_length=100, num_rollouts=40,
                   num_iterations=150, learning_rate=0.1,
                   test_file='test.p', is_load=False,
-                  is_continue=False, baseline=None):
+                  is_continue=False, baseline=None, test_task=None):
         if is_continue:
             # Continue learning from a loaded policy
             # num_iterations treated as additional iterations
@@ -607,7 +619,7 @@ class Agent():
             self.PGPol = copy.deepcopy(self.Policies)  # NEW
             if not isinstance(baseline, types.NoneType):
                 # print("PGPOL1: ", baseline.Policies[0].policy.theta.T)
-                self.PGPol[self.modelPGELLA.targetIdx:] = copy.deepcopy(baseline.Policies[:])
+                self.PGPol[test_task] = copy.deepcopy(baseline.Policies[0])
                 # print("PGPOL2: ", self.PGPol[self.modelPGELLA.targetIdx].policy.theta.T)
 
             self.PolicyPGELLAGroup = \
@@ -637,7 +649,8 @@ class Agent():
         self.testPGELLA(self.Tasks, self.PGPol,
                         self._learning_rate, traj_length, num_rollouts,
                         num_iterations, self.PolicyPGELLAGroup,
-                        avgRPGELLA=avg_RPGELLA, avgRPG=avg_RPG)
+                        avgRPGELLA=avg_RPGELLA, avgRPG=avg_RPG,
+                        test_task=test_task)
 
         self.saveModelTest(test_file)
 
@@ -662,7 +675,7 @@ class Agent():
 
     def testPGELLA(self, Tasks, PGPol, learningRate, trajLength,
                    numRollouts, numIterations, PolicyPGELLAGroup,
-                   avgRPGELLA=None, avgRPG=None):
+                   avgRPGELLA=None, avgRPG=None, test_task=None):
 
         plt.ion()
 
@@ -688,7 +701,9 @@ class Agent():
             Test_Avg_rPGELLA = avgRPGELLA
         # Avg_rPGELLA = np.zeros((numIterations, tasks_size))
         # Avg_rPG = np.zeros((numIterations, tasks_size))
-        for k in range(self.modelPGELLA.targetIdx, tasks_size):  # Test over all tasks
+        # for k in range(self.modelPGELLA.targetIdx, tasks_size):  # Test over all tasks
+        for k in range(1):
+            k = test_task
             print("@ Task: ", k + 1)
             fig = plt.figure("PG-ELLA Task " + str(k+1))
             ax = fig.add_subplot(111)
@@ -714,7 +729,7 @@ class Agent():
             print("Init PG policy: ", PGPol[k].policy.theta.T)
             # Loop over Iterations
             for m in range(start_it[k], numIterations+start_it[k]):
-                print("    @ Iteration: ", m+1)
+                print("@ Iteration: ", m+1)
                 print("    Perturbation: ", Tasks[k].param.disturbance)
                 # PG
                 data = self.obtainData(PGPol[k].policy, trajLength,
@@ -732,7 +747,7 @@ class Agent():
                 # Update Policy Parameters
                 PGPol[k].policy.theta = PGPol[k].policy.theta + \
                     learningRate * dJdTheta.reshape(9, 1)
-                print("PG policy    : ", PGPol[k].policy.theta.T)
+                print("    PG policy    : ", PGPol[k].policy.theta.T)
 
                 # PG-ELLA
                 dataPGELLA = self.obtainData(PolicyPGELLAGroup[k].policy,
@@ -753,7 +768,7 @@ class Agent():
                 PolicyPGELLAGroup[k].policy.theta = \
                     PolicyPGELLAGroup[k].policy.theta + \
                     learningRate * dJdThetaPGELLA.reshape(9, 1)
-                print("PGELLA policy: ", PolicyPGELLAGroup[k].policy.theta.T)
+                print("    PGELLA policy: ", PolicyPGELLAGroup[k].policy.theta.T)
 
                 # Computing Average in one System per iteration
                 data_size = np.shape(data)[0]
@@ -768,6 +783,8 @@ class Agent():
 
                 Test_Avg_rPGELLA[k][m] = np.mean(Sum_rPGELLA)
                 Test_Avg_rPG[k][m] = np.mean(Sum_rPG)
+                print("    PG Mean: ", Test_Avg_rPG[k][m][0])
+                print("    PGELLA Mean: ", Test_Avg_rPGELLA[k][m][0])
 
                 # Plot graph
                 ax.scatter(m, Test_Avg_rPGELLA[k][m],
@@ -797,7 +814,7 @@ if __name__ == "__main__":
     np.set_printoptions(precision=3)
     np.set_printoptions(suppress=True)
     #random.seed(10)
-    n_systems = 19  # tasks [SOURCE]
+    n_systems = 20  # tasks [SOURCE]
     n_systems_ = 1  # tasks [TARGET]
     learning_rate = 0.000001  # Learning rate for stochastic gradient descent
     gamma = 0.9999  # Discount factor gamma
@@ -818,8 +835,6 @@ if __name__ == "__main__":
     num_iterations_ = 10  # Number of learning episodes/iterations [TARGET]
 
     agent = Agent(n_systems, learning_rate, gamma)  # [SOURCE]
-    agent_ = Agent(n_systems_, learning_rate, gamma)  # [TARGET]
-    agent_b = Agent(n_systems_, learning_rate, gamma) # [BASELINE]
     time.sleep(.5)
 
     # Learning PG
@@ -839,25 +854,27 @@ if __name__ == "__main__":
     #               avg_file='average_19_fd_source.p',
     #               is_continue=True)
     # Loading PG policies from file
-    agent.startPg(task_file='task_19_fd_source.p',
-                  policy_file='policy_19_fd_source.p',
-                  avg_file='average_19_fd_source.p',
+    agent.startPg(task_file='task_20_fd_source.p',
+                  policy_file='policy_20_fd_source.p',
+                  avg_file='average_20_fd_source.p',
                   is_load=True)
 
-    for trial in range(20):
+    for test_task in range(n_systems):
+        agent_ = Agent(n_systems_, learning_rate, gamma)  # [TARGET]
+        agent_b = Agent(n_systems_, learning_rate, gamma) # [BASELINE]
         # Learning PG
         agent_.startPg(poli_type, base_learner, traj_length,
                        num_rollouts, num_iterations_,
-                       task_file='task_1_fd_target_trial{0}.p'.format(trial),
-                       policy_file='policy_1_fd_target_trial{0}.p'.format(trial),
-                       avg_file='average_1_fd_target_trial{0}.p'.format(trial),
-                       is_load=False, source=agent)
+                       task_file='task_1_fd_target_task{0}.p'.format(test_task),
+                       policy_file='policy_1_fd_target_task{0}.p'.format(test_task),
+                       avg_file='average_1_fd_target_task{0}.p'.format(test_task),
+                       is_load=False, source=agent, test_task=test_task)
         agent_b.startPg(poli_type, base_learner, traj_length,
                         num_rollouts, num_iterations_,
-                        task_file='task_1_fd_target_base_trial{0}.p'.format(trial),
-                        policy_file='policy_1_fd_target_base_trial{0}.p'.format(trial),
-                        avg_file='average_1_fd_target_base_trial{0}.p'.format(trial),
-                        is_load=False, tasks=agent_.Tasks)
+                        task_file='task_1_fd_target_base_task{0}.p'.format(test_task),
+                        policy_file='policy_1_fd_target_base_task{0}.p'.format(test_task),
+                        avg_file='average_1_fd_target_base_task{0}.p'.format(test_task),
+                        is_load=False, tasks=agent_.Tasks, test_task=test_task)
 
         # Continue Learning PG
         # NOTE: Make a Backup of the files before running to ensure
@@ -889,8 +906,8 @@ if __name__ == "__main__":
         # Learning PGELLA from SOURCE to TARGET
         agent_.startElla(traj_length, num_rollouts,
                          learning_rate_ella, mu1, mu2, k,
-                         model_file='model_1_fd_target_trial{0}.p'.format(trial),
-                         is_load=False, source=agent)
+                         model_file='model_1_fd_target_task{0}.p'.format(test_task),
+                         is_load=False, source=agent, test_task=test_task)
         # Load PGELLA Model from file
         # agent_.startElla(model_file='model_1_fd_target.p',
         #                 is_load=True, source=agent)
@@ -898,12 +915,12 @@ if __name__ == "__main__":
         # Testing Phase
         # traj_length = 150
         num_rollouts = 15  # 100
-        num_iterations = 100  # 200
+        num_iterations = 90  # 200
         # learning_rate = .1
 
         agent_.startTest(traj_length, num_rollouts, num_iterations,
-                         learning_rate, test_file='test_1_fd_target_trial{0}.p'.format(trial),
-                         is_load=False, baseline=agent_b)
+                         learning_rate, test_file='test_1_fd_target_task{0}.p'.format(test_task),
+                         is_load=False, baseline=agent_b, test_task=test_task)
 
     # agent_.startTest(traj_length, num_rollouts, num_iterations, learning_rate,
     #                test_file='test_1_fd_target.p', is_continue=True)
