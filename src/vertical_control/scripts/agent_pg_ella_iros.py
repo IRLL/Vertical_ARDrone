@@ -449,7 +449,7 @@ class Agent():
             print("")
             file_name = "PG Task {n}.png".format(n=i+1)
             if not isinstance(test_task, types.NoneType):
-                file_name = "FirstIter_PG_Task_{n}.png".format(n=test_task)
+                file_name = "FirstIter_PG_Task_{n}.png".format(n=test_task+1)
             plt.savefig(file_name, bbox_inches='tight')
             plt.close(fig)
         print("Task completion times: ", tasks_time)
@@ -723,7 +723,6 @@ class Agent():
                 ax.figure.canvas.draw()
                 fig.canvas.draw()
                 fig.canvas.flush_events()
-                plt.savefig("PGELLA.eps", bbox_inches='tight', format='eps')
 
             start_time = datetime.now()
             print("Init PG policy: ", PGPol[k].policy.theta.T)
@@ -799,7 +798,9 @@ class Agent():
             stop_time = datetime.now()
             tasks_time[k] = str(stop_time - start_time)
 
-            file_name = "PG-ELLA Task {n}.eps".format(n=k+1)
+            file_name = "PGELLA_Task_{n}.eps".format(n=k+1)
+            if not isinstance(test_task, types.NoneType):
+                file_name = "PGELLA_Task_{n}.eps".format(n=test_task+1)
             plt.savefig(file_name, bbox_inches='tight', format='eps')
             plt.close(fig)
 
@@ -865,15 +866,15 @@ if __name__ == "__main__":
         # Learning PG
         agent_.startPg(poli_type, base_learner, traj_length,
                        num_rollouts, num_iterations_,
-                       task_file='task_1_fd_target_task{0}.p'.format(test_task),
-                       policy_file='policy_1_fd_target_task{0}.p'.format(test_task),
-                       avg_file='average_1_fd_target_task{0}.p'.format(test_task),
+                       task_file='task_1_fd_target_task{0}.p'.format(test_task+1),
+                       policy_file='policy_1_fd_target_task{0}.p'.format(test_task+1),
+                       avg_file='average_1_fd_target_task{0}.p'.format(test_task+1),
                        is_load=False, source=agent, test_task=test_task)
         agent_b.startPg(poli_type, base_learner, traj_length,
                         num_rollouts, num_iterations_,
-                        task_file='task_1_fd_target_base_task{0}.p'.format(test_task),
-                        policy_file='policy_1_fd_target_base_task{0}.p'.format(test_task),
-                        avg_file='average_1_fd_target_base_task{0}.p'.format(test_task),
+                        task_file='task_1_fd_target_base_task{0}.p'.format(test_task+1),
+                        policy_file='policy_1_fd_target_base_task{0}.p'.format(test_task+1),
+                        avg_file='average_1_fd_target_base_task{0}.p'.format(test_task+1),
                         is_load=False, tasks=agent_.Tasks, test_task=test_task)
 
         # Continue Learning PG
@@ -906,7 +907,7 @@ if __name__ == "__main__":
         # Learning PGELLA from SOURCE to TARGET
         agent_.startElla(traj_length, num_rollouts,
                          learning_rate_ella, mu1, mu2, k,
-                         model_file='model_1_fd_target_task{0}.p'.format(test_task),
+                         model_file='model_1_fd_target_task{0}.p'.format(test_task+1),
                          is_load=False, source=agent, test_task=test_task)
         # Load PGELLA Model from file
         # agent_.startElla(model_file='model_1_fd_target.p',
@@ -919,7 +920,7 @@ if __name__ == "__main__":
         # learning_rate = .1
 
         agent_.startTest(traj_length, num_rollouts, num_iterations,
-                         learning_rate, test_file='test_1_fd_target_task{0}.p'.format(test_task),
+                         learning_rate, test_file='test_1_fd_target_task{0}.p'.format(test_task+1),
                          is_load=False, baseline=agent_b, test_task=test_task)
 
     # agent_.startTest(traj_length, num_rollouts, num_iterations, learning_rate,
