@@ -490,40 +490,22 @@ class Agent():
         # Load PG policies and tasks to a file
         self.modelPGELLA = pickle.load(open(model_file, 'rb'))
 
-    def getSeedRandom(self, size, n_sets):
-        self.randNumbers = []
-        for i in range(n_sets):
-            temp = range(size)
-            random.shuffle(temp)
-            self.randNumbers += temp
-
-    def getNextRandom(self):
-        if len(self.randNumbers) > 0:
-            return self.randNumbers.pop(0)
-        return None
-
     def learnPGELLA(self, Tasks, Policies, learningRate,
                     trajLength, numRollouts, modelPGELLA):
-        counter = 1
+        counter = 0
         tasks_size = np.shape(Tasks)[0]
         ObservedTasks = np.zeros((tasks_size, 1))
         limitOne = 0
-        limitTwo = tasks_size
+        limitTwo = tasks_size - 1
         print("Task size: ", tasks_size)
 
         HessianArray = [Hessianarray() for i in range(tasks_size)]
         ParameterArray = [Parameterarray() for i in range(tasks_size)]
 
-        # self.getSeedRandom(tasks_size, 1)
-        # taskId = 0 # FIXME to get rid of random choice of task
-        # while len(self.randNumbers) > 0:
-        # while not np.all(ObservedTasks):  # Repeat until all tasks are observed
-        for taskId in range(tasks_size):
+        # for taskId in range(tasks_size):
+        while not np.all(ObservedTasks[:-1]):  # Repeat until all tasks are observed
             # Pick a random task
-            # taskId = np.random.randint(limitOne, limitTwo, 1)
-            # taskId = self.getNextRandom()
-            # if counter == 1:
-            #    self.randNumbers.append(taskId)
+            taskId = np.random.randint(limitOne, limitTwo, 1)
             print("Task ID: ", taskId)
 
             if ObservedTasks[taskId] == 0:
@@ -578,7 +560,20 @@ class Agent():
             print("Iterating @: ", counter)
             counter = counter + 1
 
-            # taskId += 1 # FIXME to get rid of random choice of task
+        # Learn L&S for target task (last task)
+        while not np.all(ObservedTasks):
+            ObservedTasks[tasks_size-1] = 1
+            D = np.identity(np.shape(Policies[tasks_size-1].policy.theta)[0])
+            HessianArray[tasks_size-1].D = D
+            ParameterArray[tasks_size-1].alpha = \
+                copy.deepcopy(Policies[tasks_size-1].policy.theta)
+
+            # Perform Updating L and S
+            # Perform PGELLA for that Group
+            modelPGELLA = updatePGELLA(modelPGELLA, taskId, ObservedTasks,
+                                       HessianArray, ParameterArray)
+            print("Iterating @: ", counter)
+            counter = counter + 1
 
         print("All Tasks observed @: ", counter-1)
 
@@ -849,67 +844,68 @@ if __name__ == "__main__":
                   avg_file='average_19_fd_source.p',
                   is_load=True)
 
-    # Learning PG
-    # agent_.startPg(poli_type, base_learner, traj_length,
-    #                num_rollouts, num_iterations_,
-    #                task_file='task_1_fd_target.p',
-    #                policy_file='policy_1_fd_target.p',
-    #                avg_file='average_1_fd_target.p',
-    #                is_load=False, source=agent)
-    # agent_b.startPg(poli_type, base_learner, traj_length,
-    #                 num_rollouts, num_iterations_,
-    #                 task_file='task_1_fd_target_base.p',
-    #                 policy_file='policy_1_fd_target_base.p',
-    #                 avg_file='average_1_fd_target_base.p',
-    #                 is_load=False, tasks=agent_.Tasks)
+    for trial in range(20):
+        # Learning PG
+        agent_.startPg(poli_type, base_learner, traj_length,
+                       num_rollouts, num_iterations_,
+                       task_file='task_1_fd_target_trial{0}.p'.format(trial),
+                       policy_file='policy_1_fd_target_trial{0}.p'.format(trial),
+                       avg_file='average_1_fd_target_trial{0}.p'.format(trial),
+                       is_load=False, source=agent)
+        agent_b.startPg(poli_type, base_learner, traj_length,
+                        num_rollouts, num_iterations_,
+                        task_file='task_1_fd_target_base_trial{0}.p'.format(trial),
+                        policy_file='policy_1_fd_target_base_trial{0}.p'.format(trial),
+                        avg_file='average_1_fd_target_base_trial{0}.p'.format(trial),
+                        is_load=False, tasks=agent_.Tasks)
 
-    # Continue Learning PG
-    # NOTE: Make a Backup of the files before running to ensure
-    #       you have a copy of the original policy
-    # agent_.startPg(poli_type, base_learner, traj_length,
-    #                num_rollouts, num_iterations_,
-    #                task_file='task_1_fd_target.p',
-    #                policy_file='policy_1_fd_target.p',
-    #                avg_file='average_1_fd_target.p',
-    #                is_continue=True)
-    # Loading PG policies from file
-    agent_.startPg(task_file='task_1_fd_target.p',
-                   policy_file='policy_1_fd_target.p',
-                   avg_file='average_1_fd_target.p',
-                   is_load=True)
-    agent_b.startPg(task_file='task_1_fd_target_base.p',
-                    policy_file='policy_1_fd_target_base.p',
-                    avg_file='average_1_fd_target_base.p',
-                    is_load=True)
+        # Continue Learning PG
+        # NOTE: Make a Backup of the files before running to ensure
+        #       you have a copy of the original policy
+        # agent_.startPg(poli_type, base_learner, traj_length,
+        #                num_rollouts, num_iterations_,
+        #                task_file='task_1_fd_target.p',
+        #                policy_file='policy_1_fd_target.p',
+        #                avg_file='average_1_fd_target.p',
+        #                is_continue=True)
+        # Loading PG policies from file
+        # agent_.startPg(task_file='task_1_fd_target.p',
+        #                policy_file='policy_1_fd_target.p',
+        #                avg_file='average_1_fd_target.p',
+        #                is_load=True)
+        # agent_b.startPg(task_file='task_1_fd_target_base.p',
+        #                 policy_file='policy_1_fd_target_base.p',
+        #                 avg_file='average_1_fd_target_base.p',
+        #                 is_load=True)
 
-    # Learning ELLA
-    # traj_length = 150
-    num_rollouts = 0  # 200
-    learning_rate_ella = learning_rate
-    mu1 = 0.00001  # 0.0000001 #0.0000001 # 0.01  # exp(-5)  # Sparsity coefficient
-    mu2 = 0.001  # 0.00000001 #0.001 #0.00000001  # exp(-5)  # Regularization coefficient
-    k = 4  # Number of inner layers
+        # Learning ELLA
+        # traj_length = 150
+        num_rollouts = 0  # 200
+        learning_rate_ella = learning_rate
+        mu1 = 0.00001  # 0.0000001 #0.0000001 # 0.01  # exp(-5)  # Sparsity coefficient
+        mu2 = 0.001  # 0.00000001 #0.001 #0.00000001  # exp(-5)  # Regularization coefficient
+        k = 4  # Number of inner layers
 
-    # Learning PGELLA from SOURCE to TARGET
-    # agent_.startElla(traj_length, num_rollouts,
-    #                  learning_rate_ella, mu1, mu2, k,
-    #                  model_file='model_1_fd_target.p',
-    #                  is_load=False, source=agent)
-    # Load PGELLA Model from file
-    agent_.startElla(model_file='model_1_fd_target.p',
-                    is_load=True, source=agent)
+        # Learning PGELLA from SOURCE to TARGET
+        agent_.startElla(traj_length, num_rollouts,
+                         learning_rate_ella, mu1, mu2, k,
+                         model_file='model_1_fd_target_trial{0}.p'.format(trial),
+                         is_load=False, source=agent)
+        # Load PGELLA Model from file
+        # agent_.startElla(model_file='model_1_fd_target.p',
+        #                 is_load=True, source=agent)
 
-    # Testing Phase
-    # traj_length = 150
-    num_rollouts = 15  # 100
-    num_iterations = 50  # 200
-    # learning_rate = .1
+        # Testing Phase
+        # traj_length = 150
+        num_rollouts = 15  # 100
+        num_iterations = 100  # 200
+        # learning_rate = .1
 
-    # agent_.startTest(traj_length, num_rollouts, num_iterations,
-    #                  learning_rate, test_file='test_1_fd_target.p',
-    #                  is_load=False, baseline=agent_b)
+        agent_.startTest(traj_length, num_rollouts, num_iterations,
+                         learning_rate, test_file='test_1_fd_target_trial{0}.p'.format(trial),
+                         is_load=False, baseline=agent_b)
 
-    agent_.startTest(traj_length, num_rollouts, num_iterations, learning_rate,
-                   test_file='test_1_fd_target.p', is_continue=True)
+    # agent_.startTest(traj_length, num_rollouts, num_iterations, learning_rate,
+    #                test_file='test_1_fd_target.p', is_continue=True)
 
     rospy.spin()
